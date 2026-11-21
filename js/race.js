@@ -173,15 +173,15 @@ const Race = {
     if (fx < W + 40) drawFinish(ctx, fx);
     ctx.restore();
 
-    const plX = 100;
+    const plX = 96;
     let aiX = clamp(plX + (dA - dP) * PPM, -190, W + 60);
     const oc = Game.oppColor(this.oppIdx);
     const aiStyle = CARS[this.opp.car].style, plStyle = CARS[cs.id].style;
     const AIG = 200, PLG = 250;
     // voitures en résolution native (sprite x2)
     ctx.save(); ctx.translate(0, sh * 2);
-    drawCar(ctx, aiStyle, oc, aiX * 2, AIG * 2, 2, {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v});
-    drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 2, {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v});
+    drawCar(ctx, aiStyle, oc, aiX * 2, AIG * 2, 1, {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v});
+    drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v});
     ctx.restore();
 
     ctx.save(); ctx.scale(2, 2);
@@ -189,7 +189,7 @@ const Race = {
     this.drawNitro(ctx, this.pl, plX, PLG, plStyle);
     for (const p of this.particles) {
       const st = p.who === 'pl' ? plStyle : aiStyle;
-      const bx = (p.who === 'pl' ? plX : aiX) + PROFILES[st].wheels[0] - 6, by = (p.who === 'pl' ? PLG : AIG) - 4;
+      const bx = (p.who === 'pl' ? plX : aiX) + PROFILES[st].wheels[0] / 2 - 4, by = (p.who === 'pl' ? PLG : AIG) - 4;
       ctx.globalAlpha = Math.max(0, p.life / p.max) * 0.7;
       ctx.fillStyle = '#d8d8e0';
       const sz = Math.round(p.sz);

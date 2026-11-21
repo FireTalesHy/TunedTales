@@ -262,8 +262,8 @@ function paintThumbs() {
   document.querySelectorAll('canvas.thumb').forEach(cv => {
     const ctx = cv.getContext('2d'), st = CARS[cv.dataset.car].style, p = PROFILES[st];
     ctx.clearRect(0, 0, cv.width, cv.height);
-    const y = cv.height - 8, x = Math.round((cv.width - p.L) / 2);
+    const y = cv.height - 8, x = Math.round((cv.width - p.L * 0.5) / 2);
     ctx.fillStyle = '#0f1224'; ctx.fillRect(0, y, cv.width, 10);
-    drawCar(ctx, st, cv.dataset.color, x, y, 1, {wheelAng: 0.4});
+    drawCar(ctx, st, cv.dataset.color, x, y, 0.5, {wheelAng: 0.4});
   });
 }

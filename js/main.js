@@ -51,7 +51,7 @@ function drawGarage(ctx, t) {
   ctx.globalAlpha = blink * 0.5; ctx.fillStyle = '#ff3d9a'; ctx.fillRect(36, 16, 178, 34); ctx.globalAlpha = 1;
   ctx.fillStyle = blink > 0.9 ? '#ff7ac0' : '#a04a80'; ctx.font = `10px ${FONT}`; ctx.textBaseline = 'top'; ctx.fillText('TUNED TALES', 52, 29);
   ctx.restore();
-  const s = 3, x = Math.round((960 - p.L * s) / 2) + 40, y = 520, bob = Math.round(Math.sin(t * 1.6) * 1);
+  const s = 2, x = Math.round((960 - p.L * s) / 2) - 40, y = 520, bob = Math.round(Math.sin(t * 1.6) * 1);
   ctx.save(); ctx.globalAlpha = 0.16; ctx.translate(0, y * 2 + 8); ctx.scale(1, -1);
   drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3}); ctx.restore();
   drawCar(ctx, c.style, cs.color, x, y + bob, s, {wheelAng: 0.3});

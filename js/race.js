@@ -126,7 +126,7 @@ const Race = {
   updateSound() {
     if (!Sound.ready) return;
     if (!this.plV) this.plV = Sound.engine(this.plCar.engine, this.plCar.parts, {vol: 1});
-    if (!this.aiV) this.aiV = Sound.engine(this.opp.engine, this.opp.parts, {vol: 0.38, distant: true});
+    if (!this.aiV) this.aiV = Sound.engine(this.opp.engine, this.opp.parts, {vol: 0.3, distant: true});
     const s = this.pl, a = this.ai, sp = this.plSpec;
     if (this.state === 'stage' && !s.launched) Sound.update(this.plV, this.revRpm, this.holding ? 1 : 0.12, false, this.revRpm >= sp.red * 0.97);
     else Sound.update(this.plV, s.rpm, this.state === 'done' ? 0.05 : s.shiftT > 0 ? 0.15 : 1, s.spin, s.limiter);

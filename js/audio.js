@@ -19,6 +19,9 @@ const ENGINE_SOUND = {
   ls3:   {cyl: 8, intake: 140, exhaust: 140, extractor: 150, pipe: 170, ign: 0.02,  gIn: 0.25, gBlock: 0.3,  gOut: 0.38}
 };
 // variantes de silencieux testées stables (action 0.1) : moins d'éléments = son plus libre
+const MASTER_VOL = 0.8;
+// niveau du tuyau de sortie par niveau d'échappement (le silencieux simulé ouvert est déjà bien plus fort)
+const EX_OUT = [1, 0.75, 0.5, 0.32];
 const MUFFLERS = [[10, 15, 20, 25], [10, 15, 20], [10, 15], [6, 9, 12, 15]];
 
 const Sound = {
@@ -31,8 +34,8 @@ const Sound = {
     try { this.muted = localStorage.getItem('tt_muted') === '1'; } catch (e) {}
     this.ctx = new AC();
     const comp = this.ctx.createDynamicsCompressor();
-    comp.threshold.value = -14; comp.ratio.value = 6;
-    this.master = this.ctx.createGain(); this.master.gain.value = this.muted ? 0 : 0.8;
+    comp.threshold.value = -10; comp.knee.value = 10; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.2;
+    this.master = this.ctx.createGain(); this.master.gain.value = this.muted ? 0 : MASTER_VOL;
     this.master.connect(comp); comp.connect(this.ctx.destination);
     const n = this.ctx.sampleRate * 2, b = this.ctx.createBuffer(1, n, this.ctx.sampleRate), d = b.getChannelData(0);
     for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
@@ -47,7 +50,7 @@ const Sound = {
   toggleMute() {
     this.init(); this.muted = !this.muted;
     try { localStorage.setItem('tt_muted', this.muted ? '1' : '0'); } catch (e) {}
-    if (this.master) this.master.gain.setTargetAtTime(this.muted ? 0 : 0.8, this.ctx.currentTime, 0.05);
+    if (this.master) this.master.gain.setTargetAtTime(this.muted ? 0 : MASTER_VOL, this.ctx.currentTime, 0.05);
     return this.muted;
   },
   noise(loop) { const s = this.ctx.createBufferSource(); s.buffer = this.noiseBuf; s.loop = !!loop; return s; },
@@ -62,9 +65,9 @@ const Sound = {
     const out = ctx.createGain(); out.gain.value = 0;
     const tone = ctx.createBiquadFilter(); tone.type = 'lowpass'; tone.frequency.value = 5000 + ex * 2500; tone.Q.value = 0.7;
     if (opt.distant) tone.frequency.value = 1800;
-    const shaper = ctx.createWaveShaper(); const k = 1.5 + ex * 2.2, curve = new Float32Array(1024);
+    const shaper = ctx.createWaveShaper(); const k = 0.8 + ex * 0.5, curve = new Float32Array(1024);
     for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; curve[i] = Math.tanh(k * x) / Math.tanh(k); }
-    shaper.curve = curve;
+    shaper.curve = curve; shaper.oversample = '2x';
     const pre = ctx.createGain();
     pre.connect(shaper); shaper.connect(tone); tone.connect(out); out.connect(this.master);
     v.out = out; v.tone = tone; v.pre = pre;
@@ -76,10 +79,15 @@ const Sound = {
         ignitionTime: prof.ign, straightPipeWaveguideLength: prof.pipe, straightPipeReflectionFactor: 0.01,
         mufflerElementsLength: MUFFLERS[ex], action: 0.1, outletWaveguideLength: 5, outletReflectionFactor: 0.01}});
       const gi = ctx.createGain(), gb = ctx.createGain(), go = ctx.createGain();
-      gi.gain.value = prof.gIn * (1 + (P.intake || 0) * 0.25); gb.gain.value = prof.gBlock; go.gain.value = prof.gOut * (1 + ex * 0.3);
-      node.connect(gi, 0); node.connect(gb, 1); node.connect(go, 2);
+      gi.gain.value = prof.gIn * (1 + (P.intake || 0) * 0.25); gb.gain.value = prof.gBlock; go.gain.value = prof.gOut * EX_OUT[ex];
+      // les sorties du simulateur contiennent une forte composante continue (DC) : on la retire
+      // avant tout traitement, sinon la distorsion sature d'un seul côté.
+      const hp = [0, 1, 2].map(() => { const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 35; f.Q.value = 0.7; return f; });
+      node.connect(hp[0], 0); node.connect(hp[1], 1); node.connect(hp[2], 2);
+      hp[0].connect(gi); hp[1].connect(gb); hp[2].connect(go);
       gi.connect(pre); gb.connect(pre); go.connect(pre);
-      pre.gain.value = 0.11;
+      pre.gain.value = 0.22;
+      v.nodes.push(...hp);
       v.node = node; v.rpmP = node.parameters.get('rpm'); v.thrP = node.parameters.get('throttle');
       v.nodes.push(node, gi, gb, go);
     } else {
@@ -89,7 +97,7 @@ const Sound = {
       const g1 = ctx.createGain(), g2 = ctx.createGain(), g3 = ctx.createGain();
       g1.gain.value = 0.5; g2.gain.value = prof.cyl === 8 ? 0.45 : 0.2; g3.gain.value = 0.2 + ex * 0.08;
       o1.connect(g1); o2.connect(g2); o3.connect(g3); g1.connect(pre); g2.connect(pre); g3.connect(pre);
-      pre.gain.value = 0.35;
+      pre.gain.value = 0.25;
       o1.start(); o2.start(); o3.start();
       v.osc = [o1, o2, o3]; v.nodes.push(o1, o2, o3, g1, g2, g3);
     }
@@ -126,7 +134,7 @@ const Sound = {
     let bright = (v.ex ? 1 + v.ex * 0.15 : 1);
     if (p.vtec && rpm > p.vtec) bright *= 1.5;
     if (!v.node) v.tone.frequency.setTargetAtTime((500 + rpm * 0.45 * (0.5 + load)) * bright, t, 0.03);
-    let g = v.vol * (0.35 + 0.65 * load) * (1 + v.ex * 0.18);
+    let g = 0.55 * v.vol * (0.35 + 0.65 * load) * (1 + v.ex * 0.15);
     if (limiter) g *= (Math.floor(performance.now() / 35) % 2) ? 1 : 0.25;
     v.out.gain.setTargetAtTime(g, t, 0.02);
     // turbo

@@ -14,7 +14,7 @@ Jeu de drag & tuning en pixel art (2.5D), jouable dans le navigateur — aucune 
 
 **https://firetaleshy.github.io/TunedTales/**
 
-Le déploiement est automatique (`.github/workflows/pages.yml`) à chaque push sur `main`. En local : ouvrir `index.html`.
+Le site est publié par GitHub Pages depuis la branche `main` (Settings → Pages → Deploy from a branch → `main` / root). En local : ouvrir `index.html`.
 
 Contrôles : ESPACE / clic maintenu = régime au départ, relâcher au feu vert ; ESPACE / clic = passer la vitesse ; N = nitro.
 

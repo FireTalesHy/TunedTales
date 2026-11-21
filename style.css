@@ -15,7 +15,7 @@ body{background:radial-gradient(1200px 600px at 70% -10%,#2a1850 0%,transparent 
 #cash{font-family:var(--px);font-size:11px;color:var(--gold);background:rgba(255,211,77,.08);border:1px solid rgba(255,211,77,.3);padding:6px 10px;border-radius:6px}
 #carname{color:var(--mu);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.5px}
 #stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;background:#04050b}
-#scene{image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:100%;max-width:calc((100vh - 46px)*16/9);max-height:calc(100vw*9/16);object-fit:contain;touch-action:none;background:#000;box-shadow:0 0 80px rgba(0,0,0,.8)}
+#scene{image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:100%;max-width:calc(100dvh*16/9);max-height:calc(100vw*9/16);object-fit:contain;touch-action:none;background:#000;box-shadow:0 0 80px rgba(0,0,0,.8)}
 .hidden{display:none!important}
 
 /* ---------- boutons ---------- */
@@ -27,13 +27,13 @@ body{background:radial-gradient(1200px 600px at 70% -10%,#2a1850 0%,transparent 
 .shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
 /* ---------- accueil ---------- */
-#menu{position:absolute;right:max(14px,calc(50% - min(50vw,(100vh - 46px)*8/9) + 16px));top:50%;transform:translateY(-50%);width:min(290px,44vw);display:flex;flex-direction:column;gap:10px}
+#menu{position:absolute;right:max(14px,calc(50% - min(50vw,100dvh*8/9) + 16px));top:50%;transform:translateY(-50%);width:min(290px,44vw);display:flex;flex-direction:column;gap:10px}
 .mi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;color:var(--tx);font-family:var(--ui);padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.88),rgba(14,15,36,.88));backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s,border-color .15s,box-shadow .15s}
 .mi:hover{transform:translateX(-6px);border-color:var(--bd2);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,154,46,.3),0 0 30px rgba(255,154,46,.2)}
 .mi .ico{font-size:22px;width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(135deg,rgba(255,154,46,.25),rgba(255,61,154,.18));border:1px solid rgba(255,154,46,.35)}
 .mi b{display:block;font-family:var(--px);font-size:11px;letter-spacing:1px;margin-bottom:5px}
 .mi small{color:var(--mu);font-size:12px}
-#homecard{position:absolute;left:max(14px,calc(50% - min(50vw,(100vh - 46px)*8/9) + 16px));top:14px;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.85),rgba(14,15,36,.85));backdrop-filter:blur(8px);min-width:230px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+#homecard{position:absolute;left:max(14px,calc(50% - min(50vw,100dvh*8/9) + 16px));top:66px;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.85),rgba(14,15,36,.85));backdrop-filter:blur(8px);min-width:230px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 #homecard .hc-t{font-family:var(--px);font-size:10px;color:var(--ac);margin-bottom:6px}
 #homecard .hc-n{font-weight:700;font-size:16px}
 #homecard .hc-s{display:flex;gap:14px;margin-top:6px;color:var(--mu);font-size:12px}
@@ -144,4 +144,36 @@ kbd{font-family:var(--ui);font-weight:700;font-size:11px;padding:1px 6px;border-
 .pl{display:flex;justify-content:space-between;padding:3px 0;font-size:14px}.pl.total{border-top:1px solid rgba(255,255,255,.1);margin-top:6px;padding-top:8px;font-size:16px}
 .rbox .eyebrow{text-align:center}
 
-.jobcard .jobicon{font-size:56px;text-align:center;padding:14px 0;border-radius:14px;background:radial-gradient(ellipse at 50% 80%,rgba(255,154,46,.22),transparent 60%),linear-gradient(180deg,#22264f,#0b0d22)}
+.jobcard-unused .jobicon{font-size:56px;text-align:center;padding:14px 0;border-radius:14px;background:radial-gradient(ellipse at 50% 80%,rgba(255,154,46,.22),transparent 60%),linear-gradient(180deg,#22264f,#0b0d22)}
+
+/* ---------- menu Petits boulots (maquette Claude Design) ---------- */
+.jobs-intro{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap}
+.jobs-intro p{margin:0;font-size:16px;color:#b3b8dc;max-width:640px;line-height:1.5}
+.jobs-badges{display:flex;gap:8px;flex-wrap:wrap}
+.jbadge{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:18px;background:#151834;border:1px solid #2e3366;font-size:13px;font-weight:600;color:#c9cdf0}
+.jobs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media(max-width:980px){.jobs-grid{grid-template-columns:1fr}}
+.jobc{display:flex;flex-direction:column;border-radius:18px;background:#141733;border:1px solid #2b2f5e;overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s}
+.jobc:hover{transform:translateY(-4px);border-color:var(--jbd);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.jobc-art{position:relative;height:168px;background:var(--jbg);border-bottom:1px solid var(--jbd);display:flex;align-items:center;justify-content:center;color:var(--jc)}
+.jtag{position:absolute;top:14px;height:28px;padding:0 12px;display:flex;align-items:center;border-radius:14px;background:#0b0c1a;border:1px solid var(--jbd);font-size:12px;font-weight:700}
+.jtag.l{left:14px;color:var(--jlt)}.jtag.r{right:14px;color:#ffd34d}
+.jobc-body{display:flex;flex-direction:column;gap:14px;padding:20px 22px 22px;flex:1}
+.jobc-body h2{margin:0;font-size:24px;font-weight:700}
+.jobc-body p{margin:0;font-size:14px;line-height:1.5;color:#b3b8dc}
+.jkeys{display:flex;align-items:center;gap:8px;font-size:13px;color:#c9cdf0}
+.jkeys kbd{min-width:30px;height:30px;padding:0 10px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#22264f;border:1px solid #3a3f78;border-bottom-width:3px;font-size:13px}
+.jbest{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:12px;background:#0f1128}
+.jrow{display:flex;justify-content:space-between;align-items:baseline}.jrow.small{font-size:12px;color:#9097c0}
+.jlab{font-size:12px;font-weight:600;color:#9097c0;letter-spacing:1px}.jval{font-size:20px;font-weight:700}
+.jbar{height:6px;border-radius:3px;background:#22264f}.jbar>div{height:6px;border-radius:3px;background:var(--jc)}
+.btn.jgo{height:52px;border-radius:12px;font-size:15px;box-shadow:none;background:#ff9a2e}
+.btn.jgo:hover{box-shadow:0 8px 24px rgba(255,154,46,.35)}
+
+/* ---------- plein écran ---------- */
+#app{position:relative}
+#topbar{position:absolute;left:0;right:0;top:0;background:linear-gradient(180deg,rgba(10,11,24,.92),rgba(10,11,24,.7));backdrop-filter:blur(8px);transition:transform .25s}
+#stage{height:100vh;height:100dvh;flex:none}
+#scene{max-width:calc(100dvh*16/9);max-height:calc(100vw*9/16);box-shadow:none}
+body.ingame #topbar{transform:translateY(-100%)}
+#panel{top:0;padding-top:56px}

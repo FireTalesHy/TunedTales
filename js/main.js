@@ -136,6 +136,7 @@ document.addEventListener('click', e => {
     case 'go': UI.go(v); break;
     case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
+    case 'fullscreen': toggleFullscreen(); break;
     case 'refresh': if (Game.refreshContracts()) UI.render(); else flash(b); break;
     case 'mute': b.textContent = Sound.toggleMute() ? '🔇' : '🔊'; break;
     case 'listen': {
@@ -168,3 +169,13 @@ try { if (localStorage.getItem('tt_muted') === '1') $('mutebtn').textContent = '
 UI.refreshTop();
 document.fonts && document.fonts.load('10px "Press Start 2P"');
 requestAnimationFrame(frame);
+
+/* ---------- plein écran ---------- */
+function toggleFullscreen() {
+  const d = document, el = d.documentElement;
+  if (!d.fullscreenElement && !d.webkitFullscreenElement) (el.requestFullscreen || el.webkitRequestFullscreen || (() => {})).call(el, {navigationUI: 'hide'});
+  else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+}
+document.addEventListener('keydown', e => { if (e.code === 'KeyF' && !e.repeat && !Jobs.active && !(e.target.closest && e.target.closest('input'))) toggleFullscreen(); });
+// en course / mini-jeu : la barre du haut se replie pour laisser tout l'écran au jeu
+setInterval(() => document.body.classList.toggle('ingame', Race.active || Jobs.active), 200);

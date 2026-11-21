@@ -36,7 +36,7 @@ const UI = {
     paintThumbs();
     if (this.screen === 'tuning') this.drawChart();
   },
-  title() { return {jobs: '💼 PETITS BOULOTS', races: '🏁 COURSES DE DRAG', garage: '🔧 GARAGE & MOTEURS', tuning: '📈 TUNING', shop: '🚗 CONCESSION'}[this.screen]; },
+  title() { return {jobs: 'PETITS BOULOTS · Arrondis tes fins de mois', races: '🏁 COURSES DE DRAG', garage: '🔧 GARAGE & MOTEURS', tuning: '📈 TUNING', shop: '🚗 CONCESSION'}[this.screen]; },
 
   /* ---------------- COURSES ---------------- */
   raceTab: 'contracts',
@@ -104,13 +104,20 @@ const UI = {
   /* ---------------- PETITS BOULOTS ---------------- */
   rJobs() {
     const best = Game.save.jobs || {};
-    let h = `<div class="sectionbar"><span class="muted">Fauché ? Enchaîne les petits boulots : plus ton score est élevé, plus tu es payé.</span></div><div class="contracts">`;
+    let h = `<div class="jobs-intro"><p>Trois mini-jeux pour te refaire quand les contrats tournent mal. Ton score est converti en euros : plus tu joues propre, plus tu es payé.</p>
+      <div class="jobs-badges"><span class="jbadge">${JOB_SVG.clock} Rejouable à volonté</span><span class="jbadge">${JOB_SVG.trophy} Meilleurs scores sauvegardés</span></div></div>
+      <div class="jobs-grid">`;
     for (const j of JOBS) {
-      h += `<div class="contract jobcard"><div class="ctop"><span class="pill type">${j.time ? '⏱ ' + j.time + ' s' : '🔩 10 écrous'}</span><span class="pill d-easy">${fmt(j.rate * 100)} € / 100 pts</span></div>
-        <div class="jobicon">${j.icon}</div><div class="cname"><b>${j.name}</b></div>
-        <div class="muted">${j.desc}</div><div class="cond">🎮 ${j.ctrl}</div>
-        <div class="rewardrow"><span class="muted">Meilleur score</span><b class="gold big">${best[j.id] ? fmt(best[j.id]) : '—'}</b></div>
-        <button class="btn" data-act="job" data-v="${j.id}">COMMENCER ▶</button></div>`;
+      const T = JOB_THEME[j.id], sc = best[j.id] || 0, pct = clamp(sc / T.target * 100, 0, 100);
+      h += `<article class="jobc" style="--jc:${T.color};--jbg:${T.bg};--jbd:${T.bd};--jlt:${T.light}">
+        <div class="jobc-art">${JOB_SVG[j.id]}
+          <span class="jtag l">${j.time ? j.time + ' s' : '10 écrous'}</span><span class="jtag r">${fmt(j.rate * 100)} € / 100 pts</span></div>
+        <div class="jobc-body"><h2>${j.name}</h2><p>${T.desc}</p>
+          <div class="jkeys">${T.keys}</div>
+          <div class="jbest"><div class="jrow"><span class="jlab">MEILLEUR SCORE</span><span class="jval">${sc ? fmt(sc) + ' pts' : '—'}</span></div>
+            <div class="jbar"><div style="width:${pct}%"></div></div>
+            <div class="jrow small"><span>Paie correspondante</span><b class="gold">${sc ? money(sc * j.rate) : '—'}</b></div></div>
+          <button class="btn jgo" data-act="job" data-v="${j.id}">COMMENCER</button></div></article>`;
     }
     return h + '</div>';
   },

@@ -280,3 +280,23 @@ function topCar(ctx, x, y, color, down, blink) {
   ctx.restore();
 }
 function shade(hex, f) { const c = tone(hexRgb(hex), f); return `rgb(${c.map(Math.round).join(',')})`; }
+
+/* ---- éléments visuels du menu (maquette Claude Design « Menu Petits Boulots ») ---- */
+const JOB_THEME = {
+  delivery: {color: '#ff9a2e', bg: '#2a1a10', bd: '#4a2d18', light: '#ffb15c', target: 1200,
+    desc: 'Ramasse jusqu’à 3 pizzas, dépose-les sur les zones de livraison et évite la circulation. Livrer les 3 d’un coup rapporte un bonus.',
+    keys: '<kbd>←</kbd><kbd>→</kbd><span>changer de voie</span>'},
+  wash: {color: '#3ee0ff', bg: '#0f2433', bd: '#1d4660', light: '#7feaff', target: 800,
+    desc: 'Frotte la boue des voitures clientes. Chaque voiture nickel rapporte 100 points et 6 secondes de plus au chrono.',
+    keys: '<kbd>CLIC + GLISSER</kbd><span>pour frotter</span>'},
+  torque: {color: '#4cff8a', bg: '#10261a', bd: '#1f4a30', light: '#8bffb4', target: 1000,
+    desc: 'Arrête l’aiguille de la clé dynamométrique dans la zone verte. Elle rétrécit et accélère à chaque écrou.',
+    keys: '<kbd>ESPACE</kbd><span>ou clic pour serrer</span>'}
+};
+const JOB_SVG = {
+  clock: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  trophy: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>',
+  delivery: '<svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Scooter de livraison"><circle cx="16" cy="46" r="7"/><circle cx="48" cy="46" r="7"/><path d="M23 46h14l6-14h-9"/><path d="M40 20h7l4 12"/><rect x="8" y="22" width="18" height="14" rx="2"/><path d="M12 29h10"/></svg>',
+  wash: '<svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Voiture et gouttes d’eau"><path d="M8 40l5-11a4 4 0 0 1 4-2h30a4 4 0 0 1 4 2l5 11v7H8z"/><circle cx="18" cy="47" r="5"/><circle cx="46" cy="47" r="5"/><path d="M20 12c0 3-3 4-3 7a3 3 0 0 0 6 0c0-3-3-4-3-7z"/><path d="M34 8c0 3-3 4-3 7a3 3 0 0 0 6 0c0-3-3-4-3-7z"/><path d="M47 14c0 2-2 3-2 5a2 2 0 0 0 4 0c0-2-2-3-2-5z"/></svg>',
+  torque: '<svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Clé et écrou"><path d="M38 10a10 10 0 0 0-9 14L10 43a4 4 0 0 0 6 6l19-19a10 10 0 0 0 14-9l-6 6-6-2-2-6 6-6a10 10 0 0 0-3-3z"/><path d="M44 40l6 3.5v7L44 54l-6-3.5v-7z"/><circle cx="44" cy="47" r="2"/></svg>'
+};

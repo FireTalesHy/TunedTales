@@ -7,20 +7,22 @@ const GY = SH - 1;                    // ligne de sol
 
 // c : nombre = ton de la couleur carrosserie, tableau = couleur RGB
 const PROFILES = {
-  /* ---- Renault Twingo 2 : citadine ronde, toit haut, gros hayon ---- */
-  twingo: {L:216, wr:18, wheels:[34,176], sill:12, belt:58,
-    body:[[4,12],[1,18],[0,30],[1,42],[3,54],[6,64],[10,73],[16,80],[26,85],[42,88],[70,89],[96,88],[112,85],[126,80],[140,72],[152,64],[160,57],[176,52],[196,49],[208,46],[214,40],[216,32],[214,22],[208,15],[200,12]],
-    glass:[[14,58],[17,66],[22,74],[32,81],[46,84],[70,85],[96,84],[110,81],[124,76],[136,68],[148,59],[150,58]],
-    pillars:[[52,58],[100,107]], doors:[98,168], handle:[106,56], mirror:146,
-    hl:[[178,56],[202,52],[211,44],[205,40],[184,46]], hlRound:[196,47,7],
-    tl:[[1,44],[9,44],[10,66],[3,64]],
+  /* ---- Renault Twingo 2 : relevé sur photo de profil (Wikimedia Commons) ---- */
+  twingo: {L:217, wr:18, wheels:[42,193], sill:14, belt:60, spokes:5, bodyBumpers:true,
+    body:[[4,14],[2,17],[1,34],[4,52],[7,60],[13,74],[18,86],[26,90],[36,91],[90,91],[120,89],[136,87],[156,77],[170,67],[176,60],[192,57],[204,56],[212,48],[215,38],[216,26],[215,15],[210,13]],
+    glass:[[40,61],[40,79],[44,85],[52,87],[90,88],[138,85],[162,68],[168,59]],
+    pillars:[[90,100]], doors:[94,172], handle:[96,48], mirror:160,
+    hl:[[200,55],[210,54],[215,48],[214,44],[203,46]],
+    tl:[[2,44],[5,62],[12,63],[24,52],[22,46]],
     extra:[
-      {t:'poly',pts:[[188,17],[212,19],[213,28],[192,28]],c:[10,10,14]},      // prise d'air
-      {t:'rect',x:196,h:22,w:14,hh:1,c:[90,94,104]},
-      {t:'line',a:[60,36],b:[186,36],c:0.62},                                  // ligne de caractère
-      {t:'rect',x:2,h:18,w:26,hh:7,c:0.3},                                    // bas de pare-chocs arrière
-      {t:'disc',x:206,h:27,r:3,c:[255,236,160]},                               // antibrouillard
-      {t:'rect',x:0,h:34,w:3,hh:3,c:[214,218,226]}
+      {t:'line',a:[76,34],b:[168,34],c:[214,218,228]},{t:'line',a:[76,33],b:[168,33],c:0.55},   // jonc chromé
+      {t:'disc',x:179,h:50,r:1.6,c:[255,170,40]},                                              // répétiteur
+      {t:'poly',pts:[[196,16],[214,17],[215,24],[198,24]],c:[12,12,16]},                       // prise d'air basse
+      {t:'disc',x:206,h:28,r:2.2,c:[230,230,210]},
+      {t:'rect',x:0,h:16,w:5,hh:3,c:[200,204,212]},
+      {t:'line',a:[22,48],b:[200,52],c:1.5},
+      {t:'poly',pts:[[14,86],[24,91],[34,92],[34,90],[22,88]],c:0.7},
+      {t:'rect',x:90,h:60,w:10,hh:28,c:[24,24,30]}
     ]},
 
   /* ---- Renault Clio III RS : compacte sportive, bouclier agressif ---- */
@@ -42,58 +44,58 @@ const PROFILES = {
       {t:'line',a:[60,36],b:[190,38],c:0.6}
     ]},
 
-  /* ---- Mazda MX-5 NB : roadster capote, capot long, optiques ovales ---- */
-  mx5: {L:237, wr:17, wheels:[48,184], sill:12, belt:54,
-    body:[[6,12],[2,18],[0,32],[2,40],[7,46],[22,50],[46,52],[60,53],[74,60],[92,70],[112,74],[132,74],[142,68],[156,57],[172,52],[200,50],[222,46],[234,40],[237,30],[233,20],[226,14],[210,12]],
-    glass:[[78,54],[92,66],[110,71],[130,71],[142,65],[160,54]],
-    soft:[[58,53],[74,60],[92,70],[112,74],[132,74],[142,68],[156,57],[150,53]],
-    pillars:[], doors:[66,168], handle:[80,52], mirror:152,
-    hl:[[198,50],[222,47],[230,41],[224,36],[202,41]], hlRound:[214,43,7],
-    tl:[[1,40],[8,40],[11,50],[2,52]],
+  /* ---- Mazda MX-5 NB : relevé sur photo de profil (Wikimedia Commons) ---- */
+  mx5: {L:239, wr:17, wheels:[51,194], sill:11, belt:51, spokes:5, bodyBumpers:true,
+    body:[[2,11],[1,16],[0,24],[0,32],[2,42],[4,47],[7,52],[16,53],[40,54],[50,55],[54,60],[62,67],[72,72],[82,74],[100,75],[118,74],[121,72],[148,52],[154,51],[176,49],[196,46],[216,41],[230,36],[236,30],[238,22],[236,12],[230,10]],
+    glass:[[84,51],[84,67],[88,70],[120,70],[144,51]],
+    soft:[[48,55],[54,60],[62,67],[72,72],[82,74],[100,75],[118,74],[121,72],[124,69],[124,66],[86,66],[84,52],[50,52]],
+    pillars:[], doors:[83,156], handle:[90,43], mirror:120,
+    hl:[[219,40],[228,39],[233,35],[232,31],[222,33]],
+    tl:[[4,46],[14,47],[16,42],[13,37],[5,38]],
     extra:[
-      {t:'poly',pts:[[196,26],[220,24],[232,30],[198,32]],c:[10,10,14]},
-      {t:'rect',x:28,h:47,w:7,hh:7,c:[190,194,204]},                           // bouchon d'essence
-      {t:'rect',x:200,h:44,w:20,hh:2,c:0.55},
-      {t:'line',a:[16,36],b:[200,36],c:0.62},
-      {t:'rect',x:2,h:18,w:28,hh:6,c:0.3}
+      {t:'rect',x:16,h:28,w:9,hh:2,c:[255,150,40]},{t:'rect',x:220,h:25,w:7,hh:2,c:[255,150,40]},
+      {t:'disc',x:167,h:34,r:1.6,c:[255,150,40]},
+      {t:'poly',pts:[[222,13],[236,14],[237,21],[224,20]],c:[10,10,14]},
+      {t:'rect',x:4,h:15,w:10,hh:2,c:[200,204,212]},
+      {t:'line',a:[12,44],b:[214,40],c:1.5},
+      {t:'line',a:[66,15],b:[176,15],c:0.5}
     ]},
 
-  /* ---- BMW M3 E46 coupé : long capot à bosse, nez de requin, branchies ---- */
-  m3: {L:269, wr:19, wheels:[58,222], sill:11, belt:62,
-    body:[[8,11],[2,16],[0,30],[2,50],[6,59],[30,63],[56,64],[66,66],[82,74],[100,80],[116,82],[150,82],[162,79],[178,73],[200,64],[210,62],[240,62],[256,58],[265,50],[268,40],[268,30],[263,20],[255,13],[238,11]],
-    glass:[[70,62],[84,73],[100,79],[118,81],[150,81],[162,78],[178,72],[198,62]],
-    pillars:[[130,136]], doors:[92,192], handle:[100,59], mirror:190,
-    hl:[[236,61],[262,57],[266,49],[240,49]],
-    tl:[[1,44],[14,48],[16,58],[3,57]],
+  /* ---- BMW M3 E46 coupé : relevé sur photo de profil (Wikimedia Commons) ---- */
+  m3: {L:269, wr:19, wheels:[52,224], sill:13, belt:54, spokes:10, bodyBumpers:true,
+    body:[[1,13],[0,15],[0,41],[3,54],[5,59],[8,61],[26,64],[42,67],[56,75],[76,81],[100,83],[136,82],[148,80],[188,52],[206,48],[246,44],[262,41],[268,33],[268,21],[264,13]],
+    glass:[[52,55],[54,68],[64,75],[80,77],[136,77],[150,73],[180,53]],
+    pillars:[[94,98]], doors:[92,183], handle:[95,47], mirror:160,
+    hl:[[254,41],[266,39],[268,33],[256,32]],
+    tl:[[1,43],[10,44],[10,54],[2,53]],
     extra:[
-      {t:'poly',pts:[[240,14],[268,16],[268,30],[244,28]],c:[8,8,12]},         // large entrée d'air
-      {t:'rect',x:262,h:36,w:7,hh:14,c:[10,10,14]},{t:'rect',x:262,h:36,w:7,hh:1,c:[200,204,212]},{t:'rect',x:262,h:50,w:7,hh:1,c:[200,204,212]},
-      {t:'rect',x:200,h:50,w:3,hh:6,c:[8,8,12]},{t:'rect',x:205,h:50,w:3,hh:6,c:[8,8,12]},{t:'rect',x:210,h:50,w:3,hh:6,c:[8,8,12]},   // branchies
-      {t:'rect',x:198,h:50,w:16,hh:1,c:[200,204,212]},
-      {t:'rect',x:196,h:40,w:5,hh:2,c:[40,90,220]},{t:'rect',x:201,h:40,w:5,hh:2,c:[120,60,170]},{t:'rect',x:206,h:40,w:5,hh:2,c:[210,40,50]},
-      {t:'line',a:[176,64],b:[236,64],c:1.55},{t:'line',a:[176,62],b:[236,62],c:0.7},   // bosse de capot
-      {t:'rect',x:20,h:64,w:42,hh:2,c:0.5},                                     // becquet de coffre
-      {t:'rect',x:0,h:17,w:5,hh:4,c:[210,214,222]},{t:'rect',x:0,h:13,w:5,hh:4,c:[210,214,222]},
-      {t:'line',a:[58,32],b:[222,32],c:0.62}
+      {t:'rect',x:187,h:37,w:18,hh:3,c:[12,12,16]},{t:'rect',x:187,h:40,w:18,hh:1,c:[200,204,214]},          // branchie d'aile
+      {t:'rect',x:189,h:33,w:4,hh:2,c:[40,90,220]},{t:'rect',x:193,h:33,w:4,hh:2,c:[120,60,170]},{t:'rect',x:197,h:33,w:4,hh:2,c:[210,40,50]},
+      {t:'rect',x:264,h:24,w:5,hh:10,c:[12,12,16]},{t:'rect',x:264,h:34,w:5,hh:1,c:[200,204,214]},             // haricot
+      {t:'poly',pts:[[234,13],[266,14],[267,21],[238,21]],c:[10,10,14]},
+      {t:'line',a:[190,51],b:[248,45],c:1.6},                                                                // bosse de capot
+      {t:'rect',x:10,h:62,w:30,hh:2,c:0.55},                                                                 // becquet de coffre
+      {t:'rect',x:0,h:16,w:6,hh:3,c:[200,204,212]},{t:'rect',x:8,h:16,w:6,hh:3,c:[200,204,212]},
+      {t:'line',a:[14,46],b:[250,42],c:1.5},{t:'line',a:[74,20],b:[200,20],c:0.5}
     ]},
 
-  /* ---- Toyota Supra A80 : fastback bas, bulle de toit, gigantesque aileron ---- */
-  supra: {L:271, wr:19, wheels:[61,214], sill:11, belt:57,
-    body:[[8,11],[2,18],[0,30],[2,44],[6,55],[14,60],[40,64],[62,66],[78,70],[98,75],[122,77],[150,77],[168,73],[186,66],[206,58],[220,54],[246,50],[262,44],[270,36],[270,26],[264,17],[254,12],[236,11]],
-    glass:[[64,57],[76,66],[96,73],[120,75],[150,75],[166,71],[182,65],[202,57]],
-    pillars:[[130,138]], doors:[84,192], handle:[96,55], mirror:186,
-    hl:[[230,53],[259,46],[264,40],[234,42]],
-    tl:[[1,36],[10,36],[13,54],[3,52]],
+  /* ---- Toyota Supra A80 : relevé sur photo de profil (Wikimedia Commons) ---- */
+  supra: {L:271, wr:20, wheels:[57,221], sill:14, belt:59, spokes:6, bodyBumpers:true,
+    body:[[2,14],[2,19],[0,30],[1,46],[6,51],[10,54],[16,62],[34,67],[56,73],[80,79],[100,82],[120,81],[136,78],[176,59],[196,58],[216,55],[240,50],[256,45],[267,38],[270,30],[269,17],[264,14]],
+    glass:[[80,61],[78,66],[82,72],[90,76],[106,78],[140,77],[168,59]],
+    pillars:[[99,102]], doors:[94,179], handle:[98,50], mirror:150,
+    hl:[[254,46],[262,44],[268,39],[266,35],[256,37]],
+    tl:[[1,44],[8,44],[8,52],[2,52]],
     extra:[
-      {t:'rect',x:12,h:62,w:4,hh:19,c:[20,20,26]},{t:'rect',x:46,h:64,w:4,hh:17,c:[20,20,26]},     // jambes d'aileron
-      {t:'poly',pts:[[0,80],[62,80],[62,84],[0,84]],c:[26,26,32]},{t:'rect',x:0,h:84,w:62,hh:1,c:[110,114,126]},
-      {t:'rect',x:210,h:51,w:6,hh:2,c:[8,8,12]},{t:'rect',x:221,h:51,w:6,hh:2,c:[8,8,12]},                // sorties de capot
-      {t:'rect',x:196,h:44,w:3,hh:8,c:[8,8,12]},{t:'rect',x:201,h:44,w:3,hh:8,c:[8,8,12]},                 // prise d'air d'aile
-      {t:'poly',pts:[[236,14],[268,16],[269,28],[240,27]],c:[8,8,12]},
-      {t:'rect',x:0,h:34,w:10,hh:2,c:[230,40,40]},                                                          // bandeau de feux
-      {t:'rect',x:0,h:17,w:5,hh:4,c:[210,214,222]},{t:'rect',x:0,h:13,w:5,hh:4,c:[210,214,222]},
-      {t:'line',a:[126,76],b:[132,57],c:0.5},
-      {t:'line',a:[62,32],b:[214,32],c:0.62}
+      {t:'poly',pts:[[8,80],[13,82],[44,69],[40,66],[20,71],[17,62],[11,62],[10,72]],c:1.05},   // aileron relevé
+      {t:'line',a:[13,81],b:[43,69],c:[236,238,244]},
+      {t:'poly',pts:[[88,22],[100,22],[100,30],[92,30]],c:[14,14,18]},                          // écope latérale
+      {t:'rect',x:13,h:35,w:8,hh:2,c:[220,40,40]},{t:'rect',x:246,h:28,w:8,hh:2,c:[255,150,40]},
+      {t:'rect',x:186,h:44,w:4,hh:2,c:[255,150,40]},
+      {t:'poly',pts:[[240,15],[268,16],[269,25],[244,24]],c:[10,10,14]},
+      {t:'rect',x:77,h:14,w:124,hh:4,c:0.35},
+      {t:'rect',x:0,h:16,w:5,hh:4,c:[200,204,212]},
+      {t:'line',a:[30,56],b:[96,58],c:1.5},{t:'line',a:[180,50],b:[250,46],c:1.5}
     ]},
 
   /* ---- Nissan Skyline GT-R R34 : coupé carré, 4 feux ronds, aileron, évents ---- */
@@ -104,8 +106,8 @@ const PROFILES = {
     hl:[[236,58],[268,54],[274,46],[272,40],[240,46]],
     tlRound:[9,48,6],
     extra:[
-      {t:'rect',x:14,h:66,w:4,hh:19,c:[20,20,26]},{t:'rect',x:42,h:68,w:4,hh:17,c:[20,20,26]},
-      {t:'poly',pts:[[0,84],[56,84],[56,88],[0,88]],c:[26,26,32]},{t:'rect',x:0,h:88,w:56,hh:1,c:[110,114,126]},
+      {t:'rect',x:14,h:67,w:4,hh:10,c:0.8},{t:'rect',x:42,h:68,w:4,hh:9,c:0.8},                          // aileron GT-R sur jambes
+      {t:'poly',pts:[[0,77],[58,77],[58,81],[2,81]],c:1.05},{t:'line',a:[1,81],b:[57,81],c:[236,238,244]},
       {t:'poly',pts:[[206,61],[228,60],[230,63],[208,64]],c:[8,8,12]},                                      // évent de capot
       {t:'poly',pts:[[240,15],[274,17],[276,32],[246,30]],c:[8,8,12]},                                     // grandes entrées d'air
       {t:'rect',x:244,h:30,w:30,hh:1,c:[120,124,134]},
@@ -194,7 +196,7 @@ function getBody(style, color) {
     if (y < belt) { const u = (y - topY) / Math.max(1, belt - topY); f = Math.round((1.08 + 0.38 * (1 - u) + n * 0.12) / 0.08) * 0.08; }
     else {
       const u = (y - belt) / (bot - belt) + n * 0.09;
-      f = u < 0.05 ? 1.85 : u < 0.12 ? 1.45 : u < 0.30 ? 1.22 : u < 0.5 ? 1.02 : u < 0.68 ? 0.86 : u < 0.84 ? 0.68 : 0.5;
+      f = u < 0.05 ? 1.85 : u < 0.13 ? 1.42 : u < 0.28 ? 1.2 : u < 0.42 ? 1.04 : u < 0.5 ? 0.86 : u < 0.56 ? 0.74 : u < 0.72 ? 0.92 : u < 0.86 ? 0.78 : 0.56;
     }
     return tone(C, f);
   }, true);
@@ -251,9 +253,11 @@ function getBody(style, color) {
   const sk0 = p.wheels[0] + p.wr + 8, sk1 = p.wheels[1] - p.wr - 8;
   b.rect(sk0, bot - 5, sk1 - sk0, 5, (x, y) => tone(C, 0.32 + bay(x, y) * 0.05), true);
   b.rect(sk0, bot - 6, sk1 - sk0, 1, tone(C, 0.8));
-  b.rect(L - 28, bot - 12, 27, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);          // bouclier avant
-  b.rect(1, bot - 12, 25, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);               // bouclier arrière
-  for (let i = 0; i < 9; i++) b.rect(L - 25 + i * 3, bot - 8, 1, 4, [6, 6, 10]);
+  if (!p.bodyBumpers) {
+    b.rect(L - 28, bot - 12, 27, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
+    b.rect(1, bot - 12, 25, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
+    for (let i = 0; i < 9; i++) b.rect(L - 25 + i * 3, bot - 8, 1, 4, [6, 6, 10]);
+  }
   // rétroviseur
   const mx = p.mirror, my = belt - 4;
   b.poly([[mx, my], [mx + 12, my], [mx + 14, my + 4], [mx + 10, my + 9], [mx + 1, my + 9]], (x, y) => tone(C, 0.8 + bay(x, y) * 0.1 + (my + 4 - y) * 0.02), true);
@@ -316,7 +320,8 @@ function getBody(style, color) {
 }
 
 /* roue détaillée : bande de roulement, flanc, lèvre, jante à 6 rayons, disque + étrier rouge */
-function drawWheel(ctx, cx, cy, r, s, ang, fast) {
+function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp) {
+  const half = (nsp || 6) / 2;
   for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
     const d = Math.sqrt((dx + .5) * (dx + .5) + (dy + .5) * (dy + .5));
     if (d > r) continue;
@@ -328,10 +333,10 @@ function drawWheel(ctx, cx, cy, r, s, ang, fast) {
     else if (f > 0.60) c = '#8a90a0';
     else {
       const a = Math.atan2(dy + .5, dx + .5) - ang;
-      const sp = Math.abs(Math.sin(a * 3));
+      const sp = Math.abs(Math.sin(a * half));
       if (f < 0.10) c = '#e6e9f0';
       else if (f < 0.19) c = fast ? '#7a7f8c' : '#3a3d48';
-      else if ((fast ? 0.2 : sp) < 0.30 + 0.22 * f) c = Math.sin(a * 3) > 0 ? '#d4d8e2' : '#aeb3c0';
+      else if ((fast ? 0.2 : sp) < 0.30 + 0.22 * f) c = Math.sin(a * half) > 0 ? '#d4d8e2' : '#aeb3c0';
       else {
         const ca = Math.atan2(dy + .5, dx + .5);
         c = (Math.abs(ca + 0.75) < 0.5 && f > 0.28 && f < 0.56) ? '#d82828' : '#34363f';      // étrier rouge fixe
@@ -353,6 +358,52 @@ function drawCar(ctx, style, color, x, y, s, o) {
   if (lean) { ctx.translate(x + p.wheels[0] * s, y); ctx.rotate(-lean * 0.007); ctx.translate(-(x + p.wheels[0] * s), -y); }
   ctx.drawImage(body, x, y - (p.H - 1) * s, p.L * s, p.H * s);
   const fast = (o.speed || 0) > 45;
-  for (const wx of p.wheels) drawWheel(ctx, x + wx * s, y - (p.wr + 1) * s, p.wr, s, o.wheelAng || 0, fast);
+  for (const wx of p.wheels) {
+    const wc = wheelSprite(p, o.wheelAng || 0, fast);
+    ctx.drawImage(wc, x + (wx - p.wr) * s, y - (2 * p.wr + 1) * s, wc.width * s, wc.height * s);
+  }
+  ctx.restore();
+}
+
+/* cache des roues : 48 angles pré-rendus par profil */
+const _wheelCache = {};
+function wheelSprite(p, ang, fast) {
+  const n = 48, a = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2), k = fast ? 0 : Math.round(a / (Math.PI * 2) * n) % n;
+  const key = p.wr + ':' + (p.spokes || 6) + ':' + (fast ? 'f' : k);
+  if (_wheelCache[key]) return _wheelCache[key];
+  const c = document.createElement('canvas'); c.width = c.height = 2 * p.wr + 1;
+  drawWheel(c.getContext('2d'), p.wr, p.wr, p.wr, 1, k / n * Math.PI * 2, fast, p.spokes || 6);
+  return (_wheelCache[key] = c);
+}
+
+/* halos lumineux (phares, feux, néon de bas de caisse) — composition additive */
+function drawCarLights(ctx, style, x, y, s, o) {
+  o = o || {};
+  const p = PROFILES[style];
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const glow = (gx, gy, r, col, a) => {
+    const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
+    g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`);
+    ctx.fillStyle = g; ctx.fillRect(gx - r, gy - r, r * 2, r * 2);
+  };
+  // phare : point lumineux + faisceau sur la route
+  let hx = 0, hy = 0; for (const q of p.hl) { hx += q[0]; hy += q[1]; } hx /= p.hl.length; hy /= p.hl.length;
+  const HX = x + hx * s, HY = y - (p.H - 1 - hy) * s;
+  glow(HX, HY, 26 * s, '255,240,190', 0.55);
+  const beam = ctx.createLinearGradient(HX, 0, HX + 220 * s, 0);
+  beam.addColorStop(0, 'rgba(255,236,180,0.22)'); beam.addColorStop(1, 'rgba(255,236,180,0)');
+  ctx.fillStyle = beam; ctx.beginPath(); ctx.moveTo(HX, HY - 3 * s); ctx.lineTo(HX + 220 * s, y - 30 * s); ctx.lineTo(HX + 220 * s, y + 8 * s); ctx.lineTo(HX, HY + 4 * s); ctx.closePath(); ctx.fill();
+  // feux arrière
+  let tx = 3, ty = p.H - 1 - 48;
+  if (p.tl) { tx = 0; ty = 0; for (const q of p.tl) { tx += q[0]; ty += q[1]; } tx /= p.tl.length; ty /= p.tl.length; }
+  else if (p.tlRound) { tx = p.tlRound[0]; ty = p.tlRound[1]; }
+  glow(x + tx * s, y - (p.H - 1 - ty) * s, (o.brake ? 30 : 18) * s, '255,40,40', o.brake ? 0.7 : 0.45);
+  // néon de bas de caisse
+  if (o.neon) {
+    const g = ctx.createRadialGradient(x + p.L * s / 2, y, 0, x + p.L * s / 2, y, p.L * s * 0.6);
+    g.addColorStop(0, `rgba(${o.neon},0.45)`); g.addColorStop(1, `rgba(${o.neon},0)`);
+    ctx.save(); ctx.translate(x + p.L * s / 2, y); ctx.scale(1, 0.12); ctx.translate(-(x + p.L * s / 2), -y);
+    ctx.fillStyle = g; ctx.fillRect(x - 40 * s, y - p.L * s * 0.6, p.L * s + 80 * s, p.L * s * 1.2); ctx.restore();
+  }
   ctx.restore();
 }

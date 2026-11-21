@@ -24,7 +24,7 @@ function buildGarageBG() {
   c.fillStyle = '#ffd060'; for (let i = 0; i < 20; i++) c.fillRect(324 + (i % 5) * 5, 128 + Math.floor(i / 5) * 8, 1.5, 2);
   c.fillStyle = '#868ca0'; c.fillRect(296, 18, 168, 6); c.fillRect(296, 22, 6, 150); c.fillRect(458, 22, 6, 150);
   // néon (cadre)
-  c.fillStyle = '#ff3d9a'; c.fillRect(40, 20, 170, 26); c.fillStyle = '#1a0a1a'; c.fillRect(43, 23, 164, 20);
+  c.fillStyle = '#ff3d9a'; c.fillRect(130, 30, 170, 26); c.fillStyle = '#1a0a1a'; c.fillRect(133, 33, 164, 20);
   // étagères
   c.fillStyle = '#6a5038'; c.fillRect(20, 90, 100, 5); c.fillRect(20, 124, 100, 5);
   const items = [['#d03030', 28, 74, 14, 16], ['#e0c030', 48, 78, 10, 12], ['#3070d0', 66, 72, 16, 18], ['#cfcfcf', 90, 80, 8, 10], ['#d03030', 30, 108, 18, 16], ['#30a050', 60, 110, 14, 14], ['#e0c030', 84, 104, 20, 20]];
@@ -48,10 +48,10 @@ function drawGarage(ctx, t) {
   ctx.drawImage(garageBG, 0, 0);
   ctx.save(); ctx.scale(2, 2);
   const blink = (Math.sin(t * 3) > -0.8) ? 1 : 0.45;
-  ctx.globalAlpha = blink * 0.5; ctx.fillStyle = '#ff3d9a'; ctx.fillRect(36, 16, 178, 34); ctx.globalAlpha = 1;
-  ctx.fillStyle = blink > 0.9 ? '#ff7ac0' : '#a04a80'; ctx.font = `10px ${FONT}`; ctx.textBaseline = 'top'; ctx.fillText('TUNED TALES', 52, 29);
+  ctx.globalAlpha = blink * 0.5; ctx.fillStyle = '#ff3d9a'; ctx.fillRect(126, 26, 178, 34); ctx.globalAlpha = 1;
+  ctx.fillStyle = blink > 0.9 ? '#ff7ac0' : '#a04a80'; ctx.font = `10px ${FONT}`; ctx.textBaseline = 'top'; ctx.fillText('TUNED TALES', 142, 39);
   ctx.restore();
-  const s = 2, x = Math.round((960 - p.L * s) / 2) - 40, y = 520, bob = Math.round(Math.sin(t * 1.6) * 1);
+  const s = 1.6, x = Math.round(390 - p.L * s / 2), y = 516, bob = Math.round(Math.sin(t * 1.6) * 1);
   ctx.save(); ctx.globalAlpha = 0.16; ctx.translate(0, y * 2 + 8); ctx.scale(1, -1);
   drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3}); ctx.restore();
   drawCar(ctx, c.style, cs.color, x, y + bob, s, {wheelAng: 0.3});

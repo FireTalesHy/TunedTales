@@ -180,8 +180,17 @@ const Race = {
     const AIG = 200, PLG = 250;
     // voitures en résolution native (sprite x2)
     ctx.save(); ctx.translate(0, sh * 2);
-    drawCar(ctx, aiStyle, oc, aiX * 2, AIG * 2, 1, {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v});
-    drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v});
+    const aiO = {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v};
+    const plO = {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v, neon: '62,224,255'};
+    // reflets sur le bitume
+    for (const [st, col, X, Y, O] of [[aiStyle, oc, aiX * 2, AIG * 2, aiO], [plStyle, cs.color, plX * 2, PLG * 2, plO]]) {
+      ctx.save(); ctx.globalAlpha = 0.14; ctx.translate(0, Y * 2 + 2); ctx.scale(1, -1);
+      drawCar(ctx, st, col, X, Y, 1, Object.assign({}, O, {lean: 0})); ctx.restore();
+    }
+    drawCar(ctx, aiStyle, oc, aiX * 2, AIG * 2, 1, aiO);
+    drawCarLights(ctx, aiStyle, aiX * 2, AIG * 2, 1, {});
+    drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, plO);
+    drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: '62,224,255', brake: this.state === 'stage'});
     ctx.restore();
 
     ctx.save(); ctx.scale(2, 2);
@@ -301,12 +310,8 @@ const Race = {
 
 /* ---------- éléments de décor ---------- */
 function drawSky(ctx) {
-  const bands = ['#1b1240', '#2a1a58', '#3b2068', '#52287a', '#6e3084', '#8c3a88', '#b04a84', '#d25f7a', '#e87c6c', '#f4a068', '#f8c474'];
-  const bh = 10;
-  for (let i = 0; i < bands.length; i++) { ctx.fillStyle = bands[i]; ctx.fillRect(0, i * bh, W, bh + 1); }
-  ctx.fillStyle = '#fff1c0'; ctx.fillRect(360, 78, 26, 22); ctx.fillRect(364, 74, 18, 30); ctx.fillRect(356, 82, 34, 14);
-  ctx.fillStyle = '#ffffff';
-  for (let i = 0; i < 30; i++) { const r = rng(i + 5); ctx.fillRect(Math.floor(r() * W), Math.floor(r() * 50), 1, 1); }
+  if (!SKY) SKY = buildSky();
+  ctx.drawImage(SKY, 0, 0, W, 112);
 }
 function drawFar(ctx, off) {
   const span = 960;
@@ -415,4 +420,30 @@ function drawAsphalt(ctx, scroll) {
     for (let x = -off; x < 960; x += 512) ctx.drawImage(ASPH, 0, 0, 512, h, x, y0 * 2, 512, h);
   }
   ctx.restore();
+}
+
+/* ciel de crépuscule pré-rendu en résolution native avec tramage */
+let SKY = null;
+function buildSky() {
+  const c = document.createElement('canvas'); c.width = 960; c.height = 224; const x = c.getContext('2d');
+  const stops = [[0, [16, 10, 46]], [0.35, [58, 28, 104]], [0.6, [150, 58, 130]], [0.8, [232, 112, 108]], [1, [255, 196, 120]]];
+  const col = t => { for (let i = 1; i < stops.length; i++) if (t <= stops[i][0]) { const [a, ca] = stops[i - 1], [b, cb] = stops[i], k = (t - a) / (b - a); return ca.map((v, j) => v + (cb[j] - v) * k); } return stops[stops.length - 1][1]; };
+  const img = x.createImageData(960, 224);
+  for (let yy = 0; yy < 224; yy++) for (let xx = 0; xx < 960; xx++) {
+    const t = yy / 223 + bay(xx, yy) * 0.035, cc = col(Math.max(0, Math.min(1, t))), q = 12;
+    const i = (yy * 960 + xx) * 4;
+    img.data[i] = Math.round(cc[0] / q) * q; img.data[i + 1] = Math.round(cc[1] / q) * q; img.data[i + 2] = Math.round(cc[2] / q) * q; img.data[i + 3] = 255;
+  }
+  x.putImageData(img, 0, 0);
+  const r = rng(3);
+  for (let i = 0; i < 140; i++) { const yy = r() * 110; x.fillStyle = `rgba(255,255,255,${0.3 + r() * 0.7 * (1 - yy / 110)})`; x.fillRect(Math.floor(r() * 960), Math.floor(yy), 1, 1); }
+  // soleil couchant avec halo
+  const g = x.createRadialGradient(740, 196, 0, 740, 196, 140); g.addColorStop(0, 'rgba(255,230,160,0.9)'); g.addColorStop(0.25, 'rgba(255,170,110,0.35)'); g.addColorStop(1, 'rgba(255,120,120,0)');
+  x.fillStyle = g; x.fillRect(560, 40, 360, 184);
+  x.fillStyle = '#fff0c8'; x.beginPath(); x.arc(740, 200, 30, 0, Math.PI * 2); x.fill();
+  for (let yy = 178; yy < 224; yy += 7) { x.fillStyle = 'rgba(200,80,110,0.55)'; x.fillRect(700, yy, 80, 2); }
+  // nuages effilés
+  x.fillStyle = 'rgba(255,170,150,0.25)';
+  for (let i = 0; i < 9; i++) { const cx = r() * 960, cy = 70 + r() * 80, w = 80 + r() * 160; x.fillRect(Math.floor(cx), Math.floor(cy), Math.floor(w), 3); x.fillRect(Math.floor(cx + 20), Math.floor(cy - 3), Math.floor(w * 0.6), 3); }
+  return c;
 }

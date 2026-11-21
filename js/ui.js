@@ -8,14 +8,18 @@ const UI = {
 
   refreshTop() {
     $('cash').textContent = money(Game.save.money);
-    const cs = Game.car();
+    const cs = Game.car(), sp = specOf(cs), best = Game.save.best[cs.id];
     $('carname').textContent = CARS[cs.id].name;
+    const wins = Object.keys(Game.save.wins).length;
+    $('homecard').innerHTML = `<div class="hc-t">TA VOITURE</div><div class="hc-n">${CARS[cs.id].name}</div>
+      <div class="muted">${ENGINES[cs.engine].name} · ${CARS[cs.id].drive}</div>
+      <div class="hc-s"><span><b>${Math.round(sp.hp)} ch</b>puissance</span><span><b>${best ? best.toFixed(2) + ' s' : '—'}</b>record 400 m</span><span><b>${wins}/${OPPONENTS.length}</b>victoires</span></div>`;
   },
 
   go(name) {
     this.screen = name;
     const panel = $('panel');
-    $('menu').classList.toggle('hidden', name !== 'home');
+    $('menu').classList.toggle('hidden', name !== 'home'); $('homecard').classList.toggle('hidden', name !== 'home');
     $('racebtns').classList.add('hidden'); $('result').classList.add('hidden');
     Race.stop();
     if (name === 'home') { panel.classList.add('hidden'); this.refreshTop(); return; }
@@ -39,7 +43,7 @@ const UI = {
     const cs = Game.car(), spec = specOf(cs), est = estimateBest(spec);
     let h = `<div class="box info"><b>Comment jouer :</b> <b>Maintiens</b> (ESPACE / appui long) pour monter le régime dans le cadre vert, puis <b>relâche au feu vert</b>.
       Ensuite <b>appuie</b> pour passer la vitesse quand la jauge est dans la zone blanche (&gt;93%). <b>N</b> / bouton NITRO pour la nitro.</div>
-      <div class="box you"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" width="150" height="62"></canvas>
+      <div class="box you"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" width="300" height="116"></canvas>
       <div><b>${CARS[cs.id].name}</b><br>${ENGINES[cs.engine].name}<br>${Math.round(spec.hp)} ch · ${Math.round(spec.mass)} kg<br>
       Estimation 400 m : <b>${est.t400.toFixed(2)} s</b></div></div><div class="grid">`;
     OPPONENTS.forEach((o, i) => {
@@ -48,7 +52,7 @@ const UI = {
       const level = diff > 0.6 ? ['difficile', 'bad'] : diff > -0.4 ? ['équilibré', 'mid'] : ['facile', 'good'];
       const oc = Game.oppColor(i);
       h += `<div class="card ${done ? 'done' : ''}"><div class="ctitle">#${i + 1} ${o.name}${done ? ' ✔' : ''}</div>
-        <canvas class="thumb" data-car="${o.car}" data-color="${oc}" width="150" height="62"></canvas>
+        <canvas class="thumb" data-car="${o.car}" data-color="${oc}" width="300" height="116"></canvas>
         <div class="muted">${o.tag}</div>
         <div>${CARS[o.car].name}<br>${ENGINES[o.engine].name}</div>
         <div class="kv"><span>Puissance</span><b>${Math.round(os.hp)} ch</b></div>
@@ -66,7 +70,7 @@ const UI = {
     for (const id of CAR_IDS) {
       const c = CARS[id], own = Game.owns(id), sp = makeSpec(id, c.engine, {}), est = estimateBest(sp);
       h += `<div class="card ${own ? 'done' : ''}"><div class="ctitle">${c.name}</div>
-        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="150" height="62"></canvas>
+        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="300" height="116"></canvas>
         <div class="muted">${c.hint} · ${c.year}</div>
         <div class="kv"><span>Moteur</span><b>${ENGINES[c.engine].name}</b></div>
         <div class="kv"><span>Puissance</span><b>${Math.round(sp.hp)} ch</b></div>
@@ -89,7 +93,7 @@ const UI = {
       const c = Game.save.cars[id], s2 = specOf(c);
       const best = Game.save.best[id];
       h += `<div class="card ${id === cs.id ? 'sel' : ''}"><div class="ctitle">${CARS[id].name}</div>
-        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="150" height="62"></canvas>
+        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="300" height="116"></canvas>
         <div class="muted">${ENGINES[c.engine].name} · ${Math.round(s2.hp)} ch</div>
         ${best ? `<div class="muted">Record 400 m : <b>${best.toFixed(2)} s</b></div>` : ''}
         <button class="btn ${id === cs.id ? 'off' : ''}" data-act="selcar" data-v="${id}">${id === cs.id ? 'EN SERVICE' : 'CONDUIRE'}</button></div>`;
@@ -235,7 +239,7 @@ const UI = {
   /* ---------------- COURSE ---------------- */
   raceStart() {
     this.screen = 'race';
-    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('result').classList.add('hidden');
+    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('result').classList.add('hidden');
     $('racebtns').classList.remove('hidden');
     $('nitrobtn').classList.toggle('hidden', !Race.plSpec.nitro);
   },
@@ -262,8 +266,7 @@ function paintThumbs() {
   document.querySelectorAll('canvas.thumb').forEach(cv => {
     const ctx = cv.getContext('2d'), st = CARS[cv.dataset.car].style, p = PROFILES[st];
     ctx.clearRect(0, 0, cv.width, cv.height);
-    const y = cv.height - 8, x = Math.round((cv.width - p.L * 0.5) / 2);
-    ctx.fillStyle = '#0f1224'; ctx.fillRect(0, y, cv.width, 10);
-    drawCar(ctx, st, cv.dataset.color, x, y, 0.5, {wheelAng: 0.4});
+    const y = cv.height - 10, x = Math.round((cv.width - p.L) / 2);
+    drawCar(ctx, st, cv.dataset.color, x, y, 1, {wheelAng: 0.4});
   });
 }

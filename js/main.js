@@ -98,6 +98,7 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (Race.active) { Race.update(dt); Race.draw(ctx); }
+  else if (Jobs.active) { Jobs.update(dt); Jobs.draw(ctx); }
   else if (UI.screen === 'home') drawGarage(ctx, now / 1000);
   requestAnimationFrame(frame);
 }
@@ -107,6 +108,7 @@ let keyHeld = false;
 document.addEventListener('pointerdown', () => Sound.resume(), {once: false});
 document.addEventListener('keydown', e => {
   Sound.resume();
+  if (Jobs.active) { if (['Space', 'ArrowLeft', 'ArrowRight', 'ArrowUp'].includes(e.code)) e.preventDefault(); if (!e.repeat) Jobs.key(e.code); return; }
   if (!Race.active) return;
   if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); if (!e.repeat && !keyHeld) { keyHeld = true; Race.onDown(); } }
   else if (e.code === 'KeyN' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') { e.preventDefault(); Race.onNitro(); }
@@ -114,8 +116,16 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
   if ((e.code === 'Space' || e.code === 'ArrowUp') && keyHeld) { keyHeld = false; if (Race.active) Race.onUp(); }
 });
-canvas.addEventListener('pointerdown', e => { if (Race.active) { e.preventDefault(); Race.onDown(); } });
-window.addEventListener('pointerup', () => { if (Race.active && !keyHeld) Race.onUp(); });
+function canvasPos(e) {
+  const r = canvas.getBoundingClientRect(), k = Math.min(r.width / 960, r.height / 540);
+  return [(e.clientX - r.left - (r.width - 960 * k) / 2) / k, (e.clientY - r.top - (r.height - 540 * k) / 2) / k];
+}
+canvas.addEventListener('pointerdown', e => {
+  if (Race.active) { e.preventDefault(); Race.onDown(); }
+  else if (Jobs.active) { e.preventDefault(); const [x, y] = canvasPos(e); Jobs.down(x, y); }
+});
+canvas.addEventListener('pointermove', e => { if (Jobs.active) { const [x, y] = canvasPos(e); Jobs.move(x, y); } });
+window.addEventListener('pointerup', () => { if (Race.active && !keyHeld) Race.onUp(); if (Jobs.active) Jobs.up(); });
 $('nitrobtn').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); Race.onNitro(); });
 
 document.addEventListener('click', e => {
@@ -135,7 +145,8 @@ document.addEventListener('click', e => {
       else Sound.demo(v.slice(4), cs.parts);
       break;
     }
-    case 'quitrace': Race.stop(); UI.go('races'); break;
+    case 'quitrace': if (Jobs.active) { Jobs.stop(); UI.go('jobs'); } else { Race.stop(); UI.go('races'); } break;
+    case 'job': Sound.resume(); Jobs.start(v); break;
     case 'buycar': if (Game.buyCar(v)) UI.render(); else flash(b); break;
     case 'selcar': Game.save.current = v; Game.persist(); UI.render(); break;
     case 'paint': Game.paint(v); UI.render(); break;

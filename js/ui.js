@@ -21,7 +21,7 @@ const UI = {
     const panel = $('panel');
     $('menu').classList.toggle('hidden', name !== 'home'); $('homecard').classList.toggle('hidden', name !== 'home');
     $('racebtns').classList.add('hidden'); $('result').classList.add('hidden');
-    Race.stop();
+    Race.stop(); Jobs.stop();
     if (name === 'home') { panel.classList.add('hidden'); this.refreshTop(); return; }
     panel.classList.remove('hidden');
     this.render();
@@ -29,14 +29,14 @@ const UI = {
 
   render() {
     this.refreshTop();
-    const fn = {races: this.rRaces, garage: this.rGarage, tuning: this.rTuning, shop: this.rShop}[this.screen];
+    const fn = {jobs: this.rJobs, races: this.rRaces, garage: this.rGarage, tuning: this.rTuning, shop: this.rShop}[this.screen];
     const scroll = $('panelBody') ? $('panelBody').scrollTop : 0;
     $('panel').innerHTML = `<div class="phead"><button class="btn small" data-act="go" data-v="home">◀ ACCUEIL</button><h2>${this.title()}</h2></div><div id="panelBody">${fn.call(this)}</div>`;
     $('panelBody').scrollTop = scroll;
     paintThumbs();
     if (this.screen === 'tuning') this.drawChart();
   },
-  title() { return {races: '🏁 COURSES DE DRAG', garage: '🔧 GARAGE & MOTEURS', tuning: '📈 TUNING', shop: '🚗 CONCESSION'}[this.screen]; },
+  title() { return {jobs: '💼 PETITS BOULOTS', races: '🏁 COURSES DE DRAG', garage: '🔧 GARAGE & MOTEURS', tuning: '📈 TUNING', shop: '🚗 CONCESSION'}[this.screen]; },
 
   /* ---------------- COURSES ---------------- */
   raceTab: 'contracts',
@@ -99,6 +99,33 @@ const UI = {
       <div class="rewardrow"><span class="muted">${o.type === 'bet' ? 'Gain total' : 'Récompense'}</span><b class="gold big">${money(total)}</b></div>
       ${o.type === 'bet' ? `<div class="muted small">En cas de défaite : −${money(o.stake)}</div>` : '<div class="muted small">Défaite : prime de 10 %</div>'}
       <button class="btn" data-act="race" data-v="c${i}">ACCEPTER LE CONTRAT ▶</button></div>`;
+  },
+
+  /* ---------------- PETITS BOULOTS ---------------- */
+  rJobs() {
+    const best = Game.save.jobs || {};
+    let h = `<div class="sectionbar"><span class="muted">Fauché ? Enchaîne les petits boulots : plus ton score est élevé, plus tu es payé.</span></div><div class="contracts">`;
+    for (const j of JOBS) {
+      h += `<div class="contract jobcard"><div class="ctop"><span class="pill type">${j.time ? '⏱ ' + j.time + ' s' : '🔩 10 écrous'}</span><span class="pill d-easy">${fmt(j.rate * 100)} € / 100 pts</span></div>
+        <div class="jobicon">${j.icon}</div><div class="cname"><b>${j.name}</b></div>
+        <div class="muted">${j.desc}</div><div class="cond">🎮 ${j.ctrl}</div>
+        <div class="rewardrow"><span class="muted">Meilleur score</span><b class="gold big">${best[j.id] ? fmt(best[j.id]) : '—'}</b></div>
+        <button class="btn" data-act="job" data-v="${j.id}">COMMENCER ▶</button></div>`;
+    }
+    return h + '</div>';
+  },
+  jobStart() {
+    this.screen = 'job';
+    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('result').classList.add('hidden');
+    $('racebtns').classList.remove('hidden'); $('nitrobtn').classList.add('hidden');
+  },
+  showJobResult(job, score, pay, record) {
+    const r = $('result'); r.classList.remove('hidden'); $('racebtns').classList.add('hidden');
+    r.innerHTML = `<div class="rbox win"><div class="eyebrow">PETIT BOULOT</div><h2>${job.icon} TERMINÉ</h2><div class="muted">${job.name}</div>
+      <div class="payout"><div class="pl"><span>Score</span><b>${fmt(score)} pts</b></div>
+      ${record ? '<div class="pl"><span class="gold">⭐ Nouveau meilleur score</span><b></b></div>' : ''}
+      <div class="pl total"><span>Paie</span><b class="gold">+ ${money(pay)}</b></div></div>
+      <div class="rbtns"><button class="btn" data-act="job" data-v="${job.id}">REJOUER</button><button class="btn ghostbtn" data-act="go" data-v="jobs">AUTRES BOULOTS</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
   },
 
   /* ---------------- CONCESSION ---------------- */

@@ -7,4 +7,10 @@ Jeu de drag & tuning en pixel art (2.5D), jouable dans le navigateur — aucune 
 - Drag 402 m : réflexe de départ + passages de vitesse (mode facile), nitro
 - Sauvegarde automatique (localStorage)
 
-**Jouer** : ouvrir `index.html`, ou activer GitHub Pages (Settings → Pages → branche, dossier `/ (root)`).
+## ▶ Jouer
+
+**https://firetaleshy.github.io/TunedTales/**
+
+Le déploiement est automatique (`.github/workflows/pages.yml`) à chaque push sur `main`. En local : ouvrir `index.html`.
+
+Contrôles : ESPACE / clic maintenu = régime au départ, relâcher au feu vert ; ESPACE / clic = passer la vitesse ; N = nitro.

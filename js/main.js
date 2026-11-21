@@ -3,61 +3,95 @@ const canvas = $('scene'), ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 let garageBG = null;
+/* Atelier en résolution native : mur en parpaings peints, néons, établi, servante, porte ouverte sur le couchant, sol époxy */
 function buildGarageBG() {
-  const cv = document.createElement('canvas'); cv.width = 960; cv.height = 540;
-  const c = cv.getContext('2d'); c.scale(2, 2);
-  const r = rng(11);
-  // mur de briques + grain
-  c.fillStyle = '#4a3a3a'; c.fillRect(0, 0, W, 190);
-  for (let y = 0; y < 190; y += 10) for (let x = (y / 10) % 2 ? -12 : 0; x < W; x += 24) {
-    c.fillStyle = ((x * 3 + y) % 7 < 3) ? '#5c4646' : '#503c3c'; c.fillRect(x + 1, y + 1, 22, 8);
-    c.fillStyle = 'rgba(255,255,255,0.07)'; c.fillRect(x + 1, y + 1, 22, 0.5);
-    c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(x + 1, y + 8.5, 22, 0.5);
+  const c = mkCanvas(960, 540), x = c.getContext('2d'), r = rng(11);
+  const FLOOR = 340;
+  // mur : parpaings peints
+  const wg = x.createLinearGradient(0, 0, 0, FLOOR); wg.addColorStop(0, '#2b2e3d'); wg.addColorStop(1, '#3a3d4f');
+  x.fillStyle = wg; x.fillRect(0, 0, 960, FLOOR);
+  for (let y = 0; y < FLOOR; y += 20) for (let bx = (y / 20) % 2 ? -24 : 0; bx < 960; bx += 48) {
+    x.fillStyle = 'rgba(0,0,0,0.22)'; x.fillRect(bx, y, 48, 1); x.fillRect(bx, y, 1, 20);
+    x.fillStyle = 'rgba(255,255,255,0.04)'; x.fillRect(bx + 1, y + 1, 46, 1);
   }
-  for (let i = 0; i < 1800; i++) { c.fillStyle = r() < 0.5 ? 'rgba(0,0,0,0.16)' : 'rgba(255,220,200,0.07)'; c.fillRect(r() * W, r() * 190, 0.5, 0.5); }
-  // porte de garage
-  c.fillStyle = '#2a2a38'; c.fillRect(300, 22, 160, 150);
-  for (let i = 0; i < 4; i++) { c.fillStyle = i % 2 ? '#5d6275' : '#686e82'; c.fillRect(300, 22 + i * 12, 160, 11); c.fillStyle = 'rgba(255,255,255,0.12)'; c.fillRect(300, 22 + i * 12, 160, 0.5); }
-  const sky = ['#ffd37a', '#ffb866', '#f59a62', '#e07c6c', '#c0627a', '#8e4a86', '#60388a'];
-  sky.forEach((col, i) => { c.fillStyle = col; c.fillRect(300, 70 + i * 14.5, 160, 15); });
-  c.fillStyle = '#331b4a'; c.fillRect(320, 124, 30, 48); c.fillRect(360, 134, 22, 38); c.fillRect(392, 116, 36, 56);
-  c.fillStyle = '#ffd060'; for (let i = 0; i < 20; i++) c.fillRect(324 + (i % 5) * 5, 128 + Math.floor(i / 5) * 8, 1.5, 2);
-  c.fillStyle = '#868ca0'; c.fillRect(296, 18, 168, 6); c.fillRect(296, 22, 6, 150); c.fillRect(458, 22, 6, 150);
-  // néon (cadre)
-  c.fillStyle = '#ff3d9a'; c.fillRect(130, 30, 170, 26); c.fillStyle = '#1a0a1a'; c.fillRect(133, 33, 164, 20);
-  // étagères
-  c.fillStyle = '#6a5038'; c.fillRect(20, 90, 100, 5); c.fillRect(20, 124, 100, 5);
-  const items = [['#d03030', 28, 74, 14, 16], ['#e0c030', 48, 78, 10, 12], ['#3070d0', 66, 72, 16, 18], ['#cfcfcf', 90, 80, 8, 10], ['#d03030', 30, 108, 18, 16], ['#30a050', 60, 110, 14, 14], ['#e0c030', 84, 104, 20, 20]];
-  for (const [col, x, y, w, h] of items) { c.fillStyle = col; c.fillRect(x, y, w, h); c.fillStyle = 'rgba(255,255,255,0.25)'; c.fillRect(x, y, w, 1); c.fillStyle = 'rgba(0,0,0,0.3)'; c.fillRect(x, y + h - 3, w, 3); }
-  for (let i = 0; i < 3; i++) { c.fillStyle = '#16161a'; c.fillRect(14, 160 - i * 12, 36, 12); c.fillStyle = '#2c2c34'; c.fillRect(18, 162 - i * 12, 28, 3); c.fillStyle = '#3a3a44'; c.fillRect(14, 160 - i * 12, 36, 0.5); }
-  // sol béton
-  c.fillStyle = '#585a68'; c.fillRect(0, 170, W, 100);
-  for (let i = 0; i < 9; i++) { c.fillStyle = 'rgba(255,255,255,0.05)'; c.fillRect(0, 170 + i * i * 1.3 + i * 3, W, 8 + i); }
-  for (let i = -7; i <= 7; i++) { c.strokeStyle = 'rgba(0,0,0,0.12)'; c.lineWidth = 0.5; c.beginPath(); c.moveTo(W / 2 + i * 30, 170); c.lineTo(W / 2 + i * 90, H); c.stroke(); }
-  for (let i = 0; i < 2200; i++) { c.fillStyle = r() < 0.5 ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.07)'; c.fillRect(r() * W, 170 + r() * 100, 0.5, 0.5); }
-  c.fillStyle = '#e8c020'; c.fillRect(0, 262, W, 2);
-  // cône de lumière
-  c.fillStyle = 'rgba(255,230,160,0.09)'; c.beginPath(); c.moveTo(190, 0); c.lineTo(290, 0); c.lineTo(390, 268); c.lineTo(90, 268); c.closePath(); c.fill();
-  c.fillStyle = '#9aa0b4'; c.fillRect(228, 0, 24, 6);
-  return cv;
+  for (let i = 0; i < 9000; i++) { x.fillStyle = r() < 0.5 ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.035)'; x.fillRect(Math.floor(r() * 960), Math.floor(r() * FLOOR), 1, 1); }
+  // soubassement bicolore
+  x.fillStyle = '#5a1e2a'; x.fillRect(0, 250, 960, 90); x.fillStyle = '#7a2a36'; x.fillRect(0, 250, 960, 3); x.fillStyle = 'rgba(0,0,0,0.25)'; x.fillRect(0, 336, 960, 4);
+  // porte sectionnelle ouverte sur le couchant
+  const dx = 600, dw = 320, dy = 70;
+  const sg = x.createLinearGradient(0, dy, 0, FLOOR); sg.addColorStop(0, '#3a1f5e'); sg.addColorStop(0.45, '#c2577a'); sg.addColorStop(0.75, '#f59a6a'); sg.addColorStop(1, '#ffd08a');
+  x.fillStyle = sg; x.fillRect(dx, dy, dw, FLOOR - dy);
+  x.fillStyle = '#ffe9b8'; x.beginPath(); x.arc(dx + 220, FLOOR - 40, 26, 0, Math.PI * 2); x.fill();
+  for (let i = 0; i < 14; i++) { const bw = 14 + r() * 30, bh = 30 + r() * 110, bxx = dx + i * 24 + r() * 8; x.fillStyle = i % 2 ? '#2a1838' : '#341d46'; x.fillRect(Math.floor(bxx), Math.floor(FLOOR - bh), Math.floor(bw), Math.floor(bh)); for (let wy = FLOOR - bh + 4; wy < FLOOR - 4; wy += 6) for (let wx = bxx + 2; wx < bxx + bw - 2; wx += 4) if (r() < 0.25) { x.fillStyle = 'rgba(255,214,130,0.8)'; x.fillRect(Math.floor(wx), Math.floor(wy), 2, 2); } }
+  for (let i = 0; i < 4; i++) { x.fillStyle = i % 2 ? '#7c8296' : '#8a90a6'; x.fillRect(dx, dy + i * 13, dw, 12); x.fillStyle = 'rgba(255,255,255,0.18)'; x.fillRect(dx, dy + i * 13, dw, 1); }
+  x.fillStyle = '#9aa0b4'; x.fillRect(dx - 12, dy - 10, dw + 24, 10); x.fillRect(dx - 12, dy, 12, FLOOR - dy); x.fillRect(dx + dw, dy, 12, FLOOR - dy);
+  x.fillStyle = 'rgba(0,0,0,0.3)'; x.fillRect(dx, dy + 52, dw, 3);
+  // panneau perforé + outils
+  x.fillStyle = '#4a3a2c'; x.fillRect(40, 96, 250, 120);
+  for (let py = 102; py < 212; py += 8) for (let px = 46; px < 286; px += 8) { x.fillStyle = 'rgba(0,0,0,0.35)'; x.fillRect(px, py, 2, 2); }
+  const tool = (tx, ty, w, h, col) => { x.fillStyle = col; x.fillRect(tx, ty, w, h); x.fillStyle = 'rgba(255,255,255,0.25)'; x.fillRect(tx, ty, w, 1); };
+  for (let i = 0; i < 7; i++) { tool(56 + i * 12, 108, 4, 40 + (i % 3) * 8, '#b8bec8'); tool(54 + i * 12, 106, 8, 6, '#c44'); }
+  tool(150, 110, 60, 6, '#c8ccd4'); tool(150, 124, 46, 6, '#c8ccd4'); tool(220, 108, 8, 50, '#d43'); tool(240, 112, 30, 30, '#2a6dd0'); tool(150, 150, 120, 4, '#888');
+  // affiches
+  const poster = (px, py, w, h, bg, fg, t1, t2) => {
+    x.fillStyle = bg; x.fillRect(px, py, w, h); x.fillStyle = 'rgba(255,255,255,0.12)'; x.fillRect(px, py, w, 2);
+    x.fillStyle = fg; x.font = '700 14px "Chakra Petch", sans-serif'; x.textAlign = 'center'; x.fillText(t1, px + w / 2, py + 22);
+    x.font = '600 10px "Chakra Petch", sans-serif'; x.fillText(t2, px + w / 2, py + h - 10);
+    x.fillStyle = 'rgba(0,0,0,0.25)'; x.fillRect(px + w, py + 3, 3, h);
+  };
+  poster(330, 100, 90, 120, '#1a2a6a', '#ffd34d', 'DRAG', 'NIGHT · 402 m');
+  poster(440, 110, 80, 100, '#e8e2d0', '#c62f3a', 'TURBO', 'POWER CLUB');
+  // néons au plafond
+  for (const nx of [140, 460]) {
+    x.fillStyle = '#20222e'; x.fillRect(nx - 6, 0, 2, 18); x.fillRect(nx + 190, 0, 2, 18);
+    x.fillStyle = '#eef6ff'; x.fillRect(nx - 10, 18, 210, 6);
+    const lg = x.createRadialGradient(nx + 95, 22, 0, nx + 95, 22, 260); lg.addColorStop(0, 'rgba(220,235,255,0.22)'); lg.addColorStop(1, 'rgba(220,235,255,0)');
+    x.fillStyle = lg; x.fillRect(nx - 170, 0, 530, 300);
+  }
+  // sol époxy brillant
+  const fg = x.createLinearGradient(0, FLOOR, 0, 540); fg.addColorStop(0, '#3b3e4f'); fg.addColorStop(1, '#22242f');
+  x.fillStyle = fg; x.fillRect(0, FLOOR, 960, 200);
+  for (let i = 0; i < 6000; i++) { x.fillStyle = r() < 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.12)'; x.fillRect(Math.floor(r() * 960), FLOOR + Math.floor(r() * 200), 1, 1); }
+  // reflets du mur et de la porte sur le sol
+  const rf = x.createLinearGradient(0, FLOOR, 0, FLOOR + 120); rf.addColorStop(0, 'rgba(255,170,120,0.35)'); rf.addColorStop(1, 'rgba(255,170,120,0)');
+  x.fillStyle = rf; x.fillRect(dx, FLOOR, dw, 120);
+  x.fillStyle = 'rgba(122,42,54,0.25)'; x.fillRect(0, FLOOR, dx, 14);
+  // lignes du sol en perspective + bande jaune
+  x.strokeStyle = 'rgba(0,0,0,0.25)'; x.lineWidth = 1;
+  for (let i = -8; i <= 8; i++) { x.beginPath(); x.moveTo(480 + i * 70, FLOOR); x.lineTo(480 + i * 190, 540); x.stroke(); }
+  for (const y of [372, 418, 478]) { x.fillStyle = 'rgba(0,0,0,0.18)'; x.fillRect(0, y, 960, 1); }
+  x.fillStyle = '#e8c020'; x.fillRect(0, 528, 960, 4); x.fillStyle = 'rgba(0,0,0,0.3)'; x.fillRect(0, 532, 960, 2);
+  // servante rouge
+  const tx = 30, ty = 262;
+  x.fillStyle = '#9d1f28'; x.fillRect(tx, ty, 120, 100); x.fillStyle = '#c62f3a'; x.fillRect(tx, ty, 120, 6);
+  for (let i = 0; i < 6; i++) { x.fillStyle = '#b22632'; x.fillRect(tx + 4, ty + 10 + i * 15, 112, 13); x.fillStyle = '#d7dbe4'; x.fillRect(tx + 40, ty + 15 + i * 15, 40, 2); }
+  x.fillStyle = '#111'; x.fillRect(tx + 6, ty + 100, 10, 8); x.fillRect(tx + 104, ty + 100, 10, 8);
+  // pile de pneus
+  for (let i = 0; i < 4; i++) { x.fillStyle = '#131318'; x.fillRect(180, 330 - i * 22, 70, 22); x.fillStyle = '#26262e'; x.fillRect(186, 334 - i * 22, 58, 4); x.fillStyle = '#34343e'; x.fillRect(180, 330 - i * 22, 70, 1); }
+  // ombre de vignettage
+  const vg = x.createRadialGradient(480, 300, 220, 480, 300, 640); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)');
+  x.fillStyle = vg; x.fillRect(0, 0, 960, 540);
+  return c;
 }
 function drawGarage(ctx, t) {
   if (!garageBG) garageBG = buildGarageBG();
   const cs = Game.car(), c = CARS[cs.id], p = PROFILES[c.style];
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false;
   ctx.drawImage(garageBG, 0, 0);
-  ctx.save(); ctx.scale(2, 2);
-  const blink = (Math.sin(t * 3) > -0.8) ? 1 : 0.45;
-  ctx.globalAlpha = blink * 0.5; ctx.fillStyle = '#ff3d9a'; ctx.fillRect(126, 26, 178, 34); ctx.globalAlpha = 1;
-  ctx.fillStyle = blink > 0.9 ? '#ff7ac0' : '#a04a80'; ctx.font = `10px ${FONT}`; ctx.textBaseline = 'top'; ctx.fillText('TUNED TALES', 142, 39);
+  // enseigne néon
+  const on = !(Math.sin(t * 2.1) > 0.96 && Math.random() < 0.6);
+  ctx.save();
+  ctx.font = `700 44px ${UIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineWidth = 3; ctx.strokeStyle = on ? '#ff6ab8' : '#5a2a48'; ctx.shadowColor = '#ff3d9a'; ctx.shadowBlur = on ? 28 : 0;
+  ctx.strokeText('TUNED TALES', 470, 54);
+  ctx.shadowBlur = on ? 14 : 0; ctx.strokeStyle = on ? '#ffd2ec' : '#5a2a48'; ctx.lineWidth = 1; ctx.strokeText('TUNED TALES', 470, 54);
   ctx.restore();
-  const s = 1.6, x = Math.round(390 - p.L * s / 2), y = 516, bob = Math.round(Math.sin(t * 1.6) * 1);
-  ctx.save(); ctx.globalAlpha = 0.16; ctx.translate(0, y * 2 + 8); ctx.scale(1, -1);
+  // voiture, reflet sur l'époxy, halos
+  const s = 1.6, x = Math.round(400 - p.L * s / 2), y = 506;
+  ctx.save(); ctx.globalAlpha = 0.22; ctx.translate(0, y * 2 + 6); ctx.scale(1, -1);
   drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3}); ctx.restore();
-  drawCar(ctx, c.style, cs.color, x, y + bob, s, {wheelAng: 0.3});
-  const g = ctx.createRadialGradient(480, 270, 200, 480, 270, 620);
-  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.5)');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, 960, 540);
+  drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3});
+  drawCarLights(ctx, c.style, x, y, s, {neon: '62,224,255'});
 }
 
 let last = performance.now();
@@ -70,7 +104,9 @@ function frame(now) {
 
 /* ---------- entrées ---------- */
 let keyHeld = false;
+document.addEventListener('pointerdown', () => Sound.resume(), {once: false});
 document.addEventListener('keydown', e => {
+  Sound.resume();
   if (!Race.active) return;
   if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); if (!e.repeat && !keyHeld) { keyHeld = true; Race.onDown(); } }
   else if (e.code === 'KeyN' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') { e.preventDefault(); Race.onNitro(); }
@@ -88,8 +124,18 @@ document.addEventListener('click', e => {
   if (b.classList.contains('off') && a !== 'reset') { flash(b); return; }
   switch (a) {
     case 'go': UI.go(v); break;
-    case 'race': Race.start(+v); break;
-    case 'quitrace': UI.go('races'); break;
+    case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
+    case 'tab': UI.raceTab = v; UI.render(); break;
+    case 'refresh': if (Game.refreshContracts()) UI.render(); else flash(b); break;
+    case 'mute': b.textContent = Sound.toggleMute() ? '🔇' : '🔊'; break;
+    case 'listen': {
+      const cs = Game.car();
+      if (v === 'cur') Sound.demo(cs.engine, cs.parts);
+      else if (v === 'prev') { const pp = Object.assign({}, cs.parts); pp[UI.tuneSel] = (pp[UI.tuneSel] || 0) + 1; Sound.demo(cs.engine, pp); }
+      else Sound.demo(v.slice(4), cs.parts);
+      break;
+    }
+    case 'quitrace': Race.stop(); UI.go('races'); break;
     case 'buycar': if (Game.buyCar(v)) UI.render(); else flash(b); break;
     case 'selcar': Game.save.current = v; Game.persist(); UI.render(); break;
     case 'paint': Game.paint(v); UI.render(); break;
@@ -107,6 +153,7 @@ document.addEventListener('click', e => {
 function flash(b) { b.classList.add('shake'); setTimeout(() => b.classList.remove('shake'), 400); }
 
 Game.load();
+try { if (localStorage.getItem('tt_muted') === '1') $('mutebtn').textContent = '🔇'; } catch (e) {}
 UI.refreshTop();
 document.fonts && document.fonts.load('10px "Press Start 2P"');
 requestAnimationFrame(frame);

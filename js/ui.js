@@ -39,29 +39,66 @@ const UI = {
   title() { return {races: '🏁 COURSES DE DRAG', garage: '🔧 GARAGE & MOTEURS', tuning: '📈 TUNING', shop: '🚗 CONCESSION'}[this.screen]; },
 
   /* ---------------- COURSES ---------------- */
+  raceTab: 'contracts',
   rRaces() {
     const cs = Game.car(), spec = specOf(cs), est = estimateBest(spec);
-    let h = `<div class="box info"><b>Comment jouer :</b> <b>Maintiens</b> (ESPACE / appui long) pour monter le régime dans le cadre vert, puis <b>relâche au feu vert</b>.
-      Ensuite <b>appuie</b> pour passer la vitesse quand la jauge est dans la zone blanche (&gt;93%). <b>N</b> / bouton NITRO pour la nitro.</div>
-      <div class="box you"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" width="300" height="116"></canvas>
-      <div><b>${CARS[cs.id].name}</b><br>${ENGINES[cs.engine].name}<br>${Math.round(spec.hp)} ch · ${Math.round(spec.mass)} kg<br>
-      Estimation 400 m : <b>${est.t400.toFixed(2)} s</b></div></div><div class="grid">`;
-    OPPONENTS.forEach((o, i) => {
-      const os = makeSpec(o.car, o.engine, o.parts), oe = estimateBest(os);
-      const done = Game.save.wins[i], diff = est.t400 - oe.t400;
-      const level = diff > 0.6 ? ['difficile', 'bad'] : diff > -0.4 ? ['équilibré', 'mid'] : ['facile', 'good'];
-      const oc = Game.oppColor(i);
-      h += `<div class="card ${done ? 'done' : ''}"><div class="ctitle">#${i + 1} ${o.name}${done ? ' ✔' : ''}</div>
-        <canvas class="thumb" data-car="${o.car}" data-color="${oc}" width="300" height="116"></canvas>
-        <div class="muted">${o.tag}</div>
-        <div>${CARS[o.car].name}<br>${ENGINES[o.engine].name}</div>
-        <div class="kv"><span>Puissance</span><b>${Math.round(os.hp)} ch</b></div>
-        <div class="kv"><span>400 m (est.)</span><b>${oe.t400.toFixed(1)} s</b></div>
-        <div class="kv"><span>Niveau</span><b class="${level[1]}">${level[0]}</b></div>
-        <div class="kv"><span>Gain</span><b class="gold">${done ? money(o.reward * 0.4) : money(o.reward)}</b></div>
-        <button class="btn" data-act="race" data-v="${i}">COURSE ▶</button></div>`;
-    });
-    return h + '</div>';
+    const tab = this.raceTab;
+    let h = `<div class="racehead">
+      <div class="you2"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" width="300" height="116"></canvas>
+        <div><div class="eyebrow">TA VOITURE</div><div class="big">${CARS[cs.id].name}</div>
+        <div class="chips"><span class="chip">${ENGINES[cs.engine].name}</span><span class="chip">${Math.round(spec.hp)} ch</span><span class="chip">${fmt(spec.mass)} kg</span><span class="chip hl">400 m ≈ ${est.t400.toFixed(2)} s</span></div></div></div>
+      <div class="howto"><b>Départ :</b> maintiens <kbd>ESPACE</kbd> (ou l'écran) pour placer l'aiguille dans le vert, <b>relâche au feu vert</b>.<br>
+      <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
+      <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
+      <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">👑 Légendes de la ville <small>${Object.keys(Game.save.wins).length}/${OPPONENTS.length}</small></button></div>`;
+    if (tab === 'contracts') {
+      const list = Game.contracts(); Game.persist();
+      h += `<div class="sectionbar"><span class="muted">Trois propositions taillées pour ta voiture actuelle. Choisis-en une : les autres disparaissent après la course.</span>
+        <button class="btn small ${Game.save.money >= CONTRACT_REFRESH ? 'ghostbtn' : 'off'}" data-act="refresh">↻ Nouveaux contrats · ${money(CONTRACT_REFRESH)}</button></div><div class="contracts">`;
+      list.forEach((o, i) => { h += this.contractCard(o, i, spec, est); });
+      h += '</div>';
+    } else {
+      h += '<div class="grid">';
+      OPPONENTS.forEach((o, i) => {
+        const os = makeSpec(o.car, o.engine, o.parts), oe = estimateBest(os);
+        const done = Game.save.wins[i], diff = est.t400 - oe.t400;
+        const level = diff > 0.6 ? ['Difficile', 'hard'] : diff > -0.4 ? ['Serré', 'mid'] : ['Facile', 'easy'];
+        h += `<div class="card ${done ? 'done' : ''}"><div class="ctop"><span class="pill d-${level[1]}">${level[0]}</span><span class="muted">#${i + 1}</span></div>
+          <canvas class="thumb" data-car="${o.car}" data-color="${Game.oppColor(i)}" width="300" height="116"></canvas>
+          <div class="ctitle">${o.name}${done ? ' <span class="good">✔</span>' : ''}</div><div class="muted">${o.tag}</div>
+          <div class="kv"><span>Voiture</span><b>${CARS[o.car].name}</b></div>
+          <div class="kv"><span>Moteur</span><b>${ENGINES[o.engine].name}</b></div>
+          <div class="kv"><span>Puissance</span><b>${Math.round(os.hp)} ch</b></div>
+          <div class="kv"><span>400 m (est.)</span><b>${oe.t400.toFixed(2)} s</b></div>
+          <div class="rewardrow"><span class="muted">${done ? 'Revanche (40 %)' : 'Récompense'}</span><b class="gold">${money(done ? o.reward * 0.4 : o.reward)}</b></div>
+          <button class="btn" data-act="race" data-v="l${i}">DÉFIER ▶</button></div>`;
+      });
+      h += '</div>';
+    }
+    return h;
+  },
+  contractCard(o, i, spec, est) {
+    const T = CONTRACT_TYPES.find(t => t.id === o.type), os = makeSpec(o.car, o.engine, o.parts);
+    const mods = PARTS.filter(p => o.parts[p.id]).map(p => `<span class="chip sm">${p.icon} ${p.name} ${o.parts[p.id]}</span>`).join('') || '<span class="chip sm">100 % d\'origine</span>';
+    const bar = (label, a, b, unit, lowBetter, dec) => {
+      const mx = Math.max(a, b) * 1.08, f = v => (lowBetter ? (mx * 1.0 - v + Math.min(a, b) * 0.5) / (mx * 1.0 - Math.min(a, b) * 0.5) : v / mx) * 100;
+      const better = lowBetter ? a <= b : a >= b;
+      return `<div class="vsrow"><div class="vsl"><span>${label}</span><span><b class="${better ? 'good' : 'bad'}">${a.toFixed(dec)}</b> <i class="muted">vs</i> <b>${b.toFixed(dec)}</b> ${unit}</span></div>
+        <div class="vsbars"><div class="vb me" style="width:${clamp(f(a), 4, 100)}%"></div><div class="vb him" style="width:${clamp(f(b), 4, 100)}%"></div></div></div>`;
+    };
+    const total = o.type === 'bet' ? o.reward + o.stake : o.reward;
+    return `<div class="contract c-${o.diff}">
+      <div class="ctop"><span class="pill d-${o.diff}">${o.diffLabel}</span><span class="pill type">${T.icon} ${T.label}</span></div>
+      <div class="cstage"><canvas class="thumb big" data-car="${o.car}" data-color="${o.color}" width="300" height="116"></canvas></div>
+      <div class="cname"><b>${o.name}</b><span class="muted">${o.tag}</span></div>
+      <div class="ccar">${CARS[o.car].name} <span class="muted">· ${ENGINES[o.engine].name}</span></div>
+      <div class="chips">${mods}</div>
+      ${bar('Puissance', spec.hp, os.hp, 'ch', false, 0)}
+      ${bar('400 m estimé', est.t400, o.est, 's', true, 2)}
+      <div class="cond">${T.desc(o)}</div>
+      <div class="rewardrow"><span class="muted">${o.type === 'bet' ? 'Gain total' : 'Récompense'}</span><b class="gold big">${money(total)}</b></div>
+      ${o.type === 'bet' ? `<div class="muted small">En cas de défaite : −${money(o.stake)}</div>` : '<div class="muted small">Défaite : prime de 10 %</div>'}
+      <button class="btn" data-act="race" data-v="c${i}">ACCEPTER LE CONTRAT ▶</button></div>`;
   },
 
   /* ---------------- CONCESSION ---------------- */
@@ -114,12 +151,13 @@ const UI = {
     const e = ENGINES[id], cs = Game.car(), sp = makeSpec(cs.id, id, cs.parts), est = estimateBest(sp);
     const dh = Math.round(sp.hp - curSpec.hp);
     const d = (v, unit) => v === 0 ? '' : ` <i class="${v > 0 ? 'good' : 'bad'}">${v > 0 ? '+' : ''}${v}${unit}</i>`;
-    const action = current ? '<span class="own">MONTÉ</span>' :
+    const listen = `<button class="btn small ghostbtn" data-act="listen" data-v="eng:${id}" title="Écouter">🔊</button>`;
+    const action = listen + (current ? '<span class="own">MONTÉ</span>' :
       mode === 'swap' ? `<button class="btn small ${Game.save.money >= ENGINE_SWAP_FEE ? '' : 'off'}" data-act="swap" data-v="${id}">MONTER</button>` :
-      `<button class="btn small ${Game.save.money >= e.price ? '' : 'off'}" data-act="buyeng" data-v="${id}">${money(e.price)}</button>`;
+      `<button class="btn small ${Game.save.money >= e.price ? '' : 'off'}" data-act="buyeng" data-v="${id}">${money(e.price)}</button>`);
     return `<div class="eng ${current ? 'sel' : ''}"><div><b>${e.name}</b> <span class="muted">${e.kind}</span><br>
       <span class="muted">${Math.round(sp.hp)} ch${current ? '' : d(dh, ' ch')} · ${Math.round(sp.tq)} Nm · zone rouge ${fmt(sp.red)} · ${e.mass} kg</span><br>
-      <span class="muted">400 m avec tes pièces : <b>${est.t400.toFixed(2)} s</b></span></div>${action}</div>`;
+      <span class="muted">400 m avec tes pièces : <b>${est.t400.toFixed(2)} s</b></span></div><div class="engact">${action}</div></div>`;
   },
 
   /* ---------------- TUNING ---------------- */
@@ -149,7 +187,10 @@ const UI = {
     ];
     let h = `<div class="tunehead"><button class="btn small" data-act="tunecar" data-v="-1">◀</button>
       <b>${CARS[cs.id].name}</b> · ${ENGINES[cs.engine].name}
-      <button class="btn small" data-act="tunecar" data-v="1">▶</button></div>
+      <button class="btn small" data-act="tunecar" data-v="1">▶</button>
+      <span class="spacer"></span>
+      <button class="btn small ghostbtn" data-act="listen" data-v="cur">🔊 Écouter le moteur</button>
+      ${sel && (cs.parts[sel.id] || 0) < sel.tiers.length && ['exhaust', 'turbo', 'intake'].includes(sel.id) ? `<button class="btn small" data-act="listen" data-v="prev">🔊 Avec ${sel.name} niv. ${(cs.parts[sel.id] || 0) + 1}</button>` : ''}</div>
       <div class="cols tune"><div><div class="box"><canvas id="chart" width="560" height="300"></canvas>
       <div class="legend"><span><i style="background:#ff9a2e"></i>Puissance (ch)</span><span><i style="background:#3ec8ff"></i>Couple (Nm)</span>
       <span><i class="dash"></i>Aperçu amélioration</span><span><i class="dot"></i>Origine</span></div></div>
@@ -246,19 +287,20 @@ const UI = {
   showResult(res) {
     const o = Race.opp, r = $('result');
     r.classList.remove('hidden'); $('racebtns').classList.add('hidden');
-    r.innerHTML = `<div class="rbox ${res.win ? 'win' : 'lose'}"><h2>${res.win ? '🏆 VICTOIRE !' : '💥 DÉFAITE'}</h2>
-      <div class="muted">face à ${o.name} (${CARS[o.car].name})</div>
-      <div class="rgrid"><span>Ton temps</span><b>${res.plT < 90 ? res.plT.toFixed(2) + ' s' : '—'}</b>
-      <span>Son temps</span><b>${res.aiT < 90 ? res.aiT.toFixed(2) + ' s' : '—'}</b>
-      <span>Réflexe</span><b>${res.fs ? 'FAUX DÉPART' : res.rt != null ? res.rt.toFixed(3) + ' s' : '—'}</b>
+    const lines = (res.lines || []).map(([l, v]) => `<div class="pl"><span>${l}</span><b class="${v >= 0 ? 'gold' : 'bad'}">${v >= 0 ? '+' : '−'} ${money(Math.abs(v))}</b></div>`).join('');
+    const again = o.kind === 'ladder' ? `<button class="btn" data-act="race" data-v="l${o.idx}">REJOUER</button>` : `<button class="btn" data-act="go" data-v="races">NOUVEAUX CONTRATS</button>`;
+    r.innerHTML = `<div class="rbox ${res.win ? 'win' : 'lose'}"><div class="eyebrow">${o.kind === 'ladder' ? 'LÉGENDE DE LA VILLE' : 'CONTRAT'}</div>
+      <h2>${res.win ? 'VICTOIRE' : 'DÉFAITE'}</h2>
+      <div class="muted">face à ${o.name} · ${CARS[o.car].name}</div>
+      <div class="rgrid"><span>Ton temps</span><b>${res.plT < 90 ? res.plT.toFixed(3) + ' s' : '—'}</b>
+      <span>Son temps</span><b>${res.aiT < 90 ? res.aiT.toFixed(3) + ' s' : '—'}</b>
+      <span>Réaction</span><b>${res.fs ? '<span class="bad">FAUX DÉPART</span>' : res.rt != null ? res.rt.toFixed(3) + ' s' : '—'}</b>
       <span>0 → 100 km/h</span><b>${res.t100 ? res.t100.toFixed(2) + ' s' : '—'}</b>
-      <span>Vitesse finale</span><b>${Math.round(res.speed)} km/h</b>
+      <span>Vitesse de passage</span><b>${Math.round(res.speed)} km/h</b>
       <span>Passages parfaits</span><b>${res.perfect}/${res.shifts}</b></div>
-      ${res.record ? '<div class="gold">⭐ NOUVEAU RECORD DE LA VOITURE !</div>' : ''}
-      <div class="reward">+ ${money(res.reward)} ${res.win && !res.first ? '<small>(course déjà gagnée : 40%)</small>' : ''}</div>
-      <div class="rbtns"><button class="btn" data-act="race" data-v="${Race.oppIdx}">REJOUER</button>
-      <button class="btn" data-act="go" data-v="races">COURSES</button>
-      <button class="btn" data-act="go" data-v="tuning">TUNING</button></div></div>`;
+      ${res.record ? '<div class="gold">⭐ NOUVEAU RECORD POUR CETTE VOITURE</div>' : ''}
+      <div class="payout">${lines}<div class="pl total"><span>Total</span><b class="${res.reward >= 0 ? 'gold' : 'bad'}">${res.reward >= 0 ? '+' : '−'} ${money(Math.abs(res.reward))}</b></div></div>
+      <div class="rbtns">${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
   }
 };
 

@@ -121,7 +121,7 @@ const Sound = {
   },
 
   /* rpm, charge (0-1), patinage, rupteur */
-  update(v, rpm, load, spin, limiter) {
+  update(v, rpm, load, spin, limiter, spool) {
     if (!v || v.dead) return;
     const t = this.ctx.currentTime, p = v.prof;
     rpm = Math.max(700, rpm);
@@ -139,10 +139,10 @@ const Sound = {
     v.out.gain.setTargetAtTime(g, t, 0.02);
     // turbo
     if (v.whistleG) {
-      const target = load > 0.5 ? clamp((rpm - 2200) / 3200, 0, 1) : 0;
-      v.boost += (target - v.boost) * (target > v.boost ? 0.04 : 0.15);
+      const target = load > 0.5 ? clamp((rpm - 2200) / 3200, 0, 1) * (spool == null ? 1 : spool) : 0;
+      v.boost += (target - v.boost) * (target > v.boost ? (spool == null ? 0.04 : 0.25) : 0.25);
       v.whistle.frequency.setTargetAtTime(1600 + v.boost * 5200, t, 0.05);
-      v.whistleG.gain.setTargetAtTime(v.vol * v.boost * 0.03 * Math.min(2, v.turboLvl), t, 0.05);
+      v.whistleG.gain.setTargetAtTime(v.vol * v.boost * 0.04 * Math.min(2, v.turboLvl), t, 0.05);
       v.hissG.gain.setTargetAtTime(v.vol * v.boost * 0.05 * Math.min(2, v.turboLvl), t, 0.05);
     }
     v.screechG.gain.setTargetAtTime(spin ? v.vol * 0.12 : 0, t, 0.04);
@@ -151,7 +151,7 @@ const Sound = {
   /* passage de vitesse : dump valve si turbo, pétarades si échappement */
   shift(v) {
     if (!v || v.dead) return;
-    if (v.whistleG && v.boost > 0.35) this.blowoff(v.vol * v.boost);
+    if (v.whistleG && v.boost > 0.35) { this.blowoff(v.vol * v.boost); v.boost = 0.1; }
     if (v.ex > 0) this.pops(v.vol, 2 + v.ex * 2);
   },
   blowoff(amt) {

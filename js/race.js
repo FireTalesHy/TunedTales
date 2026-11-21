@@ -129,9 +129,9 @@ const Race = {
     if (!this.aiV) this.aiV = Sound.engine(this.opp.engine, this.opp.parts, {vol: 0.3, distant: true});
     const s = this.pl, a = this.ai, sp = this.plSpec;
     if (this.state === 'stage' && !s.launched) Sound.update(this.plV, this.revRpm, this.holding ? 1 : 0.12, false, this.revRpm >= sp.red * 0.97);
-    else Sound.update(this.plV, s.rpm, this.state === 'done' ? 0.05 : s.shiftT > 0 ? 0.15 : 1, s.spin, s.limiter);
+    else Sound.update(this.plV, s.rpm, this.state === 'done' ? 0.05 : s.shiftT > 0 ? 0.15 : 1, s.spin, s.limiter, sp.turbo ? s.spool : null);
     const aiStageRpm = this.t > 1 ? this.aiLaunchRpm * (0.92 + Math.sin(this.t * 9) * 0.05) : IDLE;
-    Sound.update(this.aiV, a.launched ? a.rpm : aiStageRpm, a.launched ? (a.fin || this.state === 'done' ? 0.05 : a.shiftT > 0 ? 0.15 : 1) : (this.t > 1 ? 0.8 : 0.1), a.spin, a.limiter);
+    Sound.update(this.aiV, a.launched ? a.rpm : aiStageRpm, a.launched ? (a.fin || this.state === 'done' ? 0.05 : a.shiftT > 0 ? 0.15 : 1) : (this.t > 1 ? 0.8 : 0.1), a.spin, a.limiter, this.aiSpec.turbo && a.launched ? a.spool : null);
   },
 
   update(dt) {
@@ -200,7 +200,7 @@ const Race = {
     const sp = this.plSpec, s = this.pl, red = sp.red;
     const rpm = this.state === 'stage' ? this.revRpm : s.rpm;
     // --- compte-tours ---
-    const px = 16, py = 14, pw = 250, ph = 196;
+    const px = 16, py = 14, pw = 250, ph = 204 + (sp.turbo ? 18 : 0) + (sp.nitro ? 12 : 0);
     glassPanel(ctx, px, py, pw, ph);
     const cx = px + 125, cy = py + 118, R = 82, a0 = Math.PI * 0.8, a1 = Math.PI * 2.2;
     const maxR = Math.ceil(red / 1000 + 1) * 1000, ang = v => a0 + (a1 - a0) * clamp(v / maxR, 0, 1);
@@ -239,6 +239,13 @@ const Race = {
       ctx.fillStyle = on ? col : 'rgba(255,255,255,0.1)';
       if (on) { ctx.shadowColor = col; ctx.shadowBlur = 8; }
       ctx.beginPath(); ctx.arc(cx - 64 + i * 16, py + 16, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+    }
+    // manomètre de turbo
+    if (sp.turbo) {
+      const bst = (s.launched ? s.spool : this.holding ? 0.4 : 0.05) * clamp((rpm - 1800) / 1800, 0, 1);
+      ctx.fillStyle = '#9097c0'; ctx.font = `700 10px ${UIF}`; ctx.textAlign = 'left'; ctx.fillText('BOOST', px + 14, py + ph - (sp.nitro ? 26 : 13));
+      ctx.fillStyle = 'rgba(0,0,0,0.4)'; roundRect(ctx, px + 56, py + ph - (sp.nitro ? 33 : 20), pw - 70, 6, 3); ctx.fill();
+      ctx.fillStyle = bst > 0.85 ? '#ff9a2e' : '#ffd34d'; roundRect(ctx, px + 56, py + ph - (sp.nitro ? 33 : 20), (pw - 70) * bst, 6, 3); ctx.fill();
     }
     // nitro
     if (sp.nitro) {

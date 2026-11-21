@@ -104,7 +104,7 @@ const Game = {
       if (res.win) {
         reward = opp.reward; lines.push(['Contrat rempli', opp.reward]);
         if (opp.type === 'bet') { reward += opp.stake; lines.push(['Mise remportée', opp.stake]); }
-        if (opp.type === 'reflex' && !res.fs && res.rt != null && res.rt < 0.3) { const b = Math.round(opp.reward * 0.5); reward += b; lines.push(['Bonus réflexe < 0,30 s', b]); }
+        if (opp.type === 'reflex' && res.zone >= 0.9) { const b = Math.round(opp.reward * 0.5); reward += b; lines.push(['Bonus maîtrise du régime', b]); }
         if (opp.type === 'launch' && res.launchQ > 0.95) { const b = Math.round(opp.reward * 0.4); reward += b; lines.push(['Bonus départ parfait', b]); }
         if (opp.type === 'shifts' && res.shifts > 0 && res.perfect === res.shifts) { const b = Math.round(opp.reward * 0.4); reward += b; lines.push(['Bonus passages parfaits', b]); }
       } else if (opp.type === 'bet') { reward = -opp.stake; lines.push(['Mise perdue', -opp.stake]); }
@@ -127,7 +127,7 @@ const CONTRACT_DIFFS = [
 const CONTRACT_TYPES = [
   {id: 'street', label: 'Course de rue', icon: '🏁', desc: () => 'Bats ton adversaire sur 402 m.'},
   {id: 'bet',    label: 'Pari',          icon: '💰', desc: o => `Mise de ${fmt(o.stake)} € : gagne et tu la doubles, perds et elle est à lui.`},
-  {id: 'reflex', label: 'Défi réflexe',  icon: '⚡', desc: () => 'Bonus +50 % si ton temps de réaction est sous 0,30 s.'},
+  {id: 'reflex', label: 'Pied de velours', icon: '🎚️', desc: () => 'Bonus +50 % si l\'aiguille reste dans le vert pendant 90 % du compte à rebours.'},
   {id: 'launch', label: 'Départ canon',  icon: '🚀', desc: () => 'Bonus +40 % pour un départ parfait (cadre vert).'},
   {id: 'shifts', label: 'Boîte parfaite', icon: '🎯', desc: () => 'Bonus +40 % si tous tes passages sont parfaits.'}
 ];

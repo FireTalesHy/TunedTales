@@ -47,7 +47,7 @@ const UI = {
       <div class="you2"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" width="300" height="116"></canvas>
         <div><div class="eyebrow">TA VOITURE</div><div class="big">${CARS[cs.id].name}</div>
         <div class="chips"><span class="chip">${ENGINES[cs.engine].name}</span><span class="chip">${Math.round(spec.hp)} ch</span><span class="chip">${fmt(spec.mass)} kg</span><span class="chip hl">400 m ≈ ${est.t400.toFixed(2)} s</span></div></div></div>
-      <div class="howto"><b>Départ :</b> maintiens <kbd>ESPACE</kbd> (ou l'écran) pour placer l'aiguille dans le vert, <b>relâche au feu vert</b>.<br>
+      <div class="howto"><b>Départ :</b> maintiens / relâche <kbd>ESPACE</kbd> (ou l'écran) pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
       <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
       <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">👑 Légendes de la ville <small>${Object.keys(Game.save.wins).length}/${OPPONENTS.length}</small></button></div>`;
@@ -294,7 +294,8 @@ const UI = {
       <div class="muted">face à ${o.name} · ${CARS[o.car].name}</div>
       <div class="rgrid"><span>Ton temps</span><b>${res.plT < 90 ? res.plT.toFixed(3) + ' s' : '—'}</b>
       <span>Son temps</span><b>${res.aiT < 90 ? res.aiT.toFixed(3) + ' s' : '—'}</b>
-      <span>Réaction</span><b>${res.fs ? '<span class="bad">FAUX DÉPART</span>' : res.rt != null ? res.rt.toFixed(3) + ' s' : '—'}</b>
+      <span>Régime dans le vert</span><b class="${res.zone >= 0.9 ? 'good' : ''}">${Math.round((res.zone || 0) * 100)} %</b>
+      <span>Qualité du départ</span><b>${Math.round((res.launchQ || 0) * 100)} %</b>
       <span>0 → 100 km/h</span><b>${res.t100 ? res.t100.toFixed(2) + ' s' : '—'}</b>
       <span>Vitesse de passage</span><b>${Math.round(res.speed)} km/h</b>
       <span>Passages parfaits</span><b>${res.perfect}/${res.shifts}</b></div>

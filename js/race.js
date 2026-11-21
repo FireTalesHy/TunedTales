@@ -3,6 +3,7 @@
 const W = 480, H = 270;                 // repère logique (le canvas fait 960x540)
 const PPM = 5;                          // pixels logiques par mètre
 const FONT = '"Press Start 2P", "Courier New", monospace';
+const LAUNCH_ZONE = 0.09;           // demi-largeur de la zone verte (fraction de la zone rouge)
 const UIF = '"Chakra Petch", "Segoe UI", sans-serif';
 
 function rng(seed) { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
@@ -33,7 +34,7 @@ const Race = {
     this.msg = ''; this.msgT = 0; this.particles = []; this.result = null;
     this.fs = false; this.rt = null; this.launchAt = Infinity; this.plLaunchRpm = 0;
     this.state = 'stage'; this.active = true; this.wheelAng = 0; this.aiWheelAng = 0;
-    this.shiftCount = 0; this.perfectShifts = 0; this.aiGear = 0;
+    this.shiftCount = 0; this.perfectShifts = 0; this.aiGear = 0; this.zoneT = 0; this.countT = 0; this.zoneFrac = 0;
     Sound.stopAll(); this.plV = this.aiV = null;
     Sound.resume();
     UI.raceStart();
@@ -44,30 +45,22 @@ const Race = {
 
   onDown() {
     if (!this.active) return;
-    if (this.state === 'stage') {
-      if (this.t >= this.greenAt && !this.pl.launched && this.launchAt === Infinity) this.launchPlayer();
-      else if (this.t < this.greenAt) this.holding = true;
-    } else if (this.state === 'race' && this.pl.launched && !this.pl.fin) this.shift();
+    if (this.state === 'stage') this.holding = true;
+    else if (this.state === 'race' && this.pl.launched && !this.pl.fin) this.shift();
   },
   onUp() {
     if (!this.active) return;
-    if (this.state === 'stage' && this.holding) {
-      this.holding = false;
-      if (this.t >= this.greenAt) { if (!this.pl.launched && this.launchAt === Infinity) this.launchPlayer(); }
-      else {
-        this.fs = true; this.launchAt = this.greenAt + 0.7; this.plLaunchRpm = this.revRpm;
-        this.setMsg('FAUX DÉPART  +0.7 s', '#ff4a5a');
-      }
-    }
+    this.holding = false;
   },
   onNitro() {
     if (this.state === 'race' && this.pl.launched && this.plSpec.nitro && this.pl.nitroLeft > 0) { this.pl.nitroOn = true; this.setMsg('NITRO !', '#3ee0ff'); }
   },
 
   launchPlayer() {
-    const rpm = this.revRpm, q = launchQuality(rpm, this.launchBest, this.plSpec.red);
-    this.rt = Math.max(0, this.t - this.greenAt);
-    this.holding = false;
+    const rpm = this.revRpm, red = this.plSpec.red, dev = Math.abs(rpm - this.launchBest);
+    const q = dev <= LAUNCH_ZONE * red ? 1 - 0.04 * dev / (LAUNCH_ZONE * red) : launchQuality(rpm, this.launchBest, red) * 0.95;
+    this.rt = 0;
+    this.zoneFrac = this.zoneT / Math.max(0.01, this.countT);
     this.plLaunchRpm = rpm; this.plLaunchQ = q;
     simLaunch(this.pl, this.plSpec, rpm, q);
     this.pl.startT = this.t;
@@ -89,11 +82,12 @@ const Race = {
   step(dt) {
     this.t += dt;
     if (this.state === 'stage') {
-      const lim = this.plSpec.red * 0.98;
-      if (this.holding) this.revRpm = Math.min(lim, this.revRpm + 5200 * dt);
-      else this.revRpm = Math.max(IDLE, this.revRpm - 7000 * dt);
-      if (this.fs && this.t >= this.launchAt && !this.pl.launched) { this.revRpm = this.plLaunchRpm; this.launchPlayer(); this.rt = 0.7; }
-      if (this.t >= this.greenAt + 1.6 && !this.pl.launched) { this.revRpm = IDLE; this.launchPlayer(); this.setMsg('TROP LENT', '#ff9a4a'); }
+      const red = this.plSpec.red, lim = red * 0.98;
+      if (this.holding) this.revRpm = Math.min(lim, this.revRpm + 3400 * dt);
+      else this.revRpm = Math.max(IDLE, this.revRpm - 3000 * dt);
+      // temps passé dans la zone verte pendant le compte à rebours (à partir du 1er feu orange)
+      if (this.t >= 1.0) { this.countT += dt; if (Math.abs(this.revRpm - this.launchBest) <= LAUNCH_ZONE * red) this.zoneT += dt; }
+      if (this.t >= this.greenAt && !this.pl.launched) this.launchPlayer();
     }
     if (!this.ai.launched && this.t >= this.greenAt + this.aiReact) simLaunch(this.ai, this.aiSpec, this.aiLaunchRpm, this.aiLaunchQ);
     if (this.ai.launched && !this.ai.fin) {
@@ -123,7 +117,7 @@ const Race = {
     const aiT = this.ai.fin ? this.ai.tFin + this.aiReact : 99;
     const win = plT < aiT;
     this.result = {win, plT, aiT, et: this.pl.fin ? this.pl.tFin : null, rt: this.rt, speed: this.pl.v * 3.6, t100: this.pl.t100, fs: this.fs,
-                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0};
+                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac};
     Game.raceDone(this.opp, this.result);
     this.setMsg(win ? 'VICTOIRE' : 'DÉFAITE', win ? '#4cff8a' : '#ff4a5a'); this.msgT = 3;
     setTimeout(() => { if (this.state === 'done') { Sound.stopAll(); this.plV = this.aiV = null; UI.showResult(this.result); } }, 1600);
@@ -213,7 +207,7 @@ const Race = {
     ctx.lineCap = 'butt';
     ctx.lineWidth = 10; ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.beginPath(); ctx.arc(cx, cy, R, a0, a1); ctx.stroke();
     ctx.strokeStyle = 'rgba(255,74,90,0.85)'; ctx.beginPath(); ctx.arc(cx, cy, R, ang(red), a1); ctx.stroke();
-    if (this.state === 'stage') { ctx.strokeStyle = '#4cff8a'; ctx.beginPath(); ctx.arc(cx, cy, R, ang(this.launchBest - 0.07 * red), ang(this.launchBest + 0.07 * red)); ctx.stroke(); }
+    if (this.state === 'stage') { ctx.strokeStyle = '#4cff8a'; ctx.beginPath(); ctx.arc(cx, cy, R, ang(this.launchBest - LAUNCH_ZONE * red), ang(this.launchBest + LAUNCH_ZONE * red)); ctx.stroke(); }
     else if (s.gear < sp.gears.length - 1) { ctx.strokeStyle = rpm >= 0.93 * red ? '#ffffff' : 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.arc(cx, cy, R, ang(0.93 * red), ang(red)); ctx.stroke(); }
     // arc de régime actuel
     const grd = ctx.createLinearGradient(cx - R, 0, cx + R, 0); grd.addColorStop(0, '#ff3d9a'); grd.addColorStop(1, '#ff9a2e');
@@ -277,11 +271,12 @@ const Race = {
     if (this.state === 'stage' || this.t < this.greenAt + 2.5) this.drawTree(ctx);
     // --- consigne de départ ---
     if (this.state === 'stage') {
-      const txt = this.t < this.greenAt ? (this.holding ? 'Garde le régime dans la zone verte…' : 'MAINTIENS ESPACE / l\'écran pour monter en régime') : 'RELÂCHE !';
+      const inZone = Math.abs(this.revRpm - this.launchBest) <= LAUNCH_ZONE * red;
+      const txt = this.t < 1.0 ? 'Accélère et place l\'aiguille dans la zone verte' : inZone ? '✓ DANS LE VERT — tiens-la jusqu\'au feu vert' : (this.revRpm < this.launchBest ? '▲ Accélère un peu (maintiens)' : '▼ Trop haut, relâche un peu');
       ctx.font = `700 17px ${UIF}`; const tw = ctx.measureText(txt).width + 40;
       ctx.fillStyle = 'rgba(10,12,30,0.75)'; roundRect(ctx, 480 - tw / 2, 214, tw, 34, 17); ctx.fill();
       ctx.strokeStyle = 'rgba(255,211,77,0.5)'; ctx.lineWidth = 1; ctx.stroke();
-      ctx.fillStyle = this.t < this.greenAt ? '#ffd34d' : '#4cff8a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, 480, 232);
+      ctx.fillStyle = inZone ? '#4cff8a' : '#ffd34d'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, 480, 232);
     }
     // --- message ---
     if (this.msgT > 0) {

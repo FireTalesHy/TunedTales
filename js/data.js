@@ -10,6 +10,12 @@ const ENGINES = {
   s54:   {name:'S54 3.2 6 cyl.',  kind:'6 cyl. atmo',  hp:343, hpRpm:7900, tqRpm:4900, red:8200, mass:190, turbo:false, price:10500},
   rb26:  {name:'RB26DETT',        kind:'6 cyl. biturbo',hp:300,hpRpm:6800, tqRpm:4400, red:8000, mass:215, turbo:true,  price:12500},
   jz:    {name:'2JZ-GTE',         kind:'6 cyl. turbo', hp:320, hpRpm:5600, tqRpm:4000, red:7000, mass:225, turbo:true,  price:13500},
+  sr20:  {name:'SR20DET',         kind:'4 cyl. turbo', hp:250, hpRpm:6400, tqRpm:4800, red:7500, mass:150, turbo:true,  price:7000},
+  g63:   {name:'4G63T',           kind:'4 cyl. turbo', hp:290, hpRpm:6500, tqRpm:3500, red:7500, mass:165, turbo:true,  price:9500},
+  mezger:{name:'Mezger 3.6 flat-6',kind:'6 cyl. à plat atmo', hp:415, hpRpm:7600, tqRpm:5500, red:8400, mass:200, turbo:false, price:28000},
+  vr38:  {name:'VR38DETT',        kind:'V6 biturbo',   hp:485, hpRpm:6400, tqRpm:3200, red:7100, mass:240, turbo:true,  price:45000},
+  thp:   {name:'1.6 THP 200',     kind:'4 cyl. turbo', hp:200, hpRpm:5800, tqRpm:1800, red:6500, mass:135, turbo:true,  price:5000},
+  lr1:   {name:'1LR-GUE V10',     kind:'V10 atmo',     hp:560, hpRpm:8700, tqRpm:6800, red:9000, mass:170, turbo:false, price:150000},
   ls3:   {name:'LS3 V8 6.2',      kind:'V8 atmo',      hp:430, hpRpm:5900, tqRpm:4600, red:6600, mass:200, turbo:false, price:16000}
 };
 
@@ -32,7 +38,28 @@ const CARS = {
            gears:[3.83,2.36,1.69,1.31,1.00,0.79], color:'#e8e8e8', style:'supra', hint:'Légende, 2JZ increvable'},
   skyline:{name:'Nissan Skyline R34', year:1999, drive:'AWD', price:50000, engine:'rb26',
            body:1345, mu:1.10, frac:0.92, eff:0.86, r:0.32, cd:0.34, A:2.00, final:4.11,
-           gears:[3.83,2.36,1.69,1.31,1.00,0.79], color:'#4060b8', style:'skyline', hint:'Godzilla : 4 roues motrices'}
+           gears:[3.83,2.36,1.69,1.31,1.00,0.79], color:'#4060b8', style:'skyline', hint:'Godzilla : 4 roues motrices'},
+  civic:  {name:'Honda Civic Type R EP3', year:2002, drive:'FWD', price:12000, engine:'k20a',
+           body:1080, mu:1.00, frac:0.53, eff:0.90, r:0.31, cd:0.34, A:2.00, final:4.76,
+           gears:[3.27,2.13,1.52,1.15,0.92,0.74], color:'#f0f0f0', style:'civic', hint:'Le VTEC qui kicke à 5 800 tr/min'},
+  rcz:    {name:'Peugeot RCZ',       year:2011, drive:'FWD', price:18000, engine:'thp',
+           body:1185, mu:1.00, frac:0.53, eff:0.90, r:0.32, cd:0.32, A:2.00, final:4.10,
+           gears:[3.42,1.95,1.36,1.05,0.84,0.69], color:'#b3121e', style:'rcz', hint:'Coupé double bulle et 1.6 turbo'},
+  s15:    {name:'Nissan Silvia S15',  year:2000, drive:'RWD', price:25000, engine:'sr20',
+           body:1100, mu:1.00, frac:0.63, eff:0.91, r:0.31, cd:0.29, A:1.90, final:4.08,
+           gears:[3.32,1.90,1.31,1.00,0.82,0.70], color:'#d9dde3', style:'s15', hint:'La reine du drift'},
+  evo:    {name:'Mitsubishi Lancer Evo IX', year:2006, drive:'AWD', price:45000, engine:'g63',
+           body:1235, mu:1.10, frac:0.92, eff:0.86, r:0.32, cd:0.35, A:2.10, final:4.53,
+           gears:[2.92,1.79,1.27,0.97,0.76], color:'#c8102e', style:'evo', hint:'Le rallye homologué pour la route'},
+  gt3:    {name:'Porsche 911 GT3 (997)', year:2007, drive:'RWD', price:120000, engine:'mezger',
+           body:1195, mu:1.25, frac:0.66, eff:0.91, r:0.33, cd:0.30, A:2.00, final:3.44,
+           gears:[3.82,2.15,1.56,1.21,0.97,0.83], color:'#f4f4f4', style:'gt3', hint:'Moteur arrière, châssis de course'},
+  r35:    {name:'Nissan GT-R R35',   year:2009, drive:'AWD', price:250000, engine:'vr38',
+           body:1500, mu:1.15, frac:0.92, eff:0.87, r:0.34, cd:0.27, A:2.10, final:3.70,
+           gears:[4.06,2.30,1.59,1.25,1.00,0.80], color:'#8d939e', style:'r35', hint:'Godzilla version moderne'},
+  lfa:    {name:'Lexus LFA',         year:2011, drive:'RWD', price:1000000, engine:'lr1',
+           body:1310, mu:1.32, frac:0.62, eff:0.91, r:0.34, cd:0.31, A:2.00, final:4.56,
+           gears:[3.23,2.19,1.61,1.24,1.00,0.82], color:'#f2cc2e', style:'lfa', hint:'Le V10 qui hurle à 9 000 tr/min'}
 };
 const CAR_IDS = Object.keys(CARS);
 const ENGINE_IDS = Object.keys(ENGINES);
@@ -118,7 +145,7 @@ const VISUAL = [
     {v: 'purple', n: 'Violet', p: 350}, {v: 'orange', n: 'Orange', p: 350}, {v: 'red', n: 'Rouge', p: 350}]}
 ];
 // emplacement des ailerons par profil : zone de pose [x0, x1] et style de montage
-const SPOILER_MOUNT = {twingo: [12, 36, 'roof'], clio: [20, 42, 'roof'], mx5: [6, 34, 'deck'], m3: [6, 38, 'deck'], supra: [8, 44, 'deck'], skyline: [6, 40, 'deck']};
+const SPOILER_MOUNT = {civic: [14, 36, 'roof'], rcz: [6, 30, 'deck'], s15: [8, 34, 'deck'], evo: [6, 44, 'deck'], gt3: [8, 46, 'deck'], r35: [6, 40, 'deck'], lfa: [6, 36, 'deck'], twingo: [12, 36, 'roof'], clio: [20, 42, 'roof'], mx5: [6, 34, 'deck'], m3: [6, 38, 'deck'], supra: [8, 44, 'deck'], skyline: [6, 40, 'deck']};
 function lookOf(o) { return Object.assign({}, LOOK_DEFAULT, (o && o.look) || {}); }
 function randomLook(rnd, level) {
   const pick = (id, maxIdx) => { const opts = VISUAL.find(v => v.id === id).opts; return opts[Math.min(opts.length - 1, Math.floor(rnd() * Math.min(opts.length, maxIdx)))].v; };

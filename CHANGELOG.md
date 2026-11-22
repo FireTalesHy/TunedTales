@@ -4,6 +4,12 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🔧 v1.6.1 — Correctif d'affichage · 22 novembre 2026
+- Les fichiers du jeu sont versionnés : après une mise à jour, le navigateur recharge forcément la nouvelle interface (fini le bouton COURSES sans style et le menu décalé dus à l'ancienne feuille de style en cache).
+- Menus adaptés aux petits écrans (mobile en paysage, tablettes).
+
+---
+
 ## 💸 v1.6.0 — « Gros billets » · 22 novembre 2026
 
 ### 🔥 Série de victoires

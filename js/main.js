@@ -135,9 +135,14 @@ document.addEventListener('click', e => {
   if (b.classList.contains('off') && a !== 'reset') { flash(b); return; }
   switch (a) {
     case 'go': UI.go(v); break;
-    case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
+    case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : v[0] === 'p' ? Game.pinkSlips()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
     case 'bcat': UI.bodyCat = v; UI.render(); break;
+    case 'sellcar': {
+      const c = Game.save.cars[v];
+      if (c && confirm(`Vendre ta ${CARS[v].name} pour ${money(Game.carValue(c) * 0.6)} ?`)) { Game.sellCar(v); UI.render(); }
+      break;
+    }
     case 'bopt': {
       const [id, val] = v.split('|'), cs = Game.car();
       let value = id === 'color' ? val : VISUAL.find(x => x.id === id).opts[+val].v;

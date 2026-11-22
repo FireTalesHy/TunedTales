@@ -19,7 +19,7 @@ const UI = {
   go(name) {
     this.screen = name;
     const panel = $('panel');
-    $('menu').classList.toggle('hidden', name !== 'home'); $('homecard').classList.toggle('hidden', name !== 'home');
+    $('menu').classList.toggle('hidden', name !== 'home'); $('homecard').classList.toggle('hidden', name !== 'home'); $('racego').classList.toggle('hidden', name !== 'home');
     $('racebtns').classList.add('hidden'); $('result').classList.add('hidden');
     Race.stop(); Jobs.stop();
     if (name === 'home') { panel.classList.add('hidden'); this.refreshTop(); return; }
@@ -51,13 +51,22 @@ const UI = {
       <div class="howto"><b>Départ :</b> maintiens / relâche <kbd>ESPACE</kbd> (ou l'écran) pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
       <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
+      <button class="tab ${tab === 'pink' ? 'on' : ''}" data-act="tab" data-v="pink">🏴 Courses au titre</button>
       <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">👑 Légendes de la ville <small>${Object.keys(Game.save.wins).length}/${OPPONENTS.length}</small></button></div>`;
     if (tab === 'contracts') {
       const list = Game.contracts(); Game.persist();
+      const st = Game.save.streak || 0, sm = Game.streakMult(st);
+      h += `<div class="streak"><div class="flames">${[0, 1, 2, 3, 4, 5, 6, 7].map(k => `<i class="${k < st ? 'on' : ''}"></i>`).join('')}</div>
+        <div><b>SÉRIE : ${st} victoire${st > 1 ? 's' : ''}</b><span class="muted"> · prochaine victoire ×${sm.toFixed(1)} (max ×2,5) · une défaite remet à zéro</span></div></div>`;
       h += `<div class="sectionbar"><span class="muted">Trois propositions taillées pour ta voiture actuelle. Choisis-en une : les autres disparaissent après la course.</span>
         <button class="btn small ${Game.save.money >= CONTRACT_REFRESH ? 'ghostbtn' : 'off'}" data-act="refresh">↻ Nouveaux contrats · ${money(CONTRACT_REFRESH)}</button></div><div class="contracts">`;
       list.forEach((o, i) => { h += this.contractCard(o, i, spec, est); });
       h += '</div>';
+    } else if (tab === 'pink') {
+      const list = Game.pinkSlips(); Game.persist();
+      h += `<div class="pinkhead"><b>COURSES AU TITRE DE PROPRIÉTÉ</b><span>Le gagnant repart avec la voiture de l'autre. Tu mets en jeu ta voiture actuelle : <b class="bad">${CARS[cs.id].name}</b> (valeur ${money(Game.carValue(cs))}). Si tu possèdes déjà le modèle gagné, son titre est revendu 70 % de sa valeur.</span></div>`;
+      if (!list.length) h += `<div class="box">🔒 Il te faut <b>au moins 2 voitures</b> pour mettre un titre en jeu (sinon tu risquerais de te retrouver à pied). Passe à la concession !</div>`;
+      else { h += '<div class="contracts">'; list.forEach((o, i) => { h += this.contractCard(o, i, spec, est, 'p'); }); h += '</div>'; }
     } else {
       h += '<div class="grid">';
       OPPONENTS.forEach((o, i) => {
@@ -78,7 +87,8 @@ const UI = {
     }
     return h;
   },
-  contractCard(o, i, spec, est) {
+  contractCard(o, i, spec, est, pre) {
+    pre = pre || 'c';
     const T = CONTRACT_TYPES.find(t => t.id === o.type), os = makeSpec(o.car, o.engine, o.parts);
     const mods = PARTS.filter(p => o.parts[p.id]).map(p => `<span class="chip sm">${p.icon} ${p.name} ${o.parts[p.id]}</span>`).join('') || '<span class="chip sm">100 % d\'origine</span>';
     const bar = (label, a, b, unit, lowBetter, dec) => {
@@ -87,8 +97,8 @@ const UI = {
       return `<div class="vsrow"><div class="vsl"><span>${label}</span><span><b class="${better ? 'good' : 'bad'}">${a.toFixed(dec)}</b> <i class="muted">vs</i> <b>${b.toFixed(dec)}</b> ${unit}</span></div>
         <div class="vsbars"><div class="vb me" style="width:${clamp(f(a), 4, 100)}%"></div><div class="vb him" style="width:${clamp(f(b), 4, 100)}%"></div></div></div>`;
     };
-    const total = o.type === 'bet' ? o.reward + o.stake : o.reward;
-    return `<div class="contract c-${o.diff}">
+    const total = o.type === 'bet' ? o.reward + o.stake : o.reward, pink = o.type === 'pink';
+    return `<div class="contract c-${o.diff} ${pink ? 'c-pink' : ''}">
       <div class="ctop"><span class="pill d-${o.diff}">${o.diffLabel}</span><span class="pill type">${T.icon} ${T.label}</span></div>
       <div class="cstage"><canvas class="thumb big" data-car="${o.car}" data-color="${o.color}" data-look='${JSON.stringify(o.look || null)}' width="300" height="116"></canvas></div>
       <div class="cname"><b>${o.name}</b><span class="muted">${o.tag}</span></div>
@@ -97,9 +107,12 @@ const UI = {
       ${bar('Puissance', spec.hp, os.hp, 'ch', false, 0)}
       ${bar('400 m estimé', est.t400, o.est, 's', true, 2)}
       <div class="cond">${T.desc(o)}</div>
-      <div class="rewardrow"><span class="muted">${o.type === 'bet' ? 'Gain total' : 'Récompense'}</span><b class="gold big">${money(total)}</b></div>
-      ${o.type === 'bet' ? `<div class="muted small">En cas de défaite : −${money(o.stake)}</div>` : '<div class="muted small">Défaite : prime de 10 %</div>'}
-      <button class="btn" data-act="race" data-v="c${i}">ACCEPTER LE CONTRAT ▶</button></div>`;
+      ${pink ? `<div class="rewardrow"><span class="muted">Tu gagnes</span><b class="gold big">Sa ${CARS[o.car].name.split(' ').slice(1).join(' ')}</b></div>
+        <div class="muted small">Valeur ${money(o.value)}${Game.owns(o.car) ? ` · déjà au garage : revendue ${money(o.reward)}` : ' · ajoutée à ton garage avec ses pièces'}</div>
+        <div class="small bad">⚠ Défaite : tu perds ta ${CARS[Game.car().id].name}</div>` :
+      `<div class="rewardrow"><span class="muted">${o.type === 'bet' ? 'Gain total' : 'Récompense'}</span><b class="gold big">${money(total)}</b></div>
+      ${o.type === 'bet' ? `<div class="muted small">En cas de défaite : −${money(o.stake)}</div>` : '<div class="muted small">Défaite : prime de 10 %</div>'}`}
+      <button class="btn" data-act="race" data-v="${pre}${i}">${pink ? 'METTRE MA VOITURE EN JEU ▶' : 'ACCEPTER LE CONTRAT ▶'}</button></div>`;
   },
 
   /* ---------------- CARROSSERIE (personnalisation visuelle) ---------------- */
@@ -185,7 +198,7 @@ const UI = {
   },
   jobStart() {
     this.screen = 'job';
-    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('result').classList.add('hidden');
+    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('racego').classList.add('hidden'); $('result').classList.add('hidden');
     $('racebtns').classList.remove('hidden'); $('nitrobtn').classList.add('hidden');
   },
   showJobResult(job, score, pay, record) {
@@ -229,7 +242,8 @@ const UI = {
         <canvas class="thumb" data-car="${id}" data-color="${c.color}" data-look='${JSON.stringify(lookOf(c))}' width="300" height="116"></canvas>
         <div class="muted">${ENGINES[c.engine].name} · ${Math.round(s2.hp)} ch</div>
         ${best ? `<div class="muted">Record 400 m : <b>${best.toFixed(2)} s</b></div>` : ''}
-        <button class="btn ${id === cs.id ? 'off' : ''}" data-act="selcar" data-v="${id}">${id === cs.id ? 'EN SERVICE' : 'CONDUIRE'}</button></div>`;
+        <button class="btn ${id === cs.id ? 'off' : ''}" data-act="selcar" data-v="${id}">${id === cs.id ? 'EN SERVICE' : 'CONDUIRE'}</button>
+        ${Object.keys(Game.save.cars).length > 1 ? `<button class="btn small ghostbtn" data-act="sellcar" data-v="${id}">VENDRE · ${money(Game.carValue(c) * 0.6)}</button>` : ''}</div>`;
     }
     h += `</div><h3>Peinture (50 €)</h3><div class="paints">`;
     for (const p of PAINTS) h += `<button class="paint ${p === cs.color ? 'sel' : ''}" style="background:${p}" data-act="paint" data-v="${p}"></button>`;
@@ -376,14 +390,16 @@ const UI = {
   /* ---------------- COURSE ---------------- */
   raceStart() {
     this.screen = 'race';
-    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('result').classList.add('hidden');
+    $('panel').classList.add('hidden'); $('menu').classList.add('hidden'); $('homecard').classList.add('hidden'); $('racego').classList.add('hidden'); $('result').classList.add('hidden');
     $('racebtns').classList.remove('hidden');
     $('nitrobtn').classList.toggle('hidden', !Race.plSpec.nitro);
   },
   showResult(res) {
     const o = Race.opp, r = $('result');
     r.classList.remove('hidden'); $('racebtns').classList.add('hidden');
-    const lines = (res.lines || []).map(([l, v]) => `<div class="pl"><span>${l}</span><b class="${v >= 0 ? 'gold' : 'bad'}">${v >= 0 ? '+' : '−'} ${money(Math.abs(v))}</b></div>`).join('');
+    const lines = (res.lines || []).map(([l, v, k]) => k === 'car' ? `<div class="pl"><span class="good">${l}</span><b class="good">AU GARAGE</b></div>` :
+      k === 'lost' ? `<div class="pl"><span class="bad">${l}</span><b class="bad">TITRE CÉDÉ</b></div>` : k === 'info' ? `<div class="pl"><span class="muted">${l}</span><b></b></div>` :
+      `<div class="pl"><span>${l}</span><b class="${v >= 0 ? 'gold' : 'bad'}">${v >= 0 ? '+' : '−'} ${money(Math.abs(v))}</b></div>`).join('');
     const again = o.kind === 'ladder' ? `<button class="btn" data-act="race" data-v="l${o.idx}">REJOUER</button>` : `<button class="btn" data-act="go" data-v="races">NOUVEAUX CONTRATS</button>`;
     r.innerHTML = `<div class="rbox ${res.win ? 'win' : 'lose'}"><div class="eyebrow">${o.kind === 'ladder' ? 'LÉGENDE DE LA VILLE' : 'CONTRAT'}</div>
       <h2>${res.win ? 'VICTOIRE' : 'DÉFAITE'}</h2>

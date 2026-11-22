@@ -305,3 +305,27 @@ h3{font-size:24px;color:var(--ac)}
 .bs-cart>div:first-child{display:flex;justify-content:space-between;align-items:baseline}
 .bs-actions{justify-content:flex-end}
 @media(max-width:980px){.bs{grid-template-columns:1fr}.bs-left{position:static}.bs-cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* série de victoires + courses au titre */
+.streak{display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:10px 16px;clip-path:var(--cut-s);background:linear-gradient(90deg,rgba(255,120,30,.16),rgba(5,9,20,.8));box-shadow:inset 0 0 0 1px rgba(255,150,40,.35)}
+.streak b{font-family:var(--hd);font-size:24px;font-style:italic;letter-spacing:1px;color:#ffb347}
+.flames{display:flex;gap:4px}.flames i{width:12px;height:22px;transform:skewX(-14deg);background:rgba(255,255,255,.08)}
+.flames i.on{background:linear-gradient(180deg,#ffe15a,#ff7a1a 60%,#ff2b2b);box-shadow:0 0 10px rgba(255,120,30,.8)}
+.contract.c-pink{box-shadow:inset 0 0 0 2px var(--ac2),inset 0 0 50px rgba(255,43,214,.15)!important}
+.contract.c-pink::before{background:repeating-linear-gradient(90deg,var(--ac2) 0 12px,#111 12px 24px)!important}
+.contract.c-pink .btn{background:linear-gradient(180deg,#ff8bf0,#ff2bd6 50%,#a0108a);color:#fff}
+
+/* onglet courses au titre */
+.pinkhead{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding:12px 16px;clip-path:var(--cut-s);background:linear-gradient(90deg,rgba(255,43,214,.18),rgba(5,9,20,.85));box-shadow:inset 0 0 0 1px rgba(255,43,214,.45)}
+.pinkhead>b{font-family:var(--hd);font-size:28px;font-style:italic;letter-spacing:1px;color:#ff7ae6}
+/* bouton COURSES façon ligne d'arrivée, en bas à droite de l'accueil */
+#racego{position:absolute;right:max(16px,calc(50% - min(50vw,100dvh*8/9) + 18px));bottom:22px;display:flex;align-items:stretch;gap:0;padding:0;border:0;cursor:pointer;
+  transform:skewX(-12deg);clip-path:polygon(0 0,100% 0,100% 100%,0 100%);box-shadow:0 0 0 2px #fff,0 0 30px rgba(255,255,255,.25),0 14px 40px rgba(0,0,0,.6);transition:transform .15s,box-shadow .15s;z-index:3}
+#racego:hover{transform:skewX(-12deg) translateY(-4px) scale(1.03);box-shadow:0 0 0 2px #fff,0 0 44px rgba(25,230,255,.5),0 18px 50px rgba(0,0,0,.6)}
+#racego .rg-flag{width:74px;background:conic-gradient(#fff 0 25%,#0b0b0f 0 50%,#fff 0 75%,#0b0b0f 0) 0 0/18px 18px}
+#racego .rg-txt{display:flex;flex-direction:column;justify-content:center;padding:10px 22px 6px;background:linear-gradient(180deg,#14161e,#05060a);text-align:left}
+#racego .rg-txt small{font-family:var(--hd);font-size:15px;font-style:italic;letter-spacing:2px;color:var(--ac)}
+#racego .rg-txt b{font-family:var(--hd);font-size:56px;line-height:.8;font-style:italic;font-weight:700;letter-spacing:2px;color:#fff;text-shadow:0 0 18px rgba(255,255,255,.35)}
+#racego .rg-arrow{display:flex;align-items:center;padding:0 18px;font-size:28px;color:#04060c;background:conic-gradient(#fff 0 25%,#0b0b0f 0 50%,#fff 0 75%,#0b0b0f 0) 0 0/18px 18px;text-shadow:0 0 6px #fff}
+#racego .rg-arrow{color:transparent}
+#menu{top:44%}

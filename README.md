@@ -5,7 +5,7 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.5.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.6.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
 [![Voitures](https://img.shields.io/badge/voitures-13-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
@@ -78,6 +78,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 - 🔊 **Sons moteurs simulés physiquement** pour chaque moteur, sifflement de turbo, dump valve, pétarades.
 - 🎨 **Personnalisation visuelle** : 12 catégories, de la peinture nacrée au kit widebody.
 - 📜 **Contrats** générés selon ta voiture + 12 **légendes de la ville** à battre.
+- 🔥 **Séries de victoires** jusqu'à ×2,5 et 🏴 **courses au titre de propriété** : gagne la voiture de ton rival… ou perds la tienne.
 - 💼 **Petits boulots** : livraison de pizzas, station de lavage, serrage au couple.
 - 💾 **Sauvegarde automatique** dans le navigateur.
 
@@ -92,7 +93,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.5.0 « Garage de légende »** — 7 nouvelles voitures, atelier Carrosserie et nouvelle interface façon NFS.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.6.0 « Gros billets »** — séries de victoires, courses au titre de propriété, vente de voitures.
 
 ## 🙏 Crédits
 

@@ -4,6 +4,26 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 💸 v1.6.0 — « Gros billets » · 22 novembre 2026
+
+### 🔥 Série de victoires
+- Chaque victoire d'affilée multiplie tes gains : ×1,2 · ×1,4 · ×1,6… jusqu'à **×2,5**.
+- Une seule défaite et la série retombe à zéro. Jauge de flammes dans le menu Courses.
+
+### 🏴 Courses au titre de propriété (nouvel onglet)
+- Mets ta voiture en jeu contre celle d'un rival plus rapide : **le gagnant repart avec la voiture de l'autre**.
+- Voiture gagnée ajoutée à ton garage avec ses pièces et sa déco (ou titre revendu 70 % si tu l'as déjà).
+- 3 niveaux : Serré, Difficile, Extrême. Il faut au moins 2 voitures pour jouer.
+
+### 💰 Économie
+- Les récompenses grimpent plus fort avec la performance de ta voiture : les supercars rapportent enfin gros.
+- **Vente de voitures** au garage (60 % de leur valeur, pièces comprises).
+
+### 🏁 Accueil
+- Gros bouton **COURSES** façon ligne d'arrivée, en bas à droite.
+
+---
+
 ## 🚀 v1.5.0 — « Garage de légende » · 22 novembre 2026
 
 ### 🚗 7 nouvelles voitures (12 000 € → 1 000 000 €)

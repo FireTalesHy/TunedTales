@@ -162,7 +162,7 @@ const Race = {
   /* ---------------- rendu ---------------- */
   draw(ctx) {
     const cs = this.plCar, dP = this.pl.x, dA = this.ai.x;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(HD, 0, 0, HD, 0, 0);
     ctx.imageSmoothingEnabled = false;
     // ---- impression de vitesse : vibrations, caméra qui encaisse, flou de mouvement ----
     const v = this.pl.v, kv = clamp((v - 8) / 60, 0, 1), nitro = this.pl.nitroOn && this.pl.nitroLeft > 0;
@@ -174,7 +174,7 @@ const Race = {
     const blur = Math.round(kv * 22 + (nitro ? 14 : 0));
     if (blur > 2) {                                   // flou de mouvement : copies décalées du décor
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
-      for (let k = 1; k <= 3; k++) { ctx.globalAlpha = 0.28; ctx.drawImage(ctx.canvas, 0, 0, 960, 540, blur * k / 3, 0, 960, 540); }
+      for (let k = 1; k <= 3; k++) { ctx.globalAlpha = 0.28; ctx.drawImage(ctx.canvas, 0, 0, 960 * HD, 540 * HD, blur * k / 3 * HD, 0, 960 * HD, 540 * HD); }
       ctx.restore();
     }
     // la caméra « encaisse » l'accélération : la voiture recule un peu dans l'image puis revient
@@ -235,7 +235,7 @@ const Race = {
     }
     if (nitro) {                                       // coup de poing visuel de la nitro (aberration chromatique légère)
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.07;
-      ctx.drawImage(ctx.canvas, -4, 0); ctx.drawImage(ctx.canvas, 4, 0);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(ctx.canvas, -4 * HD, 0); ctx.drawImage(ctx.canvas, 4 * HD, 0);
       ctx.restore();
     }
     this.drawHud(ctx);

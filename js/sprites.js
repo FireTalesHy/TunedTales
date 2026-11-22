@@ -582,6 +582,25 @@ Buf.prototype.line = function (x0, y0, x1, y1, c, sil) {
 };
 
 const _bodyCache = {};
+/* ---------- rendu HD : agrandissement pixel-art EPX/Scale2x (diagonales lissées, 2x plus de pixels) ---------- */
+const HD = 2;
+function scale2x(src) {
+  const w = src.width, h = src.height, sd = new Uint32Array(src.getContext('2d').getImageData(0, 0, w, h).data.buffer);
+  const out = new ImageData(w * 2, h * 2), od = new Uint32Array(out.data.buffer), W = w * 2;
+  const at = (x, y) => sd[Math.min(h - 1, Math.max(0, y)) * w + Math.min(w - 1, Math.max(0, x))];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const P = sd[y * w + x], A = at(x, y - 1), B = at(x + 1, y), C = at(x - 1, y), D = at(x, y + 1);
+    let p1 = P, p2 = P, p3 = P, p4 = P;
+    if (C === A && C !== D && A !== B) p1 = A;
+    if (A === B && A !== C && B !== D) p2 = B;
+    if (D === C && D !== B && C !== A) p3 = C;
+    if (B === D && B !== A && D !== C) p4 = D;
+    const o = y * 2 * W + x * 2; od[o] = p1; od[o + 1] = p2; od[o + W] = p3; od[o + W + 1] = p4;
+  }
+  const c = document.createElement('canvas'); c.width = W; c.height = h * 2; c.getContext('2d').putImageData(out, 0, 0);
+  return c;
+}
+function getBodyHD(style, color, look) { const b = getBody(style, color, look); return b._hd || (b._hd = scale2x(b)); }
 function getBody(style, color, look) {
   if (PROFILES[style].livery) { color = PROFILES[style].livery; look = null; }   // livrée verrouillée
   const lk = lookOf({look});
@@ -892,7 +911,7 @@ function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color) {
 function drawCar(ctx, style, color, x, y, s, o) {
   o = o || {};
   if (PROFILES[style].livery) o = Object.assign({}, o, {look: null});
-  const p = PROFILES[style], lk = lookOf({look: o.look}), body = getBody(style, color, lk);
+  const p = PROFILES[style], lk = lookOf({look: o.look}), body = getBodyHD(style, color, lk);
   const lean = o.lean || 0, WS = lk.wheelSize || 0, r = p.wr + WS;
   const drop = Math.min(lk.height || 0, p.sill - 2 - (lk.kit >= 2 ? 4 : lk.kit ? 3 : 0));
   ctx.imageSmoothingEnabled = false;
@@ -906,7 +925,7 @@ function drawCar(ctx, style, color, x, y, s, o) {
   const fast = (o.speed || 0) > 45;
   for (const wx of p.wheels) {
     const wc = wheelSprite(p, o.wheelAng || 0, fast, lk);
-    ctx.drawImage(wc, x + (wx - r) * s, y - (2 * r + 1) * s, wc.width * s, wc.height * s);
+    ctx.drawImage(wc, x + (wx - r) * s, y - (2 * r + 1) * s, (2 * r + 1) * s, (2 * r + 1) * s);
   }
   ctx.restore();
 }
@@ -919,8 +938,8 @@ function wheelSprite(p, ang, fast, lk) {
   const n = 48, a = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2), k = fast ? 0 : Math.round(a / (Math.PI * 2) * n) % n;
   const key = [r, p.spokes || 6, lk.wheel, lk.wheelColor, fast ? 'f' : k].join(':');
   if (_wheelCache[key]) return _wheelCache[key];
-  const c = document.createElement('canvas'); c.width = c.height = 2 * r + 1;
-  drawWheel(c.getContext('2d'), r, r, r, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor);
+  const R = r * HD, c = document.createElement('canvas'); c.width = c.height = 2 * R + HD;   // roue rendue nativement en HD
+  drawWheel(c.getContext('2d'), R + HD / 2, R + HD / 2, R, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor);
   return (_wheelCache[key] = c);
 }
 

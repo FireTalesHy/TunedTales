@@ -37,7 +37,7 @@ const Jobs = {
     this['update_' + this.job.id](this.g, dt);
   },
   draw(ctx) {
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false;
+    ctx.setTransform(HD, 0, 0, HD, 0, 0); ctx.imageSmoothingEnabled = false;
     this['draw_' + this.job.id](ctx, this.g);
     // bandeau score / temps
     glassPanel(ctx, 16, 14, 250, 74);

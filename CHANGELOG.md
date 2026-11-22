@@ -4,6 +4,14 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🖥️ v1.12.0 — « Haute définition » · 22 novembre 2026
+
+- 🖼️ **Rendu du jeu doublé** : la scène passe de 960×540 à **1920×1080**. Compteurs, textes, HUD, néons et halos sont deux fois plus nets.
+- 🚗 **Toutes les voitures en HD** : les carrosseries sont agrandies avec un lissage pixel-art (EPX/Scale2x) qui adoucit les diagonales, et les **jantes sont redessinées nativement en double résolution** (branches, freins et lèvres plus fins).
+- 🔍 Vignettes de la concession / du garage, atelier carrosserie et banc de puissance également rendus en HD ; les vignettes s'ajustent pour que les grands véhicules (F1) ne soient plus coupés.
+
+---
+
 ## 🏆 v1.11.0 — « Légendes » · 22 novembre 2026
 
 Cinq légendes rejoignent la concession (29 véhicules) :

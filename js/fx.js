@@ -73,15 +73,15 @@ const FX = {
 /* reflet lumineux qui balaie la carrosserie (pour le garage et l'atelier) */
 const _sheenCv = document.createElement('canvas');
 function drawSheen(ctx, style, color, look, x, y, s, phase, strength) {
-  const p = PROFILES[style], lk = lookOf({look}), body = getBody(style, color, lk);
+  const p = PROFILES[style], lk = lookOf({look}), body = getBodyHD(style, color, lk);
   const drop = Math.min(lk.height || 0, p.sill - 2 - (lk.kit >= 2 ? 4 : lk.kit ? 3 : 0));
-  _sheenCv.width = p.L; _sheenCv.height = p.H;
+  _sheenCv.width = body.width; _sheenCv.height = body.height;
   const c = _sheenCv.getContext('2d');
-  c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, p.L, p.H); c.drawImage(body, 0, 0);
-  c.globalCompositeOperation = 'source-in';
+  c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, body.width, body.height); c.drawImage(body, 0, 0);
+  c.globalCompositeOperation = 'source-in'; c.setTransform(HD, 0, 0, HD, 0, 0);
   const cx = -p.L * 0.4 + phase * p.L * 1.8, g = c.createLinearGradient(cx - 30, 0, cx + 30, p.H);
   g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, `rgba(255,255,255,${strength || 0.5})`); g.addColorStop(1, 'rgba(255,255,255,0)');
-  c.fillStyle = g; c.fillRect(0, 0, p.L, p.H);
+  c.fillStyle = g; c.fillRect(0, 0, p.L, p.H); c.setTransform(1, 0, 0, 1, 0, 0);
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.imageSmoothingEnabled = false;
   ctx.drawImage(_sheenCv, x, y - (p.H - 1 - drop) * s, p.L * s, p.H * s); ctx.restore();
 }

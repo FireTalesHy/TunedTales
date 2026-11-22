@@ -58,7 +58,7 @@ const UI = {
     const cs = Game.car(), spec = specOf(cs), est = estimateBest(spec);
     const tab = this.raceTab;
     let h = `<div class="racehead">
-      <div class="you2"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" data-look='${JSON.stringify(lookOf(cs))}' width="300" height="116"></canvas>
+      <div class="you2"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" data-look='${JSON.stringify(lookOf(cs))}' width="600" height="232"></canvas>
         <div><div class="eyebrow">TA VOITURE</div><div class="big">${CARS[cs.id].name}</div>
         <div class="chips"><span class="chip">${ENGINES[cs.engine].name}</span><span class="chip">${Math.round(spec.hp)} ch</span><span class="chip">${fmt(spec.mass)} kg</span><span class="chip hl">400 m ≈ ${est.t400.toFixed(2)} s</span></div></div></div>
       <div class="howto"><b>Départ :</b> maintiens / relâche <kbd>ESPACE</kbd> (ou l'écran) pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
@@ -122,7 +122,7 @@ const UI = {
         const lo = Game.ladderOpp(idx), os = makeSpec(o.car, o.engine, o.parts), oe = estimateBest(os);
         h += `<div class="card ${isBoss ? 'boss' : ''} ${won ? 'done' : ''}">
           <div class="ctop">${isBoss ? '<span class="pill d-hard">👑 BOSS</span>' : '<span class="pill type">Membre</span>'}${won ? '<span class="good">✔ battu</span>' : ''}</div>
-          <canvas class="thumb" data-car="${o.car}" data-color="${lo.color}" data-look='${JSON.stringify(lo.look)}' width="300" height="116"></canvas>
+          <canvas class="thumb" data-car="${o.car}" data-color="${lo.color}" data-look='${JSON.stringify(lo.look)}' width="600" height="232"></canvas>
           <div class="ctitle">${o.name}</div><div class="muted">${o.tag}</div>
           <div class="kv"><span>Voiture</span><b>${CARS[o.car].name}</b></div>
           <div class="kv"><span>Puissance · 400 m</span><b>${Math.round(os.hp)} ch · ${oe.t400.toFixed(2)} s</b></div>
@@ -140,7 +140,7 @@ const UI = {
     const loss = c.drive === 'AWD' ? 0.80 : 0.85;
     r.classList.remove('hidden');
     r.innerHTML = `<div class="rbox dyno"><div class="eyebrow">BANC DE PUISSANCE · ${c.drive}</div><h2>${c.name}</h2>
-      <canvas id="dynocv" width="960" height="400"></canvas>
+      <canvas id="dynocv" width="1920" height="800"></canvas>
       <div class="rbtns"><button class="btn" data-act="dyno">↻ RELANCER</button><button class="btn ghostbtn" data-act="dyno-close">FERMER</button></div></div>`;
     const cv = $('dynocv'), ctx = cv.getContext('2d'), t0 = performance.now(), pts = [];
     const v = Sound.ready ? Sound.engine(cs.engine, cs.parts, {vol: 1}) : null; this._dynoV = v;
@@ -148,7 +148,7 @@ const UI = {
     let ang = 0, last = t0, best = {hp: 0, r: 0, tq: 0, tr: 0};
     const frame = now => {
       if (!$('dynocv')) return this.dynoStop();
-      const T = (now - t0) / 1000, dt = (now - last) / 1000; last = now;
+      const T = (now - t0) / 1000, dt = (now - last) / 1000; last = now; ctx.setTransform(HD, 0, 0, HD, 0, 0);
       let rpm, load = 1;
       if (T < 0.8) { rpm = 900; load = 0.1; } else if (T < 5.2) rpm = rMin + (rMax - rMin) * (T - 0.8) / 4.4; else if (T < 6.4) { rpm = rMax - (rMax - 900) * Math.min(1, (T - 5.2) / 1.2); load = 0.05; } else rpm = 900;
       if (v) Sound.update(v, rpm, load, false, false, sp.turbo ? Math.min(1, Math.max(0, (T - 1) / 1.2)) : null);
@@ -216,7 +216,7 @@ const UI = {
     const total = o.type === 'bet' ? o.reward + o.stake : o.reward, pink = o.type === 'pink';
     return `<div class="contract c-${o.diff} ${pink ? 'c-pink' : ''}">
       <div class="ctop"><span class="pill d-${o.diff}">${o.diffLabel}</span><span class="pill type">${T.icon} ${T.label}</span></div>
-      <div class="cstage"><canvas class="thumb big" data-car="${o.car}" data-color="${o.color}" data-look='${JSON.stringify(o.look || null)}' width="300" height="116"></canvas></div>
+      <div class="cstage"><canvas class="thumb big" data-car="${o.car}" data-color="${o.color}" data-look='${JSON.stringify(o.look || null)}' width="600" height="232"></canvas></div>
       <div class="cname"><b>${o.name}</b><span class="muted">${o.tag}</span></div>
       <div class="ccar">${CARS[o.car].name} <span class="muted">· ${ENGINES[o.engine].name}</span></div>
       <div class="chips">${mods}</div>
@@ -243,7 +243,7 @@ const UI = {
   rBody() {
     const cs = Game.car(), cur = lookOf(cs), dl = this.draftLook(), cat = this.bodyCat;
     const cats = [{id: 'color', name: 'Couleur', sub: 'Teinte de caisse'}].concat(VISUAL.map(v => ({id: v.id, name: v.name, sub: v.sub})));
-    let h = `<div class="bs"><div class="bs-left"><div class="bs-stage"><canvas id="bsview" width="900" height="370"></canvas>
+    let h = `<div class="bs"><div class="bs-left"><div class="bs-stage"><canvas id="bsview" width="1800" height="740"></canvas>
       <div class="bs-title"><span class="eyebrow">ATELIER CARROSSERIE</span><b>${CARS[cs.id].name}</b></div>
       <div class="bs-nav"><button class="btn small ghostbtn" data-act="tunecar" data-v="-1">◀ Voiture préc.</button><button class="btn small ghostbtn" data-act="tunecar" data-v="1">Voiture suiv. ▶</button></div></div>
       %%CART%%</div>
@@ -281,7 +281,7 @@ const UI = {
     t = t || performance.now() / 1000;
     const cv = $('bsview'); if (!cv) return;
     const ctx = cv.getContext('2d'), cs = Game.car(), st = CARS[cs.id].style, p = PROFILES[st], lk = this.draftLook(), col = this.draftColor();
-    ctx.imageSmoothingEnabled = false;
+    ctx.setTransform(HD, 0, 0, HD, 0, 0); ctx.imageSmoothingEnabled = false;
     const g = ctx.createLinearGradient(0, 0, 0, 370); g.addColorStop(0, '#05070f'); g.addColorStop(0.61, '#0d1630'); g.addColorStop(0.62, '#0a0f1f'); g.addColorStop(1, '#03050b');
     ctx.fillStyle = g; ctx.fillRect(0, 0, 900, 370);
     // projecteurs et grille au sol
@@ -337,7 +337,7 @@ const UI = {
     for (const id of CAR_IDS) {
       const c = CARS[id], own = Game.owns(id), sp = makeSpec(id, c.engine, {}), est = estimateBest(sp);
       h += `<div class="card ${own ? 'done' : ''}"><div class="ctitle">${c.name}</div>
-        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="300" height="116"></canvas>
+        <canvas class="thumb" data-car="${id}" data-color="${c.color}" width="600" height="232"></canvas>
         <div class="muted">${c.hint} · ${c.year}</div>
         <div class="kv"><span>Moteur</span><b>${ENGINES[c.engine].name}</b></div>
         <div class="kv"><span>Puissance</span><b>${Math.round(sp.hp)} ch</b></div>
@@ -360,7 +360,7 @@ const UI = {
       const c = Game.save.cars[id], s2 = specOf(c);
       const best = Game.save.best[id];
       h += `<div class="card ${id === cs.id ? 'sel' : ''}"><div class="ctitle">${CARS[id].name}</div>
-        <canvas class="thumb" data-car="${id}" data-color="${c.color}" data-look='${JSON.stringify(lookOf(c))}' width="300" height="116"></canvas>
+        <canvas class="thumb" data-car="${id}" data-color="${c.color}" data-look='${JSON.stringify(lookOf(c))}' width="600" height="232"></canvas>
         <div class="muted">${ENGINES[c.engine].name} · ${Math.round(s2.hp)} ch</div>
         ${best ? `<div class="muted">Record 400 m : <b>${best.toFixed(2)} s</b></div>` : ''}
         <button class="btn ${id === cs.id ? 'off' : ''}" data-act="selcar" data-v="${id}">${id === cs.id ? 'EN SERVICE' : 'CONDUIRE'}</button>
@@ -584,9 +584,11 @@ const UI = {
 function paintThumbs() {
   document.querySelectorAll('canvas.thumb').forEach(cv => {
     const ctx = cv.getContext('2d'), st = CARS[cv.dataset.car].style, p = PROFILES[st];
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    const y = cv.height - 10, x = Math.round((cv.width - p.L) / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+    const W = cv.width / HD, H = cv.height / HD, s = Math.min(1, (W - 12) / p.L);       // vignette rendue en HD
+    ctx.setTransform(HD, 0, 0, HD, 0, 0);
+    const y = H - 10, x = Math.round((W - p.L * s) / 2);
     let look = null; try { look = cv.dataset.look ? JSON.parse(cv.dataset.look) : null; } catch (e) {}
-    drawCar(ctx, st, cv.dataset.color, x, y, 1, {wheelAng: 0.4, look});
+    drawCar(ctx, st, cv.dataset.color, x, y, s, {wheelAng: 0.4, look});
   });
 }

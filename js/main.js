@@ -76,7 +76,7 @@ function buildGarageBG() {
 function drawGarage(ctx, t) {
   if (!garageBG) garageBG = buildGarageBG();
   const cs = Game.car(), c = CARS[cs.id], p = PROFILES[c.style];
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false;
+  ctx.setTransform(HD, 0, 0, HD, 0, 0); ctx.imageSmoothingEnabled = false;
   ctx.drawImage(garageBG, 0, 0);
   // enseigne néon
   const on = !(Math.sin(t * 2.1) > 0.96 && Math.random() < 0.6);

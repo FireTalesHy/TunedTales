@@ -4,6 +4,17 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## ✏️ v1.13.0 — « Trait fin » · 22 novembre 2026
+
+- 🖌️ **Véhicules dessinés deux fois plus finement** : les carrosseries ne sont plus agrandies mais **rastérisées nativement en double résolution**. Contours, tramage de la peinture, vitres, reflets, joints de portes, vinyles, kits, ailerons et sorties d'échappement gagnent en finesse.
+- 🚗 **Silhouettes corrigées** pour coller davantage aux vrais modèles :
+  - **Mazda RX-7 FD** : cabine bulle courte, ailes galbées, phares escamotables, feux ronds et aileron « arceau » d'origine (au lieu d'un gros aileron de berline).
+  - **Ford Mustang 2025** : fastback, poupe haute et verticale, nez « requin », feux à trois barres, évents de capot.
+  - **BMW M3 E46** : vraie malle de coupé, lunette arrière inclinée.
+  - **Ford Focus Mk1** : profil de compacte (et non plus de break), feux verticaux dans le montant arrière.
+
+---
+
 ## 🖥️ v1.12.0 — « Haute définition » · 22 novembre 2026
 
 - 🖼️ **Rendu du jeu doublé** : la scène passe de 960×540 à **1920×1080**. Compteurs, textes, HUD, néons et halos sont deux fois plus nets.

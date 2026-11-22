@@ -65,8 +65,8 @@ const PROFILES = {
 
   /* ---- BMW M3 E46 coupé : relevé sur photo de profil (Wikimedia Commons) ---- */
   m3: {L:269, wr:19, wheels:[52,224], sill:13, belt:54, spokes:10, bodyBumpers:true,
-    body:[[1,13],[0,15],[0,41],[3,54],[5,59],[8,61],[26,64],[42,67],[56,75],[76,81],[100,83],[136,82],[148,80],[188,52],[206,48],[246,44],[262,41],[268,33],[268,21],[264,13]],
-    glass:[[52,55],[54,68],[64,75],[80,77],[136,77],[150,73],[180,53]],
+    body:[[1,13],[0,15],[0,41],[3,54],[5,59],[8,62],[30,64],[50,66],[64,70],[82,79],[100,83],[136,82],[148,80],[188,52],[206,48],[246,44],[262,41],[268,33],[268,21],[264,13]],
+    glass:[[70,62],[82,74],[98,78],[136,78],[148,74],[178,56]],
     pillars:[[94,98]], doors:[92,183], handle:[95,47], mirror:160,
     hl:[[254,41],[266,39],[268,33],[256,32]],
     tl:[[1,43],[10,44],[10,54],[2,53]],
@@ -231,15 +231,15 @@ const PROFILES = {
       {t:'line',a:[84,30],b:[210,34],c:0.6}
     ]},
   /* ---- Ford Focus Mk1 : « New Edge », phares et feux triangulaires ---- */
-  focus: {L:250, wr:18, wheels:[40,196], sill:12, belt:58, spokes:5, bodyBumpers:true,
-    body:[[3,12],[0,22],[1,40],[2,58],[5,72],[10,82],[20,87],[40,89],[116,89],[132,87],[150,80],[172,66],[194,57],[218,52],[236,47],[246,40],[249,28],[247,16],[240,12]],
-    glass:[[18,60],[19,72],[24,80],[36,85],[116,85],[130,83],[146,77],[166,66],[182,60]],
-    pillars:[[60,66],[108,114]], doors:[62,110,184], handle:[116,55], mirror:172,
-    hl:[[206,55],[238,49],[244,43],[214,44]],
-    tl:[[1,48],[8,48],[14,74],[4,72]],
+  focus: {L:250, wr:18, wheels:[42,198], sill:12, belt:58, spokes:5, bodyBumpers:true,
+    body:[[3,12],[0,22],[0,42],[2,56],[6,66],[13,77],[22,84],[38,87],[90,88],[120,87],[140,83],[160,72],[184,58],[206,53],[228,48],[242,42],[248,32],[249,18],[243,12]],
+    glass:[[38,62],[36,72],[42,80],[52,83],[118,83],[136,80],[154,70],[172,60]],
+    pillars:[[58,66],[108,114]], doors:[62,112,184], handle:[118,54], mirror:174,
+    hl:[[214,51],[238,46],[244,40],[220,42]],
+    tl:[[1,48],[6,48],[16,76],[10,78],[3,62]],
     extra:[
-      {t:'poly',pts:[[228,20],[248,22],[248,30],[230,30]],c:[14,14,18]},
-      {t:'line',a:[50,36],b:[192,38],c:0.6},
+      {t:'poly',pts:[[232,18],[248,20],[248,30],[234,30]],c:[14,14,18]},
+      {t:'line',a:[50,36],b:[196,38],c:0.6},{t:'line',a:[178,60],b:[232,49],c:1.5},
       {t:'rect',x:0,h:15,w:5,hh:3,c:[200,204,212]}
     ]},
 
@@ -259,35 +259,37 @@ const PROFILES = {
     ]},
 
   /* ---- Mazda RX-7 FD : courbes rondes, nez plongeant, grand aileron arceau ---- */
-  rx7: {L:257, wr:19, wheels:[52,197], sill:10, belt:54, spokes:5, bodyBumpers:true,
-    body:[[5,10],[0,20],[0,34],[3,46],[10,54],[30,58],[54,62],[70,68],[88,73],[108,74],[128,73],[142,68],[162,56],[180,50],[206,46],[230,40],[248,32],[256,24],[254,14],[246,10]],
-    glass:[[66,56],[82,66],[100,71],[126,70],[140,65],[156,55]],
-    pillars:[[110,113]], doors:[74,162], handle:[82,50], mirror:150,
-    hl:[[236,32],[250,29],[252,25],[238,27]],
-    tl:[[1,40],[12,42],[12,48],[1,47]],
+  rx7: {L:258, wr:19, wheels:[56,202], sill:10, belt:52, spokes:5, bodyBumpers:true,
+    body:[[4,10],[0,18],[0,36],[3,48],[10,54],[30,56],[52,59],[72,65],[94,71],[116,74],[134,72],[150,65],[166,55],[180,50],[196,50],[210,52],[224,48],[240,40],[252,32],[257,24],[255,14],[248,10]],
+    glass:[[82,58],[98,67],[118,70],[132,68],[148,61],[160,54]],
+    pillars:[], doors:[90,166], handle:[98,46], mirror:156, noHandle:true,
+    hl:[[238,38],[251,32],[254,28],[241,33]],
+    tlRound:[6,46,4],
     extra:[
-      {t:'line',a:[226,41],b:[250,33],c:[20,20,24]},
-      {t:'rect',wing:1,x:12,h:56,w:3,hh:11,c:1.0},{t:'rect',wing:1,x:38,h:60,w:3,hh:7,c:1.0},
-      {t:'poly',wing:1,pts:[[4,66],[46,66],[46,69],[4,69]],c:1.05},{t:'line',wing:1,a:[4,69],b:[46,69],c:[236,238,244]},
-      {t:'poly',pts:[[230,12],[254,14],[255,22],[232,21]],c:[12,12,16]},
-      {t:'poly',pts:[[166,32],[174,33],[174,40],[166,39]],c:[12,12,16]},
-      {t:'line',a:[60,32],b:[194,34],c:0.6},
+      {t:'line',a:[230,44],b:[252,33],c:[20,20,24]},                                               // phares escamotables fermés
+      {t:'rect',wing:1,x:10,h:55,w:3,hh:8,c:1.0},{t:'rect',wing:1,x:30,h:57,w:3,hh:7,c:1.0},      // aileron « arceau » d'origine
+      {t:'poly',wing:1,pts:[[4,62],[40,63],[40,66],[6,65]],c:1.05},{t:'line',wing:1,a:[5,65],b:[39,66],c:[236,238,244]},
+      {t:'poly',pts:[[232,12],[255,14],[256,22],[234,21]],c:[12,12,16]},
+      {t:'poly',pts:[[170,30],[178,31],[178,38],[170,37]],c:[12,12,16]},                           // ouïe d'aile
+      {t:'line',a:[176,50],b:[226,47],c:1.5},{t:'line',a:[10,53],b:[52,58],c:1.5},                 // ailes galbées
+      {t:'line',a:[60,30],b:[196,32],c:0.6},
       {t:'rect',x:0,h:14,w:6,hh:3,c:[200,204,212]}
     ]},
 
   /* ---- Ford Mustang GT 2025 : capot long, fastback, feux à trois barres ---- */
-  mustang: {L:289, wr:21, wheels:[62,228], sill:12, belt:60, spokes:5, bodyBumpers:true,
-    body:[[6,12],[0,24],[0,44],[4,56],[14,60],[40,62],[60,66],[78,74],[98,80],[124,82],[146,80],[164,72],[186,62],[214,58],[252,55],[274,50],[286,42],[288,30],[285,16],[276,12]],
-    glass:[[80,62],[96,72],[112,77],[140,77],[156,72],[176,62]],
-    pillars:[[128,132]], doors:[100,186], handle:[108,56], mirror:176,
-    hl:[[252,54],[276,50],[282,44],[256,46]],
-    tl:[[1,50],[10,52],[10,60],[1,59]],
+  mustang: {L:289, wr:21, wheels:[62,228], sill:12, belt:62, spokes:5, bodyBumpers:true,
+    body:[[4,12],[0,24],[0,56],[2,62],[14,64],[40,66],[60,70],[80,76],[100,81],[124,83],[146,81],[164,73],[186,62],[214,59],[250,58],[274,57],[285,53],[288,44],[288,18],[280,12]],
+    glass:[[82,66],[98,74],[114,78],[140,78],[156,73],[176,63]],
+    pillars:[[128,132]], doors:[102,186], handle:[110,58], mirror:176,
+    hl:[[256,55],[280,53],[286,49],[262,50]],
+    tl:[[1,52],[9,52],[9,62],[1,61]],
     extra:[
-      {t:'rect',x:1,h:51,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:54,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:57,w:8,hh:1,c:[255,120,110]},
-      {t:'poly',wing:1,pts:[[8,61],[30,62],[30,64],[8,63]],c:0.9},
-      {t:'rect',x:222,h:57,w:14,hh:2,c:[12,12,16]},
-      {t:'poly',pts:[[262,16],[288,18],[288,40],[266,38]],c:[12,12,16]},
-      {t:'line',a:[70,34],b:[224,36],c:0.6},
+      {t:'rect',x:1,h:54,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:57,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:60,w:8,hh:1,c:[255,120,110]},   // feux à trois barres
+      {t:'poly',wing:1,pts:[[6,65],[30,66],[30,68],[6,67]],c:0.9},
+      {t:'rect',x:222,h:60,w:12,hh:2,c:[12,12,16]},{t:'rect',x:238,h:59,w:12,hh:2,c:[12,12,16]},  // évents de capot
+      {t:'poly',pts:[[276,22],[288,24],[288,44],[279,44]],c:[12,12,16]},                           // calandre « nez de requin »
+      {t:'rect',x:280,h:34,w:6,hh:2,c:[200,204,214]},
+      {t:'line',a:[16,58],b:[64,62],c:1.5},{t:'line',a:[70,36],b:[224,38],c:0.6},
       {t:'rect',x:0,h:15,w:6,hh:4,c:[200,204,212]},{t:'rect',x:8,h:15,w:6,hh:4,c:[200,204,212]}
     ]},
 
@@ -600,14 +602,27 @@ function scale2x(src) {
   const c = document.createElement('canvas'); c.width = W; c.height = h * 2; c.getContext('2d').putImageData(out, 0, 0);
   return c;
 }
-function getBodyHD(style, color, look) { const b = getBody(style, color, look); return b._hd || (b._hd = scale2x(b)); }
+function getBodyHD(style, color, look) { return getBody(style, color, look); }   // les carrosseries sont rastérisées nativement en HD
+const GYH = GY * HD;
+/* version HD d'un profil : toutes les coordonnées multipliées par HD */
+function hdProfile(p) {
+  if (p._hd) return p._hd;
+  const u = HD, S = a => a && a.map(q => [q[0] * u, q[1] * u]), m = v => v == null ? v : v * u;
+  return (p._hd = Object.assign({}, p, {
+    L: p.L * u, H: p.H * u, wr: p.wr * u, wheels: p.wheels.map(m), sill: p.sill * u, belt: p.belt * u, bottom: p.bottom * u, beltY: p.beltY * u,
+    body: S(p.body), glass: S(p.glass), soft: S(p.soft), hl: S(p.hl), tl: S(p.tl), pillars: S(p.pillars), doors: p.doors.map(m),
+    handle: S([p.handle])[0], mirror: p.mirror * u, hlRound: p.hlRound && p.hlRound.map(m), tlRound: p.tlRound && p.tlRound.map(m),
+    extra: p.extra.map(e => Object.assign({}, e, {pts: S(e.pts), a: e.a && [e.a[0] * u, e.a[1] * u], b: e.b && [e.b[0] * u, e.b[1] * u],
+      x: m(e.x), y: m(e.y), w: m(e.w), hh: m(e.hh), r: m(e.r)}))
+  }));
+}
 function getBody(style, color, look) {
   if (PROFILES[style].livery) { color = PROFILES[style].livery; look = null; }   // livrée verrouillée
   const lk = lookOf({look});
   const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize, lk.hood, lk.roof, lk.lights, lk.banner, lk.exhaustTip].join('|');
   if (_bodyCache[key]) return _bodyCache[key];
-  const p = PROFILES[style], b = new Buf(p.L, p.H), C = hexRgb(color);
-  const WS = lk.wheelSize || 0;
+  const u = HD, p = hdProfile(PROFILES[style]), b = new Buf(p.L, p.H), C = hexRgb(color), GY = GYH;   // rastérisation native en HD
+  const WS = (lk.wheelSize || 0) * u;
   const L = p.L, belt = p.beltY, bot = p.bottom;
   const topY = Math.min(...p.body.map(q => q[1]));
   const col = c => typeof c === 'number' ? tone(C, c) : c;
@@ -638,8 +653,8 @@ function getBody(style, color, look) {
   // 2) ailes bombées : reflet au-dessus de chaque roue
   for (const wx of p.wheels) {
     const cy = GY - p.wr;
-    for (let a = 0; a <= 180; a += 2) {
-      const t = a * Math.PI / 180, rr = p.wr + 8;
+    for (let a = 0; a <= 180; a += 1) {
+      const t = a * Math.PI / 180, rr = p.wr + 8 * u;
       const x = Math.round(wx - Math.cos(t) * rr), y = Math.round(cy - Math.sin(t) * rr);
       if (b.has(x, y) && y > belt) { b.px(x, y, tone(C, 1.5)); if (a % 6 === 0) b.px(x, y + 1, tone(C, 1.3)); }
     }
@@ -652,26 +667,26 @@ function getBody(style, color, look) {
     const hit = (x, y) => {
       const v = (y - belt) / hb;
       switch (lk.decal) {
-        case 'side': { const th = x > L * 0.72 ? 0.16 * (1 - (x - L * 0.72) / (L * 0.3)) : 0.16; return x > 8 && x < L - 8 && Math.abs(v - 0.5) < th / 2 ? 1 : 0; }
-        case 'stripes': return x > 6 && x < L - 6 && ((v > 0.26 && v < 0.31) || (v > 0.36 && v < 0.41)) ? 1 : 0;
-        case 'checker': return x > L * 0.08 && x < L * 0.92 && v > 0.55 && v < 0.82 && ((Math.floor(x / 5) + Math.floor(y / 5)) & 1) ? 1 : 0;
+        case 'side': { const th = x > L * 0.72 ? 0.16 * (1 - (x - L * 0.72) / (L * 0.3)) : 0.16; return x > 8 * u && x < L - 8 * u && Math.abs(v - 0.5) < th / 2 ? 1 : 0; }
+        case 'stripes': return x > 6 * u && x < L - 6 * u && ((v > 0.26 && v < 0.31) || (v > 0.36 && v < 0.41)) ? 1 : 0;
+        case 'checker': return x > L * 0.08 && x < L * 0.92 && v > 0.55 && v < 0.82 && ((Math.floor(x / (5 * u)) + Math.floor(y / (5 * u))) & 1) ? 1 : 0;
         case 'flames': {
           if (x < L * 0.3) return 0;
-          const u = (x - L * 0.3) / (L * 0.7), amp = hb * 0.36 * Math.pow(u, 0.7), dy = Math.abs(y - (belt + hb * 0.55));
-          const edge = amp * (0.55 + 0.45 * Math.sin(x * 0.32 + y * 0.18));
-          return dy < edge ? (dy < edge * 0.45 && u > 0.35 ? 2 : 1) : 0;
+          const uu = (x - L * 0.3) / (L * 0.7), amp = hb * 0.36 * Math.pow(uu, 0.7), dy = Math.abs(y - (belt + hb * 0.55));
+          const edge = amp * (0.55 + 0.45 * Math.sin((x * 0.32 + y * 0.18) / u));
+          return dy < edge ? (dy < edge * 0.45 && uu > 0.35 ? 2 : 1) : 0;
         }
-        case 'tribal': { const yc = belt + hb * (0.45 + 0.22 * Math.sin(x * 0.045)), th = 1.2 + 3.2 * Math.abs(Math.sin(x * 0.09)); return x > 10 && x < L - 10 && Math.abs(y - yc) < th ? 1 : 0; }
+        case 'tribal': { const yc = belt + hb * (0.45 + 0.22 * Math.sin(x * 0.045 / u)), th = (1.2 + 3.2 * Math.abs(Math.sin(x * 0.09 / u))) * u; return x > 10 * u && x < L - 10 * u && Math.abs(y - yc) < th ? 1 : 0; }
         case 'number': {
           const d2 = (x - dcx) * (x - dcx) + (y - dcy) * (y - dcy);
           if (d2 > dr * dr) return 0;
-          const gx = Math.floor((x - dcx + 3) / 2), gy = Math.floor((y - dcy + 5) / 2);
+          const gx = Math.floor((x - dcx + 3 * u) / (2 * u)), gy = Math.floor((y - dcy + 5 * u) / (2 * u));
           return gx >= 0 && gx < 3 && gy >= 0 && gy < 5 && digit[gy][gx] === '1' ? 2 : 1;
         }
       }
       return 0;
     };
-    for (let y = belt + 1; y < bot - 3; y++) for (let x = 0; x < L; x++) {
+    for (let y = belt + 1; y < bot - 3 * u; y++) for (let x = 0; x < L; x++) {
       if (!b.sil[y * L + x]) continue;
       const h = hit(x, y); if (!h) continue;
       const base = h === 2 ? (lk.decal === 'flames' ? [255, 206, 60] : lum > 128 ? [16, 16, 20] : [244, 244, 248]) : D;
@@ -681,15 +696,15 @@ function getBody(style, color, look) {
   // capot et toit (carbone, ouïes, écope)
   const gxs = p.glass.map(q => q[0]), gx0 = Math.min(...gxs), gx1 = Math.max(...gxs);
   const topAtB = x => { for (let y = 0; y < p.H; y++) if (inPoly(p.body, x + .5, y + .5)) return y; return bot; };
-  const carbon = (x, y) => ((x >> 1) + (y >> 1)) & 1 ? [36, 38, 46] : [20, 21, 26];
+  const carbon = (x, y) => ((x >> 2) + (y >> 2)) & 1 ? [36, 38, 46] : [20, 21, 26];
   if (!p.open && (lk.hood === 'carbon' || lk.hood === 'carbonvent')) {
-    for (let x = gx1 + 3; x < L - 10; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 5 && y < bot - 8; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
+    for (let x = gx1 + 3 * u; x < L - 10 * u; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 5 * u && y < bot - 8 * u; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
   }
   if (!p.open && (lk.hood === 'vent' || lk.hood === 'carbonvent')) {
-    for (let k = 0; k < 3; k++) { const vx = gx1 + 14 + k * 11; if (vx > L - 20) break; const ty = topAtB(vx + 3); b.rect(vx, ty + 1, 7, 2, [8, 8, 12]); b.rect(vx, ty + 3, 7, 1, tone(C, 1.4)); }
+    for (let k = 0; k < 3; k++) { const vx = gx1 + (14 + k * 11) * u; if (vx > L - 20 * u) break; const ty = topAtB(vx + 3 * u); b.rect(vx, ty + u, 7 * u, 2 * u, [8, 8, 12]); b.rect(vx, ty + 3 * u, 7 * u, u, tone(C, 1.4)); }
   }
   if (!p.open && lk.roof === 'carbon') {
-    for (let x = gx0 + 3; x < gx1 - 3; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 3; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
+    for (let x = gx0 + 3 * u; x < gx1 - 3 * u; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 3 * u; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
   }
   // lignes de caractère / ombres sous le bouclier
   for (const e of p.extra) if (e.t === 'line' && typeof e.c === 'number') {
@@ -711,7 +726,7 @@ function getBody(style, color, look) {
     if (edge) { b.px(x, y, tone(C, 0.3), true); continue; }
     const u = (y - gTop) / Math.max(1, gBot - gTop);
     let c = [24 + 56 * u, 40 + 78 * u, 62 + 88 * u];
-    const d = (x * 1.0 + y * 1.7) % 46;
+    const d = ((x + y * 1.7) / u) % 46;
     if (d < 5) c = c.map(v => v + 46); else if (d < 9) c = c.map(v => v + 18);
     if (p.soft === undefined && u > 0.55 && ((x * 7 + y * 3) % 23) < 2) c = c.map(v => v - 14);
     const n = bay(x, y) * 8, tf = [1, 0.6, 0.34][lk.tint || 0]; b.px(x, y, [c[0] * tf + n, c[1] * tf + n, c[2] * tf + n], true);
@@ -720,7 +735,7 @@ function getBody(style, color, look) {
   if (lk.banner !== 'none' && !p.open) {
     const BC = {black: [14, 14, 18], white: [236, 238, 244], red: [200, 28, 36], blue: [30, 90, 220]}[lk.banner];
     for (let x = 0; x < L; x++) { let first = -1; for (let y = gTop; y <= gBot; y++) if (gm(x, y)) { first = y; break; }
-      if (first < 0) continue; for (let y = first + 1; y <= first + 3; y++) if (gm(x, y) && gm(x, y + 1)) b.px(x, y, BC); }
+      if (first < 0) continue; for (let y = first + 1; y <= first + 3 * u; y++) if (gm(x, y) && gm(x, y + 1)) b.px(x, y, BC); }
   }
   // appuis-tête (silhouettes dans l'habitacle)
   if (!p.soft) {
@@ -732,19 +747,19 @@ function getBody(style, color, look) {
 
   // 4) portes, poignées, bas de caisse
   const seam = tone(C, 0.42);
-  for (const dx of p.doors) for (let y = belt + 2; y < bot - 6; y++) if (b.has(dx, y)) { b.px(dx, y, seam); b.px(dx + 1, y, tone(C, 1.4)); }
-  if (!p.noHandle) { b.rect(p.handle[0], p.handle[1], 10, 2, [210, 214, 222]); b.rect(p.handle[0], p.handle[1] + 2, 10, 1, tone(C, 0.5)); }
-  const sk0 = p.wheels[0] + p.wr + 8, sk1 = p.wheels[1] - p.wr - 8;
-  if (!p.noSkirt) { b.rect(sk0, bot - 5, sk1 - sk0, 5, (x, y) => tone(C, 0.32 + bay(x, y) * 0.05), true); b.rect(sk0, bot - 6, sk1 - sk0, 1, tone(C, 0.8)); }
+  for (const dx of p.doors) for (let y = belt + 2 * u; y < bot - 6 * u; y++) if (b.has(dx, y)) { b.px(dx, y, seam); b.px(dx + 1, y, tone(C, 1.4)); }
+  if (!p.noHandle) { b.rect(p.handle[0], p.handle[1], 10 * u, 2 * u, [210, 214, 222]); b.rect(p.handle[0], p.handle[1] + 2 * u, 10 * u, u, tone(C, 0.5)); }
+  const sk0 = p.wheels[0] + p.wr + 8 * u, sk1 = p.wheels[1] - p.wr - 8 * u;
+  if (!p.noSkirt) { b.rect(sk0, bot - 5 * u, sk1 - sk0, 5 * u, (x, y) => tone(C, 0.32 + bay(x, y) * 0.05), true); b.rect(sk0, bot - 6 * u, sk1 - sk0, u, tone(C, 0.8)); }
   if (!p.bodyBumpers) {
-    b.rect(L - 28, bot - 12, 27, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
-    b.rect(1, bot - 12, 25, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
-    for (let i = 0; i < 9; i++) b.rect(L - 25 + i * 3, bot - 8, 1, 4, [6, 6, 10]);
+    b.rect(L - 28 * u, bot - 12 * u, 27 * u, 12 * u, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
+    b.rect(u, bot - 12 * u, 25 * u, 12 * u, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
+    for (let i = 0; i < 9; i++) b.rect(L - (25 - i * 3) * u, bot - 8 * u, u, 4 * u, [6, 6, 10]);
   }
   // rétroviseur
-  const mx = p.mirror, my = belt - 4;
-  if (!p.noMirror) b.poly([[mx, my], [mx + 12, my], [mx + 14, my + 4], [mx + 10, my + 9], [mx + 1, my + 9]], (x, y) => tone(C, 0.8 + bay(x, y) * 0.1 + (my + 4 - y) * 0.02), true);
-  if (!p.noMirror) { b.rect(mx + 2, my + 1, 8, 1, tone(C, 1.8)); b.rect(mx + 12, my + 2, 2, 2, [20, 20, 26]); }
+  const mx = p.mirror, my = belt - 4 * u;
+  if (!p.noMirror) b.poly([[mx, my], [mx + 12 * u, my], [mx + 14 * u, my + 4 * u], [mx + 10 * u, my + 9 * u], [mx + u, my + 9 * u]], (x, y) => tone(C, 0.8 + bay(x, y) * 0.1 + (my + 4 * u - y) * 0.02 / u), true);
+  if (!p.noMirror) { b.rect(mx + 2 * u, my + u, 8 * u, u, tone(C, 1.8)); b.rect(mx + 12 * u, my + 2 * u, 2 * u, 2 * u, [20, 20, 26]); }
 
   // 5) feux
   const HLC = lk.lights === 'xenon' ? [214, 232, 255] : [226, 228, 214];
@@ -752,22 +767,22 @@ function getBody(style, color, look) {
   else if (p.hlRound) {
     const [cx, cy, r] = p.hlRound;
     b.poly(p.hl, [24, 24, 30], true);
-    b.disc(cx, cy, r + 2, [18, 18, 24], true); b.disc(cx, cy, r, (x, y) => ((x - cx) + (y - cy) < -2 ? [252, 252, 244] : [226, 224, 186]), true);
-    b.disc(cx, cy, r * 0.45, [255, 214, 90]); b.px(cx - 3, cy - 3, [255, 255, 255]);
+    b.disc(cx, cy, r + 2 * u, [18, 18, 24], true); b.disc(cx, cy, r, (x, y) => ((x - cx) + (y - cy) < -2 * u ? [252, 252, 244] : [226, 224, 186]), true);
+    b.disc(cx, cy, r * 0.45, [255, 214, 90]); b.px(cx - 3 * u, cy - 3 * u, [255, 255, 255]);
   } else {
     b.poly(p.hl, (x, y) => (x + y) % 6 === 0 ? [255, 255, 255] : HLC, true);
     for (let i = 0; i < p.hl.length; i++) { const q = p.hl[i], n = p.hl[(i + 1) % p.hl.length]; b.line(q[0], q[1], n[0], n[1], [28, 28, 34]); }
     let cx = 0, cy = 0; for (const q of p.hl) { cx += q[0]; cy += q[1]; } cx = Math.round(cx / p.hl.length); cy = Math.round(cy / p.hl.length);
-    b.disc(cx, cy, 5, [60, 64, 76]); b.disc(cx, cy, 3, lk.lights === 'xenon' ? [200, 225, 255] : [255, 232, 140]); b.px(cx - 1, cy - 1, [255, 255, 255]);
-    b.rect(L - 5, p.hl[3][1] - 1, 4, 5, [255, 170, 40]);
+    b.disc(cx, cy, 5 * u, [60, 64, 76]); b.disc(cx, cy, 3 * u, lk.lights === 'xenon' ? [200, 225, 255] : [255, 232, 140]); b.rect(cx - u, cy - u, u, u, [255, 255, 255]);
+    b.rect(L - 5 * u, p.hl[3][1] - u, 4 * u, 5 * u, [255, 170, 40]);
   }
   if (p.tlRound) {
     const [cx, cy, r] = p.tlRound;
-    b.disc(cx, cy, r + 1.5, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true);
+    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true);
     b.disc(cx, cy, r * 0.45, [255, 150, 140]);
-    b.poly([[1, cy - 8], [18, cy - 8], [18, cy + 8], [1, cy + 8]], (x, y) => !b.has(x, y) || b.sil[y * L + x] ? [30, 10, 12] : [30, 10, 12], true);
-    b.disc(cx, cy, r + 1.5, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true); b.disc(cx, cy, r * 0.45, [255, 170, 160]);
-    b.disc(cx + 10, cy, r - 1, (x, y) => (x + y) % 4 ? [200, 24, 30] : [240, 90, 84], true);
+    b.poly([[u, cy - 8 * u], [18 * u, cy - 8 * u], [18 * u, cy + 8 * u], [u, cy + 8 * u]], (x, y) => !b.has(x, y) || b.sil[y * L + x] ? [30, 10, 12] : [30, 10, 12], true);
+    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true); b.disc(cx, cy, r * 0.45, [255, 170, 160]);
+    b.disc(cx + 10 * u, cy, r - u, (x, y) => (x + y) % 4 ? [200, 24, 30] : [240, 90, 84], true);
   } else {
     b.poly(p.tl, (x, y) => (x + y) % 5 === 0 ? [255, 96, 84] : [200, 24, 30], true);
     const t0 = p.tl[0]; b.line(t0[0], t0[1], p.tl[1][0], p.tl[1][1], [255, 150, 130]);
@@ -778,7 +793,7 @@ function getBody(style, color, look) {
   }
   if (!p.noLights && lk.lights === 'angel') {
     let cx = 0, cy = 0; for (const q of p.hl) { cx += q[0]; cy += q[1]; } cx = cx / p.hl.length; cy = cy / p.hl.length;
-    for (let a = 0; a < 360; a += 15) { const t = a * Math.PI / 180; b.px(Math.round(cx + Math.cos(t) * 4.5), Math.round(cy + Math.sin(t) * 3), [140, 236, 255]); }
+    for (let a = 0; a < 360; a += 15) { const t = a * Math.PI / 180; b.px(Math.round(cx + Math.cos(t) * 4.5 * u), Math.round(cy + Math.sin(t) * 3 * u), [140, 236, 255]); }
   }
 
   // 6) accessoires propres à chaque voiture
@@ -789,66 +804,66 @@ function getBody(style, color, look) {
       b.poly(e.pts, (x, y) => e.clip && !b.sil[y * L + x] ? null : e.sh ? paint(base, x, y) : base, true);
     }
     else if (e.t === 'poly') b.poly(e.pts, col(e.c), true);
-    else if (e.t === 'rect') b.rect(e.x, e.y - e.hh + 1, e.w, e.hh, typeof e.c === 'number' ? ((x, y) => tone(C, e.c + bay(x, y) * 0.05)) : e.c, true);
+    else if (e.t === 'rect') b.rect(e.x, e.y - e.hh + u, e.w, e.hh, typeof e.c === 'number' ? ((x, y) => tone(C, e.c + bay(x, y) * 0.05)) : e.c, true);
     else if (e.t === 'disc') b.disc(e.x, e.y, e.r, col(e.c), true);
-    else if (e.t === 'line' && typeof e.c !== 'number') b.line(e.a[0], e.a[1], e.b[0], e.b[1], e.c, true);
+    else if (e.t === 'line' && typeof e.c !== 'number') for (let k = 0; k < u; k++) b.line(e.a[0], e.a[1] + k, e.b[0], e.b[1] + k, e.c, true);
   }
 
   // 6b) aileron
   if (lk.spoiler && SPOILER_MOUNT[style] && !p.open) {
-    const [x0, x1, mode] = SPOILER_MOUNT[style], carb = (x, y) => [24 + bay(x, y) * 10, 25 + bay(x, y) * 10, 30 + bay(x, y) * 10];
+    const [x0, x1, mode] = SPOILER_MOUNT[style].map(v => typeof v === 'number' ? v * u : v), carb = (x, y) => [24 + bay(x, y) * 10, 25 + bay(x, y) * 10, 30 + bay(x, y) * 10];
     const topAt = x => { for (let y = 0; y < p.H; y++) if (inPoly(p.body, x + .5, y + .5)) return y; return bot; };
     const roof = mode === 'roof';
     if (lk.spoiler === 1) {
-      const ty = topAt(x0 + 2);
-      b.poly([[x0 - 2, ty - (roof ? 3 : 4)], [x0 + 16, ty - 1], [x0 + 16, ty + 2], [x0, ty + 2]], (x, y) => paint(C, x, y), true);
+      const ty = topAt(x0 + 2 * u);
+      b.poly([[x0 - 2 * u, ty - (roof ? 3 : 4) * u], [x0 + 16 * u, ty - u], [x0 + 16 * u, ty + 2 * u], [x0, ty + 2 * u]], (x, y) => paint(C, x, y), true);
     } else {
-      const big = lk.spoiler === 3, deck = Math.min(topAt(x0 + 6), topAt(x1 - 6));
-      const py = Math.max(2, deck - (roof ? (big ? 8 : 5) : (big ? 18 : 11))), px0 = x0 - (big ? 4 : 2), px1 = x1 + (big ? 6 : 2);
-      for (const sx of [x0 + 6, x1 - 8]) { b.rect(sx, py + 2, 2, topAt(sx) - py - 1, carb, true); if (big) b.rect(sx - 2, py - 1, 5, 1, carb, true); }
-      b.rect(px0, py, px1 - px0, 3, carb, true); b.rect(px0, py, px1 - px0, 1, [120, 124, 136], true);
-      const eh = big ? 10 : 7; b.rect(px0, py - 2, 2, eh, carb, true); b.rect(px1 - 2, py - 2, 2, eh, carb, true);
+      const big = lk.spoiler === 3, deck = Math.min(topAt(x0 + 6 * u), topAt(x1 - 6 * u));
+      const py = Math.max(2 * u, deck - (roof ? (big ? 8 : 5) : (big ? 18 : 11)) * u), px0 = x0 - (big ? 4 : 2) * u, px1 = x1 + (big ? 6 : 2) * u;
+      for (const sx of [x0 + 6 * u, x1 - 8 * u]) { b.rect(sx, py + 2 * u, 2 * u, topAt(sx) - py - u, carb, true); if (big) b.rect(sx - 2 * u, py - u, 5 * u, u, carb, true); }
+      b.rect(px0, py, px1 - px0, 3 * u, carb, true); b.rect(px0, py, px1 - px0, u, [120, 124, 136], true);
+      const eh = (big ? 10 : 7) * u; b.rect(px0, py - 2 * u, 2 * u, eh, carb, true); b.rect(px1 - 2 * u, py - 2 * u, 2 * u, eh, carb, true);
     }
   }
   // 6c) sorties d'échappement
-  const chrome = (x, y) => (y & 1) ? [228, 232, 240] : [176, 182, 194];
-  if (lk.exhaustTip === 'twin') { b.rect(0, bot - 6, 10, 5, chrome, true); b.rect(0, bot - 5, 3, 3, [10, 10, 12]); }
-  else if (lk.exhaustTip === 'quad') { b.rect(0, bot - 5, 9, 4, chrome, true); b.rect(0, bot - 10, 9, 4, chrome, true); b.rect(0, bot - 4, 2, 2, [10, 10, 12]); b.rect(0, bot - 9, 2, 2, [10, 10, 12]); }
-  else if (lk.exhaustTip === 'center') { b.rect(0, bot - 8, 12, 7, chrome, true); b.rect(0, bot - 7, 4, 5, [10, 10, 12]); }
-  else if (lk.exhaustTip === 'side') { const sx = p.wheels[0] + p.wr + 8; b.rect(sx, bot - 1, 12, 4, chrome, true); b.rect(sx, bot, 3, 2, [10, 10, 12]); }
+  const chrome = (x, y) => ((y >> 1) & 1) ? [228, 232, 240] : [176, 182, 194];
+  if (lk.exhaustTip === 'twin') { b.rect(0, bot - 6 * u, 10 * u, 5 * u, chrome, true); b.rect(0, bot - 5 * u, 3 * u, 3 * u, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'quad') { b.rect(0, bot - 5 * u, 9 * u, 4 * u, chrome, true); b.rect(0, bot - 10 * u, 9 * u, 4 * u, chrome, true); b.rect(0, bot - 4 * u, 2 * u, 2 * u, [10, 10, 12]); b.rect(0, bot - 9 * u, 2 * u, 2 * u, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'center') { b.rect(0, bot - 8 * u, 12 * u, 7 * u, chrome, true); b.rect(0, bot - 7 * u, 4 * u, 5 * u, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'side') { const sx = p.wheels[0] + p.wr + 8 * u; b.rect(sx, bot - u, 12 * u, 4 * u, chrome, true); b.rect(sx, bot, 3 * u, 2 * u, [10, 10, 12]); }
   // écope de toit
   if (!p.open && lk.roof === 'scoop') {
     const cx = Math.round((gx0 + gx1) / 2), ty = topAtB(cx);
-    b.poly([[cx - 13, ty + 1], [cx - 8, ty - 5], [cx + 9, ty - 5], [cx + 12, ty + 1]], (x, y) => paint(C, x, y - 10), true);
-    b.rect(cx + 7, ty - 4, 4, 4, [8, 8, 12], true);
+    b.poly([[cx - 13 * u, ty + u], [cx - 8 * u, ty - 5 * u], [cx + 9 * u, ty - 5 * u], [cx + 12 * u, ty + u]], (x, y) => paint(C, x, y - 10 * u), true);
+    b.rect(cx + 7 * u, ty - 4 * u, 4 * u, 4 * u, [8, 8, 12], true);
   }
   // 7) passages de roues
   if (!p.noArch) for (const wx of p.wheels) {
     const cy = GY - p.wr - WS;
-    b.disc(wx, cy, p.wr + WS + 5, tone(C, 0.28), true, bot);
-    b.disc(wx, cy, p.wr + WS + 3.8, [8, 8, 12], true, bot);
+    b.disc(wx, cy, p.wr + WS + 5 * u, tone(C, 0.28), true, bot);
+    b.disc(wx, cy, p.wr + WS + 3.8 * u, [8, 8, 12], true, bot);
   }
   // 7b) kit carrosserie
   if (lk.kit && !p.open) {
     const carb = (x, y) => [22 + bay(x, y) * 10, 23 + bay(x, y) * 10, 28 + bay(x, y) * 10];
-    const sk0 = p.wheels[0] + p.wr + WS + 6, sk1 = p.wheels[1] - p.wr - WS - 6;
-    b.rect(sk0 - 2, bot + 1, sk1 - sk0 + 4, lk.kit >= 2 ? 3 : 2, lk.kit >= 2 ? carb : (x, y) => paint(C, x, y + 40), true);
-    b.rect(L - 30, bot + 1, 28, 2, carb, true);
+    const sk0 = p.wheels[0] + p.wr + WS + 6 * u, sk1 = p.wheels[1] - p.wr - WS - 6 * u;
+    b.rect(sk0 - 2 * u, bot + u, sk1 - sk0 + 4 * u, (lk.kit >= 2 ? 3 : 2) * u, lk.kit >= 2 ? carb : (x, y) => paint(C, x, y + 40 * u), true);
+    b.rect(L - 30 * u, bot + u, 28 * u, 2 * u, carb, true);
     if (lk.kit >= 2) {
-      b.rect(L - 36, bot + 3, 36, 1, carb, true);
-      b.poly([[L - 12, bot - 13], [L - 3, bot - 15], [L - 4, bot - 12]], carb, true);
-      b.poly([[L - 12, bot - 8], [L - 2, bot - 10], [L - 3, bot - 7]], carb, true);
-      for (let fx = 3; fx < 26; fx += 5) b.rect(fx, bot - 1, 2, 4, carb, true);
-      b.rect(1, bot + 1, 26, 1, carb, true);
+      b.rect(L - 36 * u, bot + 3 * u, 36 * u, u, carb, true);
+      b.poly([[L - 12 * u, bot - 13 * u], [L - 3 * u, bot - 15 * u], [L - 4 * u, bot - 12 * u]], carb, true);
+      b.poly([[L - 12 * u, bot - 8 * u], [L - 2 * u, bot - 10 * u], [L - 3 * u, bot - 7 * u]], carb, true);
+      for (let fx = 3; fx < 26; fx += 5) b.rect(fx * u, bot - u, 2 * u, 4 * u, carb, true);
+      b.rect(u, bot + u, 26 * u, u, carb, true);
     }
     if (lk.kit === 3) {
       for (const wx of p.wheels) {
-        const cy = GY - p.wr - WS, R0 = p.wr + WS + 5, R1 = R0 + 4;
+        const cy = GY - p.wr - WS, R0 = p.wr + WS + 5 * u, R1 = R0 + 4 * u;
         for (let y = cy - R1; y <= Math.min(bot, cy); y++) for (let x = wx - R1; x <= wx + R1; x++) {
           const d = Math.hypot(x + .5 - wx, y + .5 - cy);
-          if (d > R0 && d <= R1) b.px(x, y, d > R1 - 1 ? tone(C, 0.35) : paint(C, x, y - 6), true);
+          if (d > R0 && d <= R1) b.px(x, y, d > R1 - u ? tone(C, 0.35) : paint(C, x, y - 6 * u), true);
         }
-        for (let a = 15; a <= 165; a += 25) { const t = a * Math.PI / 180; b.px(Math.round(wx - Math.cos(t) * (R0 + 2)), Math.round(cy - Math.sin(t) * (R0 + 2)), [210, 214, 224]); }
+        for (let a = 15; a <= 165; a += 25) { const t = a * Math.PI / 180; b.disc(Math.round(wx - Math.cos(t) * (R0 + 2 * u)), Math.round(cy - Math.sin(t) * (R0 + 2 * u)), u * 0.8, [210, 214, 224]); }
       }
     }
   }

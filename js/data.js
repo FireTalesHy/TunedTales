@@ -32,7 +32,13 @@ const ENGINES = {
   gsx13: {name:'Hayabusa 1340',   kind:'4 cyl. moto',  hp:197, hpRpm:9500, tqRpm:7200, red:11000, mass:80, turbo:false, price:7000},
   viper8:{name:'Viper 8.0 V10',   kind:'V10 atmo',     hp:456, hpRpm:5200, tqRpm:3700, red:6000, mass:320, turbo:false, price:22000},
   m158:  {name:'AMG M158 6.0 V12 biturbo', kind:'V12 biturbo', hp:730, hpRpm:5800, tqRpm:2500, red:6500, mass:240, turbo:true, price:250000},
-  rs25:  {name:'Renault RS25 3.0 V10', kind:'V10 atmo F1', hp:900, hpRpm:18500, tqRpm:16000, red:19000, mass:95, turbo:false, price:2000000}
+  rs25:  {name:'Renault RS25 3.0 V10', kind:'V10 atmo F1', hp:900, hpRpm:18500, tqRpm:16000, red:19000, mass:95, turbo:false, price:2000000},
+  kr:    {name:'KR 1.8 16v',      kind:'4 cyl. atmo',  hp:139, hpRpm:6100, tqRpm:4600, red:7000, mass:125, turbo:false, price:2200},
+  g4age: {name:'4A-GE 1.6 16v',   kind:'4 cyl. atmo',  hp:130, hpRpm:6600, tqRpm:5200, red:7600, mass:110, turbo:false, price:3200},
+  hemi:  {name:'426 Hemi V8 7.0', kind:'V8 atmo',      hp:425, hpRpm:5000, tqRpm:4000, red:6200, mass:320, turbo:false, price:19000},
+  c30a:  {name:'C30A V6 VTEC',    kind:'V6 atmo',      hp:274, hpRpm:7100, tqRpm:5300, red:8000, mass:160, turbo:false, price:14000},
+  lv12:  {name:'V12 5.2 Quattrovalvole', kind:'V12 atmo', hp:455, hpRpm:7000, tqRpm:5200, red:7500, mass:235, turbo:false, price:90000},
+  w16:   {name:'W16 8.0 quad-turbo', kind:'W16 quadriturbo', hp:1500, hpRpm:6700, tqRpm:3000, red:6900, mass:450, turbo:true, price:900000}
 };
 
 // body = masse sans moteur ; frac = part du poids sur les roues motrices ; eff = rendement transmission
@@ -123,7 +129,25 @@ const CARS = {
            gears:[2.94,2.14,1.61,1.28,1.03,0.85,0.70], color:'#7d8fa8', style:'huayra', hint:'Œuvre d\'art en carbone-titane, V12 AMG'},
   r25:    {name:'Renault R25 F1',     year:2005, drive:'RWD', price:7500000, engine:'rs25', livery:true,
            body:435,  mu:1.85, frac:0.62, eff:0.93, r:0.33, cd:0.90, A:1.40, final:6.00,
-           gears:[2.60,2.10,1.75,1.50,1.32,1.18,1.07], color:'#2160c4', style:'r25', hint:'Championne du monde 2005 · livrée officielle'}
+           gears:[2.60,2.10,1.75,1.50,1.32,1.18,1.07], color:'#2160c4', style:'r25', hint:'Championne du monde 2005 · livrée officielle'},
+  golf2:  {name:'Volkswagen Golf GTI Mk2', year:1988, drive:'FWD', price:3500, engine:'kr',
+           body:835,  mu:0.95, frac:0.60, eff:0.90, r:0.29, cd:0.36, A:1.90, final:3.67,
+           gears:[3.45,2.12,1.44,1.13,0.89], color:'#2c4f8c', style:'golf2', hint:'La GTI qui a tout inventé'},
+  ae86:   {name:'Toyota AE86 Trueno',  year:1985, drive:'RWD', price:9000, engine:'g4age',
+           body:830,  mu:0.95, frac:0.55, eff:0.90, r:0.29, cd:0.38, A:1.85, final:4.30,
+           gears:[3.59,2.02,1.38,1.00,0.86], color:'#f2f2f2', style:'ae86', hint:'Livrée panda et 4A-GE qui chante'},
+  charger:{name:'Dodge Charger R/T 1970', year:1970, drive:'RWD', price:45000, engine:'hemi',
+           body:1380, mu:1.00, frac:0.55, eff:0.88, r:0.34, cd:0.45, A:2.30, final:3.23,
+           gears:[2.45,1.45,1.00], color:'#1a1a1f', style:'charger', hint:'Muscle car, Hemi et compresseur sur le capot'},
+  nsx:    {name:'Honda NSX (NA1)',     year:1991, drive:'RWD', price:70000, engine:'c30a',
+           body:1210, mu:1.12, frac:0.60, eff:0.91, r:0.32, cd:0.32, A:1.85, final:4.06,
+           gears:[3.07,1.96,1.43,1.13,0.91], color:'#c8102e', style:'nsx', hint:'La supercar mise au point par Senna'},
+  countach:{name:'Lamborghini Countach QV', year:1985, drive:'RWD', price:600000, engine:'lv12',
+           body:1255, mu:1.15, frac:0.60, eff:0.90, r:0.31, cd:0.42, A:1.80, final:4.09,
+           gears:[2.23,1.48,1.06,0.85,0.71], color:'#e8e8ea', style:'countach', hint:'Le poster de toute une génération'},
+  chiron: {name:'Bugatti Chiron',      year:2016, drive:'AWD', price:3500000, engine:'w16',
+           body:1545, mu:1.40, frac:0.92, eff:0.86, r:0.36, cd:0.36, A:2.10, final:3.60,
+           gears:[3.20,2.20,1.65,1.30,1.03,0.84,0.67], color:'#3a63c9', style:'chiron', hint:'1 500 ch, W16 et quatre turbos'}
 };
 const CAR_IDS = Object.keys(CARS).sort((a, b) => CARS[a].price - CARS[b].price);   // toujours par prix croissant
 const ENGINE_IDS = Object.keys(ENGINES).sort((a, b) => ENGINES[a].price - ENGINES[b].price);

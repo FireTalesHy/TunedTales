@@ -4,6 +4,21 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🏁 v1.14.0 — « Garage plein » · 22 novembre 2026
+
+Six voitures de plus (35 véhicules au total) :
+
+- 🔵 **Volkswagen Golf GTI Mk2** — 3 500 € · KR 1.8 16v, boucliers noirs et liseré rouge.
+- ⚪ **Toyota AE86 Trueno** — 9 000 € · 4A-GE, phares escamotables, livrée « panda » noir et blanc.
+- ⚫ **Dodge Charger R/T 1970** — 45 000 € · 426 Hemi, calandre noire, toit vinyle et **compresseur sur le capot**.
+- 🔴 **Honda NSX (NA1)** — 70 000 € · V6 VTEC, bulle vitrée à toit noir, aileron « pont ».
+- 🤍 **Lamborghini Countach QV** — 600 000 € · V12, prises d'air de toit, aileron en V.
+- 🔷 **Bugatti Chiron** — 3 500 000 € · W16 quadriturbo de 1 500 ch, deux tons et ligne en C chromée : ~2,8 s au 0-100, 9,8 s au 400 m.
+
+🛞 **Roues à l'échelle réelle** : chaque véhicule a désormais le diamètre de roue et la taille de jante de son vrai modèle (jantes 13" de la R25, 14" de la Twingo et de la Charger, 20-21" des hypercars…). Les jantes plus grandes achetées en carrosserie augmentent la taille de la jante, flanc plus fin.
+
+---
+
 ## ✏️ v1.13.0 — « Trait fin » · 22 novembre 2026
 
 - 🖌️ **Véhicules dessinés deux fois plus finement** : les carrosseries ne sont plus agrandies mais **rastérisées nativement en double résolution**. Contours, tramage de la peinture, vitres, reflets, joints de portes, vinyles, kits, ailerons et sorties d'échappement gagnent en finesse.

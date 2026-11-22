@@ -5,8 +5,8 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.13.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
-[![Voitures](https://img.shields.io/badge/véhicules-29-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
+[![Version](https://img.shields.io/badge/version-1.14.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Voitures](https://img.shields.io/badge/véhicules-35-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
 <img src="docs/screenshots/garage.png" alt="Le garage de Tuned Tales" width="860">
@@ -58,8 +58,10 @@ Tu débarques avec une **Twingo 2 de 75 ch** et 600 € en poche. Enchaîne les 
 | Renault Twingo 2 | D4F 1.2 · 75 ch | *offerte* |
 | Peugeot 205 GTI 1.9 | XU9JA 1.9 · 130 ch | 2 000 € |
 | Ford Focus Mk1 | Zetec 1.6 · 100 ch | 3 000 € |
+| Volkswagen Golf GTI Mk2 | KR 1.8 16v · 139 ch | 3 500 € |
 | Nissan Terrano II | TD27 turbo diesel · 125 ch | 5 000 € |
 | Renault Clio RS | F4R 2.0 · 197 ch | 6 500 € |
+| Toyota AE86 Trueno | 4A-GE 1.6 16v · 130 ch | 9 000 € |
 | Mazda MX-5 NB | BP 1.8 · 140 ch | 11 000 € |
 | Honda Civic Type R EP3 | K20A VTEC · 215 ch | 12 000 € |
 | 🏍️ Suzuki Hayabusa | 1340 4 cyl. moto · 197 ch | 16 000 € |
@@ -70,17 +72,21 @@ Tu débarques avec une **Twingo 2 de 75 ch** et 600 € en poche. Enchaîne les 
 | Toyota Supra A80 | 2JZ-GTE · 320 ch | 35 000 € |
 | Mazda RX-7 FD | 13B-REW rotatif · 280 ch | 40 000 € |
 | Mitsubishi Lancer Evo IX | 4G63T · 290 ch | 45 000 € |
+| Dodge Charger R/T 1970 | 426 Hemi V8 · 425 ch | 45 000 € |
 | Nissan Skyline R34 | RB26DETT · 300 ch | 50 000 € |
 | Dodge Viper GTS | 8.0 V10 · 456 ch | 55 000 € |
 | Ford Mustang GT 2025 | Coyote 5.0 V8 · 486 ch | 60 000 € |
+| Honda NSX (NA1) | C30A V6 VTEC · 274 ch | 70 000 € |
 | Lexus RC F | 2UR-GSE 5.0 V8 · 477 ch | 75 000 € |
 | Porsche 911 GT3 (997) | Mezger 3.6 · 415 ch | 120 000 € |
 | Lancia 037 Rally | 2.0 compresseur · 325 ch | 180 000 € |
 | Nissan GT-R R35 | VR38DETT · 485 ch | 250 000 € |
 | McLaren 720S | M840T V8 biturbo · 720 ch | 320 000 € |
 | Lamborghini Huracán | V10 5.2 · 610 ch | 450 000 € |
+| Lamborghini Countach QV | V12 5.2 · 455 ch | 600 000 € |
 | Lexus LFA | 1LR-GUE V10 · 560 ch | 1 000 000 € |
 | Pagani Huayra | AMG 6.0 V12 biturbo · 730 ch | 2 800 000 € |
+| Bugatti Chiron | W16 8.0 quadriturbo · 1 500 ch | 3 500 000 € |
 | Ferrari 250 Testa Rossa | Colombo V12 · 300 ch | 5 000 000 € |
 | 🔒 Renault R25 F1 (livrée officielle) | RS25 3.0 V10 · 900 ch | 7 500 000 € |
 | 👑 **Formule 1** | **V6 turbo hybride · 1 000 ch** | **10 000 000 €** |
@@ -112,7 +118,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.13.0 « Trait fin »** — véhicules dessinés nativement en double résolution, silhouettes corrigées.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.14.0 « Garage plein »** — 6 nouvelles voitures (Golf GTI Mk2, AE86, Charger 1970, NSX, Countach, Chiron) et roues à l'échelle réelle.
 
 ## 🙏 Crédits
 

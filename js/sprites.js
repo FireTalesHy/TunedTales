@@ -518,8 +518,113 @@ const PROFILES = {
       {t:'rect',x:70,h:12,w:140,hh:3,c:[24,24,30]},
       {t:'line',a:[214,20],b:[300,22],c:0.5},
       {t:'rect',x:1,h:31,w:4,hh:3,c:[255,40,40]}
+    ]},
+
+  /* ---- Volkswagen Golf GTI Mk2 : boîte carrée, gros montant C, boucliers noirs, liseré rouge ---- */
+  golf2: {L:239, wr:17, wheels:[42,191], sill:12, belt:52, spokes:8, bodyBumpers:true,
+    body:[[2,12],[0,22],[0,44],[3,54],[10,66],[18,76],[28,82],[42,84],[118,84],[128,82],[148,63],[156,54],[200,51],[226,50],[234,46],[238,38],[238,20],[234,12]],
+    glass:[[48,54],[46,72],[50,79],[118,79],[126,77],[150,54]],
+    pillars:[[94,100]], doors:[94,158], handle:[98,48], mirror:146,
+    hl:[[226,47],[237,46],[238,38],[227,39]], hlRound:[232,42,3.5],
+    tl:[[1,42],[7,42],[7,55],[1,55]],
+    extra:[
+      {t:'rect',x:0,h:12,w:22,hh:10,c:[26,26,30]},{t:'rect',x:218,h:12,w:21,hh:12,c:[26,26,30]},   // boucliers noirs
+      {t:'rect',x:46,h:30,w:142,hh:4,c:[26,26,30]},{t:'line',a:[46,32],b:[187,32],c:[200,30,40]},  // jonc + liseré GTI
+      {t:'poly',pts:[[226,28],[238,29],[238,37],[228,37]],c:[14,14,18]},{t:'line',a:[227,33],b:[238,33],c:[200,30,40]},
+      {t:'line',a:[20,50],b:[226,48],c:1.5},
+      {t:'rect',x:2,h:14,w:5,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Toyota AE86 Sprinter Trueno : phares escamotables, livrée panda ---- */
+  ae86: {L:252, wr:17, wheels:[59,203], sill:12, belt:56, spokes:8, bodyBumpers:true,
+    body:[[3,12],[0,20],[0,44],[2,54],[8,58],[24,60],[46,66],[66,74],[86,79],[120,80],[136,78],[158,64],[172,55],[200,52],[228,48],[246,40],[251,30],[251,16],[246,12]],
+    glass:[[62,61],[72,69],[90,75],[120,75],[134,73],[152,62],[160,57]],
+    pillars:[[104,108]], doors:[100,168], handle:[108,48], mirror:160,
+    hl:[[242,38],[250,36],[251,32],[243,33]],
+    tl:[[1,40],[10,42],[10,52],[1,51]],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[0,0],[252,0],[252,29],[0,29]],c:[24,24,28]},                   // bas de caisse noir « panda »
+      {t:'line',a:[0,30],b:[251,30],c:[200,40,40]},
+      {t:'line',a:[214,50],b:[246,41],c:[30,30,34]},                                               // capots de phares fermés
+      {t:'poly',wing:1,pts:[[18,62],[42,65],[42,67],[18,64]],c:0.9},
+      {t:'rect',x:2,h:14,w:5,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Dodge Charger R/T 1970 : calandre noire pleine largeur, toit vinyle, compresseur ---- */
+  charger: {L:317, wr:20, wheels:[75,253], sill:12, belt:60, spokes:5, bodyBumpers:true,
+    body:[[3,12],[0,22],[0,52],[3,58],[20,60],[60,62],[86,66],[104,78],[118,81],[164,81],[176,77],[200,62],[236,59],[290,58],[312,57],[316,52],[316,16],[310,12]],
+    glass:[[98,64],[112,76],[164,76],[172,73],[192,62]],
+    pillars:[[140,144]], doors:[142,206], handle:[148,52], mirror:194,
+    hl:[[308,48],[315,48],[315,44],[308,44]],
+    tl:[[1,42],[5,42],[5,55],[1,55]],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[96,72],[184,72],[184,90],[96,90]],c:[26,26,30]},               // toit vinyle
+      {t:'poly',pts:[[306,22],[317,22],[317,55],[306,55]],c:[12,12,16]},                          // calandre à phares cachés
+      {t:'rect',x:298,h:20,w:19,hh:3,c:[214,218,226]},{t:'rect',x:0,h:20,w:16,hh:3,c:[214,218,226]},   // pare-chocs chromés
+      {t:'poly',pts:[[236,59],[264,59],[262,71],[238,71]],c:[196,200,210]},                       // compresseur sur le capot
+      {t:'line',a:[238,64],b:[262,64],c:[120,126,138]},{t:'line',a:[238,67],b:[262,67],c:[120,126,138]},
+      {t:'poly',pts:[[240,71],[260,71],[258,77],[242,77]],c:[20,20,24]},
+      {t:'line',a:[60,42],b:[290,42],c:0.6},{t:'line',a:[204,56],b:[300,55],c:1.5}
+    ]},
+
+  /* ---- Honda NSX NA1 : bulle vitrée à toit noir, phares escamotables, aileron intégré ---- */
+  nsx: {L:264, wr:19, wheels:[48,200], sill:10, belt:50, spokes:5, bodyBumpers:true, noHandle:true,
+    body:[[3,12],[0,20],[0,40],[2,48],[8,52],[28,54],[60,56],[80,62],[100,68],[126,70],[142,68],[158,58],[176,48],[200,44],[226,40],[248,34],[260,26],[263,16],[258,12]],
+    glass:[[76,57],[92,64],[126,66],[140,64],[154,56],[166,48]],
+    pillars:[], doors:[100,170], handle:[104,46], mirror:158,
+    hl:[[240,36],[256,30],[259,27],[244,32]],
+    tl:[[1,40],[8,42],[8,48],[1,47]],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[70,64],[162,64],[162,80],[70,80]],c:[22,22,26]},               // toit noir
+      {t:'poly',wing:1,pts:[[2,55],[40,56],[40,59],[2,58]],c:1.0},{t:'line',wing:1,a:[2,58],b:[40,59],c:[236,238,244]},   // aileron « pont »
+      {t:'poly',pts:[[60,30],[88,32],[88,44],[66,42]],c:[14,14,18]},                              // prise d'air latérale
+      {t:'line',a:[226,41],b:[256,31],c:[30,30,34]},
+      {t:'line',a:[20,36],b:[200,34],c:0.6},
+      {t:'rect',x:4,h:14,w:6,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Lamborghini Countach QV : coin pur, prises d'air de toit, aileron en V ---- */
+  countach: {L:248, wr:18, wheels:[44,191], sill:10, belt:44, spokes:5, bodyBumpers:true, noHandle:true,
+    body:[[3,12],[0,20],[0,40],[2,48],[10,52],[40,55],[60,60],[96,62],[102,64],[132,64],[140,60],[170,44],[200,38],[226,33],[244,28],[248,22],[247,14],[242,12]],
+    glass:[[104,47],[106,60],[130,60],[136,57],[160,45]],
+    pillars:[], doors:[100,172], handle:[104,40], mirror:160,
+    hl:[[228,33],[241,29],[243,27],[230,31]],
+    tl:[[1,38],[8,40],[8,46],[1,45]],
+    extra:[
+      {t:'poly',pts:[[62,60],[96,62],[96,68],[68,68]],c:0.92},                                    // prises d'air de toit
+      {t:'poly',pts:[[90,63],[96,63],[96,67],[91,67]],c:[14,14,18]},
+      {t:'poly',pts:[[62,32],[96,36],[96,48],[70,46]],c:[14,14,18]},                              // ouïe latérale
+      {t:'poly',pts:[[150,34],[176,30],[176,35],[156,38]],c:[14,14,18]},                          // conduit NACA
+      {t:'rect',wing:1,x:22,h:55,w:3,hh:8,c:0.8},
+      {t:'poly',wing:1,pts:[[0,62],[36,64],[36,67],[2,65]],c:1.0},{t:'line',wing:1,a:[1,65],b:[35,67],c:[236,238,244]},
+      {t:'line',a:[14,40],b:[226,34],c:0.55},
+      {t:'rect',x:4,h:16,w:6,hh:3,c:[200,204,212]},{t:'rect',x:12,h:16,w:6,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Bugatti Chiron : deux tons, ligne en C chromée, calandre en fer à cheval ---- */
+  chiron: {L:273, wr:21, wheels:[48,211], sill:10, belt:52, spokes:10, bodyBumpers:true, noHandle:true,
+    body:[[4,12],[0,22],[0,46],[3,54],[14,56],[40,60],[64,66],[90,71],[118,73],[138,71],[156,62],[172,52],[196,49],[218,50],[238,46],[256,38],[268,30],[272,22],[270,12]],
+    glass:[[84,62],[98,68],[118,70],[136,68],[152,60],[162,54]],
+    pillars:[], doors:[98,168], handle:[104,46], mirror:156,
+    hl:[[246,40],[262,34],[266,30],[250,34]],
+    tl:[[1,44],[4,44],[4,52],[1,52]],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[0,0],[100,0],[92,26],[90,50],[100,80],[0,80]],c:[22,30,62]},     // partie arrière bleu nuit
+      {t:'line',a:[100,72],b:[90,52],c:[214,218,226]},{t:'line',a:[90,52],b:[92,28],c:[214,218,226]},   // ligne en C
+      {t:'line',a:[92,28],b:[110,16],c:[214,218,226]},{t:'line',a:[110,16],b:[160,14],c:[214,218,226]},
+      {t:'poly',pts:[[95,28],[108,22],[108,48],[97,46]],c:[12,12,16]},                            // prise d'air dans le C
+      {t:'poly',pts:[[262,16],[272,18],[272,30],[264,30]],c:[14,14,18]},{t:'line',a:[262,30],b:[272,31],c:[214,218,226]},
+      {t:'rect',x:4,h:14,w:30,hh:5,c:[18,18,22]},
+      {t:'line',a:[176,50],b:[238,46],c:1.5}
     ]}
 };
+/* tailles de roues réelles : [rayon total en px (60 px/m), diamètre de jante en pouces] */
+const WHEEL_REAL = {twingo: [17, 14], p205: [17.5, 15], focus: [18.5, 15], terrano: [22, 15], clio: [19, 17], mx5: [17.5, 15], civic: [18.5, 17],
+  busa: [19, 17], rcz: [20, 19], m3: [20, 18], s15: [19, 16], sti: [19, 17], supra: [19.5, 17], rx7: [19, 16], evo: [19.5, 17], skyline: [19.5, 18],
+  viper: [20, 18], mustang: [20.5, 19], rcf: [20, 19], gt3: [19.5, 19], l037: [19, 16], r35: [21.5, 20], mc720: [21, 20], huracan: [20.5, 20],
+  lfa: [21, 20], huayra: [21, 20], tr250: [21, 16], r25: [20, 13], f1: [21.5, 18],
+  golf2: [17.5, 14], ae86: [17.5, 14], charger: [20, 14], nsx: [19, 16], countach: [18.5, 15], chiron: [21.5, 21]};
+for (const k in WHEEL_REAL) { const p = PROFILES[k], [wr, rim] = WHEEL_REAL[k]; if (!p) continue; p.wr = wr; p.rimQ = rim * 0.0254 / (2 * wr / 60); }
 // convertit [x,h] -> [x,y] une fois
 for (const k in PROFILES) {
   const p = PROFILES[k]; p.H = SH;
@@ -884,20 +989,20 @@ function getBody(style, color, look) {
 }
 
 /* roue détaillée : bande de roulement, flanc, lèvre, jante (plusieurs modèles), disque + étrier rouge */
-function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color) {
+function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color, rimQ) {
+  const q = rimQ || 0.7;                                   // diamètre de jante / diamètre total du pneu
   const half = (nsp || 6) / 2, st = style || 'stock', base = hexRgb(WHEEL_COLORS[color] || WHEEL_COLORS.silver);
   const rgb = c => `rgb(${c.map(Math.round).join(',')})`;
   const light = rgb(tone(base, color === 'chrome' ? 1.15 : 1.1)), dark = rgb(tone(base, 0.72)), hub = rgb(tone(base, 0.45));
-  const lipIn = st === 'deep' ? 0.46 : 0.64;
+  const lipIn = st === 'deep' ? q * 0.66 : q * 0.915;
   for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
     const d = Math.sqrt((dx + .5) * (dx + .5) + (dy + .5) * (dy + .5));
     if (d > r) continue;
-    const f = d / r;
+    const F = d / r, f = F * 0.7 / q;                        // f : rayon normalisé sur la jante (0.70 = bord de jante)
     let c;
-    if (f > 0.86) c = f > 0.95 ? '#08080a' : ((dx + dy) & 1 ? '#17171c' : '#101014');
-    else if (f > 0.70) c = f > 0.78 ? '#2a2a32' : '#202026';
-    else if (f > lipIn) c = st === 'deep' ? ((dx - dy) % 5 === 0 ? '#ffffff' : '#dfe4ee') : '#e8ecf4';
-    else if (f > lipIn - 0.04) c = '#8a90a0';
+    if (F > q) { const t = (F - q) / (1 - q); c = t > 0.84 ? '#08080a' : t > 0.53 ? ((dx + dy) & 1 ? '#17171c' : '#101014') : t > 0.27 ? '#202026' : '#2a2a32'; }
+    else if (F > lipIn) c = st === 'deep' ? ((dx - dy) % 5 === 0 ? '#ffffff' : '#dfe4ee') : '#e8ecf4';
+    else if (F > lipIn - 0.04 * q / 0.7) c = '#8a90a0';
     else {
       const a = Math.atan2(dy + .5, dx + .5) - ang;
       let on;
@@ -951,10 +1056,10 @@ function wheelSprite(p, ang, fast, lk) {
   lk = lk || LOOK_DEFAULT;
   const r = p.wr + (lk.wheelSize || 0);
   const n = 48, a = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2), k = fast ? 0 : Math.round(a / (Math.PI * 2) * n) % n;
-  const key = [r, p.spokes || 6, lk.wheel, lk.wheelColor, fast ? 'f' : k].join(':');
+  const key = [r, p.rimQ, p.spokes || 6, lk.wheel, lk.wheelColor, fast ? 'f' : k].join(':');
   if (_wheelCache[key]) return _wheelCache[key];
   const R = r * HD, c = document.createElement('canvas'); c.width = c.height = 2 * R + HD;   // roue rendue nativement en HD
-  drawWheel(c.getContext('2d'), R + HD / 2, R + HD / 2, R, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor);
+  drawWheel(c.getContext('2d'), R + HD / 2, R + HD / 2, R, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor, Math.min(0.8, (p.rimQ || 0.7) + (lk.wheelSize || 0) * 0.035));
   return (_wheelCache[key] = c);
 }
 

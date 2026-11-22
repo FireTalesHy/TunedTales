@@ -33,7 +33,12 @@ const ENGINE_SOUND = {
   ls3:   {cyl: 8, intake: 140, exhaust: 140, extractor: 150, pipe: 170, ign: 0.02,  gIn: 0.25, gBlock: 0.3,  gOut: 0.38},
   xu9:   {cyl: 4, intake: 95,  exhaust: 95,  extractor: 85,  pipe: 130, ign: 0.016, gIn: 0.4,  gBlock: 0.35, gOut: 1.05},
   ej25:  {cyl: 4, intake: 120, exhaust: 125, extractor: 150, pipe: 160, ign: 0.019, gIn: 0.3,  gBlock: 0.4,  gOut: 0.95},
-  v10l:  {cyl: 10, intake: 65, exhaust: 65,  extractor: 60,  pipe: 95,  ign: 0.013, gIn: 0.45, gBlock: 0.25, gOut: 0.55}
+  v10l:  {cyl: 10, intake: 65, exhaust: 65,  extractor: 60,  pipe: 95,  ign: 0.013, gIn: 0.45, gBlock: 0.25, gOut: 0.55},
+  lamp:  {cyl: 4, intake: 80,  exhaust: 75,  extractor: 65,  pipe: 100, ign: 0.015, gIn: 0.6,  gBlock: 0.3,  gOut: 1.1},
+  gsx13: {cyl: 4, intake: 55,  exhaust: 55,  extractor: 50,  pipe: 80,  ign: 0.012, gIn: 0.5,  gBlock: 0.25, gOut: 1.1},
+  viper8:{cyl: 10, intake: 150, exhaust: 150, extractor: 160, pipe: 180, ign: 0.021, gIn: 0.25, gBlock: 0.35, gOut: 0.45},
+  m158:  {cyl: 12, intake: 110, exhaust: 110, extractor: 115, pipe: 150, ign: 0.017, gIn: 0.3,  gBlock: 0.3,  gOut: 0.38},
+  rs25:  {cyl: 10, intake: 35,  exhaust: 35,  extractor: 30,  pipe: 60,  ign: 0.009, gIn: 0.6,  gBlock: 0.2,  gOut: 0.6}
 };
 // variantes de silencieux testées stables (action 0.1) : moins d'éléments = son plus libre
 const MASTER_VOL = 0.8;

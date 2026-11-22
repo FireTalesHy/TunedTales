@@ -253,7 +253,9 @@ const UI = {
       h += `<button class="bs-cat ${c.id === cat ? 'on' : ''}" data-act="bcat" data-v="${c.id}"><b>${c.name}</b><small>${c.sub}</small>${changed ? '<i class="dot"></i>' : ''}</button>`;
     }
     h += `</nav><div class="bs-opts">`;
-    if (cat === 'color') {
+    if (CARS[cs.id].livery) {
+      h += `<div class="bs-locked">🔒 <b>LIVRÉE OFFICIELLE VERROUILLÉE</b><span>La ${CARS[cs.id].name} roule uniquement avec ses couleurs d'origine : ni peinture, ni kit, ni vinyle.</span></div>`;
+    } else if (cat === 'color') {
       for (const p of PAINTS) {
         const eq = p === cs.color, sel = p === this.draftColor();
         h += `<button class="bs-opt sw ${sel ? 'sel' : ''}" data-act="bopt" data-v="color|${p}"><span class="swatch" style="background:${p}"></span><span class="on">${eq ? 'ÉQUIPÉ' : '50 €'}</span></button>`;

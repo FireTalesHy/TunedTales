@@ -27,7 +27,12 @@ const ENGINES = {
   ls3:   {name:'LS3 V8 6.2',      kind:'V8 atmo',      hp:430, hpRpm:5900, tqRpm:4600, red:6600, mass:200, turbo:false, price:16000},
   xu9:   {name:'XU9JA 1.9 8v',    kind:'4 cyl. atmo',  hp:130, hpRpm:6000, tqRpm:4750, red:6600, mass:115, turbo:false, price:1600},
   ej25:  {name:'EJ257 2.5 boxer', kind:'4 cyl. à plat turbo', hp:280, hpRpm:6000, tqRpm:4000, red:7000, mass:160, turbo:true, price:9000},
-  v10l:  {name:'V10 5.2 FSI',     kind:'V10 atmo',     hp:610, hpRpm:8250, tqRpm:6500, red:8700, mass:200, turbo:false, price:120000}
+  v10l:  {name:'V10 5.2 FSI',     kind:'V10 atmo',     hp:610, hpRpm:8250, tqRpm:6500, red:8700, mass:200, turbo:false, price:120000},
+  lamp:  {name:'Abarth 2.0 Volumex', kind:'4 cyl. compresseur', hp:325, hpRpm:8000, tqRpm:5000, red:8600, mass:150, turbo:false, price:30000},
+  gsx13: {name:'Hayabusa 1340',   kind:'4 cyl. moto',  hp:197, hpRpm:9500, tqRpm:7200, red:11000, mass:80, turbo:false, price:7000},
+  viper8:{name:'Viper 8.0 V10',   kind:'V10 atmo',     hp:456, hpRpm:5200, tqRpm:3700, red:6000, mass:320, turbo:false, price:22000},
+  m158:  {name:'AMG M158 6.0 V12 biturbo', kind:'V12 biturbo', hp:730, hpRpm:5800, tqRpm:2500, red:6500, mass:240, turbo:true, price:250000},
+  rs25:  {name:'Renault RS25 3.0 V10', kind:'V10 atmo F1', hp:900, hpRpm:18500, tqRpm:16000, red:19000, mass:95, turbo:false, price:2000000}
 };
 
 // body = masse sans moteur ; frac = part du poids sur les roues motrices ; eff = rendement transmission
@@ -103,7 +108,22 @@ const CARS = {
            gears:[3.64,2.24,1.52,1.13,0.92,0.71], color:'#1d3f9a', style:'sti', hint:'Le boxer du rallye et ses jantes dorées'},
   huracan:{name:'Lamborghini Huracán', year:2015, drive:'AWD', price:450000, engine:'v10l',
            body:1250, mu:1.35, frac:0.92, eff:0.88, r:0.35, cd:0.31, A:1.95, final:3.94,
-           gears:[3.13,2.59,1.96,1.54,1.22,0.97,0.77], color:'#9bd41a', style:'huracan', hint:'V10 atmo, 4 roues motrices, du vert qui pique'}
+           gears:[3.13,2.59,1.96,1.54,1.22,0.97,0.77], color:'#9bd41a', style:'huracan', hint:'V10 atmo, 4 roues motrices, du vert qui pique'},
+  busa:   {name:'Suzuki Hayabusa',    year:2008, drive:'RWD', price:16000, engine:'gsx13', moto:true,
+           body:186,  mu:1.15, frac:0.92, eff:0.95, r:0.32, cd:0.60, A:0.60, final:3.75,
+           gears:[2.62,1.94,1.53,1.29,1.14,1.04], color:'#a7adb8', style:'busa', hint:'La moto de série la plus rapide de son époque'},
+  viper:  {name:'Dodge Viper GTS',    year:1997, drive:'RWD', price:55000, engine:'viper8',
+           body:1215, mu:1.22, frac:0.62, eff:0.90, r:0.34, cd:0.35, A:2.00, final:3.07,
+           gears:[2.66,1.78,1.30,1.00,0.74,0.50], color:'#1d3fa0', style:'viper', hint:'8 litres, 10 cylindres, zéro aide électronique'},
+  l037:   {name:'Lancia 037 Rally',   year:1983, drive:'RWD', price:180000, engine:'lamp',
+           body:810,  mu:1.15, frac:0.66, eff:0.91, r:0.31, cd:0.36, A:1.80, final:4.30,
+           gears:[2.25,1.58,1.19,0.94,0.76], color:'#f4f4f4', style:'l037', hint:'La dernière propulsion championne du monde des rallyes'},
+  huayra: {name:'Pagani Huayra',      year:2012, drive:'RWD', price:2800000, engine:'m158',
+           body:1110, mu:1.48, frac:0.66, eff:0.90, r:0.35, cd:0.31, A:1.90, final:3.36,
+           gears:[2.94,2.14,1.61,1.28,1.03,0.85,0.70], color:'#7d8fa8', style:'huayra', hint:'Œuvre d\'art en carbone-titane, V12 AMG'},
+  r25:    {name:'Renault R25 F1',     year:2005, drive:'RWD', price:7500000, engine:'rs25', livery:true,
+           body:435,  mu:1.85, frac:0.62, eff:0.93, r:0.33, cd:0.90, A:1.40, final:6.00,
+           gears:[2.60,2.10,1.75,1.50,1.32,1.18,1.07], color:'#2160c4', style:'r25', hint:'Championne du monde 2005 · livrée officielle'}
 };
 const CAR_IDS = Object.keys(CARS).sort((a, b) => CARS[a].price - CARS[b].price);   // toujours par prix croissant
 const ENGINE_IDS = Object.keys(ENGINES).sort((a, b) => ENGINES[a].price - ENGINES[b].price);

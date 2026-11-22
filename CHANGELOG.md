@@ -4,6 +4,19 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🏆 v1.11.0 — « Légendes » · 22 novembre 2026
+
+Cinq légendes rejoignent la concession (29 véhicules) :
+
+- 🏍️ **Suzuki Hayabusa** — 16 000 € · la première **moto** du jeu, avec pilote couché sur le réservoir. 197 ch pour 266 kg : ~3,1 s au 0-100.
+- 🐍 **Dodge Viper GTS** — 55 000 € · V10 8.0 de 456 ch, capot interminable, double bulle, échappements latéraux.
+- 🇮🇹 **Lancia 037 Rally** — 180 000 € · moteur central à compresseur, aileron de malle, **bandes Martini**.
+- 🌬️ **Pagani Huayra** — 2 800 000 € · V12 AMG biturbo de 730 ch, silhouette goutte d'eau, échappement central.
+- 🔒 **Renault R25 F1** — 7 500 000 € · la championne du monde 2005, V10 3.0 de 900 ch à 19 000 tr/min. **Livrée bleue et jaune officielle verrouillée** : ni peinture, ni kit, ni vinyle.
+- 🔊 5 nouveaux sons moteur simulés, 5 nouveaux moteurs à swapper ; compte-tours gradué de 2 en 2 au-delà de 14 000 tr/min.
+
+---
+
 ## 🚗 v1.10.0 — « Trois nouvelles caisses » · 22 novembre 2026
 
 Trois voitures de plus à la concession (24 au total), une par gamme de prix :

@@ -411,6 +411,111 @@ const PROFILES = {
       {t:'rect',x:2,h:12,w:34,hh:6,c:[18,18,22]},                                                // diffuseur
       {t:'rect',x:10,h:20,w:6,hh:4,c:[200,204,212]},{t:'rect',x:20,h:20,w:6,hh:4,c:[200,204,212]},
       {t:'line',a:[100,22],b:[200,20],c:0.5}
+    ]},
+
+  /* ---- Suzuki Hayabusa (2e génération) : carénage « bec », écopes latérales, pilote couché ---- */
+  busa: {L:138, wr:19, wheels:[24,113], sill:14, belt:50, spokes:6, bodyBumpers:true, open:true, noArch:true, noHandle:true, noMirror:true, noSkirt:true,
+    body:[[0,58],[1,64],[8,67],[26,62],[44,55],[54,56],[62,63],[76,67],[88,66],[96,68],[104,73],[110,73],[117,66],[125,60],[132,53],[137,47],[136,41],[129,39],[120,40],[108,34],[100,22],[94,14],[70,12],[60,16],[55,26],[47,40],[34,45],[18,48],[6,51],[1,54]],
+    glass:[[97,68],[104,74],[110,74],[105,68]],
+    pillars:[], doors:[], handle:[0,0], mirror:0,
+    hl:[[125,52],[133,48],[135,44],[127,46]],
+    tl:[[0,57],[3,57],[3,62],[0,62]],
+    extra:[
+      {t:'poly',pts:[[22,17],[64,24],[64,31],[24,22]],c:[44,46,54]},                              // bras oscillant
+      {t:'poly',pts:[[3,36],[42,23],[46,30],[7,43]],c:[196,200,210]},{t:'line',a:[4,41],b:[44,28],c:[140,146,158]},   // silencieux
+      {t:'poly',pts:[[2,36],[7,35],[9,42],[4,43]],c:[30,30,36]},
+      {t:'poly',pts:[[110,20],[116,20],[112,38],[106,38]],c:[70,72,82]},                          // fourche
+      {t:'poly',pts:[[100,38],[114,41],[127,35],[125,32],[112,37]],c:0.85},                       // garde-boue
+      {t:'poly',pts:[[86,32],[101,35],[99,48],[85,44]],c:[16,16,20]},                             // écopes latérales
+      {t:'line',a:[87,37],b:[100,39],c:[70,74,86]},{t:'line',a:[86,41],b:[99,43],c:[70,74,86]},
+      {t:'poly',pts:[[60,16],[94,14],[96,18],[62,20]],c:[24,24,28]},                              // sabot
+      {t:'line',a:[12,60],b:[44,54],c:0.6},{t:'line',a:[64,60],b:[92,64],c:1.6},
+      // pilote couché sur le réservoir
+      {t:'poly',pts:[[49,57],[82,48],[84,40],[66,27],[57,29],[71,41],[47,49]],c:[34,36,44]},      // jambe
+      {t:'poly',pts:[[57,29],[66,27],[68,23],[56,24]],c:[20,20,24]},                              // botte
+      {t:'poly',pts:[[42,57],[56,58],[86,71],[92,77],[86,84],[70,82],[44,70]],c:[40,44,56]},      // buste
+      {t:'line',a:[50,64],b:[86,79],c:[210,40,50]},
+      {t:'poly',pts:[[80,72],[86,77],[106,67],[103,63]],c:[34,36,44]},                            // bras
+      {t:'disc',x:93,h:80,r:7,c:[232,234,240]},{t:'poly',pts:[[94,77],[100,77],[100,82],[96,82]],c:[22,26,38]},   // casque
+      {t:'rect',x:0,h:52,w:4,hh:3,c:[230,230,236]}
+    ]},
+
+  /* ---- Dodge Viper GTS : capot interminable, double bulle, échappements latéraux ---- */
+  viper: {L:269, wr:20, wheels:[58,205], sill:11, belt:56, spokes:3, bodyBumpers:true, noHandle:true,
+    body:[[4,12],[0,20],[0,44],[2,54],[8,58],[30,58],[44,60],[62,66],[84,72],[110,72],[120,70],[146,56],[176,53],[200,56],[214,55],[236,48],[256,40],[266,32],[268,22],[264,12]],
+    glass:[[76,58],[88,68],[112,68],[118,66],[140,56]],
+    pillars:[], doors:[96,156], handle:[100,44], mirror:140,
+    hl:[[238,46],[256,40],[260,36],[242,40]],
+    tl:[[1,46],[9,47],[9,53],[1,52]],
+    extra:[
+      {t:'poly',pts:[[170,26],[194,30],[194,44],[176,40]],c:[14,14,18]},                          // ouïes d'aile
+      {t:'line',a:[174,31],b:[193,34],c:[60,64,74]},{t:'line',a:[176,36],b:[193,39],c:[60,64,74]},
+      {t:'rect',x:100,h:14,w:56,hh:5,c:[206,210,220]},{t:'rect',x:100,h:11,w:56,hh:1,c:[120,126,138]},   // échappements latéraux
+      {t:'rect',x:204,h:55,w:10,hh:2,c:[14,14,18]},{t:'rect',x:218,h:52,w:8,hh:2,c:[14,14,18]},   // évents de capot
+      {t:'poly',pts:[[244,14],[266,15],[267,26],[248,25]],c:[12,12,16]},
+      {t:'line',a:[30,60],b:[62,67],c:1.6},
+      {t:'line',a:[20,40],b:[230,38],c:0.55},
+      {t:'rect',x:0,h:15,w:6,hh:4,c:[200,204,212]}
+    ]},
+
+  /* ---- Lancia 037 Rally : coin à moteur central, aileron de malle, bandes Martini ---- */
+  l037: {L:235, wr:19, wheels:[38,184], sill:12, belt:54, spokes:8, bodyBumpers:true, noHandle:true,
+    body:[[3,12],[0,20],[0,46],[2,58],[3,66],[14,66],[22,62],[56,64],[86,73],[96,75],[130,75],[140,71],[160,54],[180,50],[206,44],[226,37],[234,31],[235,22],[230,12]],
+    glass:[[92,56],[96,71],[130,71],[138,67],[154,55]],
+    pillars:[], doors:[92,158], handle:[100,50], mirror:150,
+    hl:[[220,27],[233,27],[234,34],[221,34]], hlRound:[227,31,4],
+    tlRound:[7,48,4],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[0,39],[235,39],[235,42],[0,42]],c:[214,30,40]},                 // bandes Martini
+      {t:'poly',clip:1,sh:1,pts:[[0,42],[235,42],[235,45],[0,45]],c:[44,150,226]},
+      {t:'poly',clip:1,sh:1,pts:[[0,45],[235,45],[235,49],[0,49]],c:[22,36,104]},
+      {t:'poly',clip:1,sh:1,pts:[[150,49],[166,49],[196,64],[180,64]],c:[22,36,104]},
+      {t:'poly',clip:1,sh:1,pts:[[144,49],[150,49],[180,64],[174,64]],c:[44,150,226]},
+      {t:'line',a:[26,62],b:[84,72],c:[16,16,20]},{t:'line',a:[30,60],b:[84,69],c:[16,16,20]},  // lamelles du capot moteur
+      {t:'poly',pts:[[60,26],[90,28],[90,46],[66,44]],c:[14,14,18]},                              // prise d'air latérale
+      {t:'poly',pts:[[214,16],[234,17],[234,25],[216,25]],c:[14,14,18]},
+      {t:'rect',x:0,h:13,w:30,hh:3,c:[24,24,28]},
+      {t:'rect',x:4,h:20,w:6,hh:4,c:[200,204,212]}
+    ]},
+
+  /* ---- Pagani Huayra : goutte d'eau, portes papillon, rétros sur tiges ---- */
+  huayra: {L:276, wr:20, wheels:[50,216], sill:10, belt:48, spokes:14, bodyBumpers:true, noHandle:true,
+    body:[[6,12],[0,22],[0,40],[4,48],[20,52],[44,58],[70,64],[96,68],[124,70],[144,68],[160,62],[178,50],[200,46],[220,48],[240,42],[258,34],[270,26],[275,18],[270,12]],
+    glass:[[78,56],[96,63],[124,66],[142,64],[156,58],[168,50]],
+    pillars:[], doors:[98,176], handle:[110,46], mirror:160,
+    hl:[[236,42],[256,35],[262,31],[240,37]],
+    tlRound:[6,44,4],
+    extra:[
+      {t:'poly',pts:[[64,26],[96,28],[96,42],[74,40]],c:[14,14,18]},                              // prise d'air latérale
+      {t:'line',a:[68,31],b:[95,32],c:[56,60,70]},
+      {t:'rect',x:56,h:10,w:170,hh:5,c:[26,28,34]},
+      {t:'disc',x:3,h:30,r:4,c:[210,214,222]},{t:'disc',x:3,h:30,r:2,c:[20,20,24]},              // échappement central
+      {t:'rect',x:238,h:10,w:34,hh:3,c:[22,22,28]},
+      {t:'rect',x:4,h:12,w:34,hh:5,c:[22,22,28]},
+      {t:'line',a:[30,50],b:[96,64],c:1.5},{t:'line',a:[178,48],b:[240,40],c:1.5},
+      {t:'line',a:[100,24],b:[214,22],c:0.5}
+    ]},
+
+  /* ---- Renault R25 (2005) : monoplace championne du monde, livrée bleue et jaune verrouillée ---- */
+  r25: {L:336, wr:22, wheels:[62,276], sill:14, belt:52, spokes:6, bodyBumpers:true, open:true, noArch:true, noHandle:true, noMirror:true, noSkirt:true, noLights:true, noDoors:true, livery:'#2160c4',
+    body:[[24,18],[26,40],[60,48],[110,56],[140,64],[156,66],[166,60],[178,50],[204,42],[244,36],[290,32],[318,28],[332,24],[333,20],[300,20],[256,22],[214,18],[200,14],[150,12],[90,12],[60,14],[40,16]],
+    glass:[[168,57],[178,60],[184,55],[172,53]],
+    pillars:[], doors:[], handle:[0,0], mirror:0,
+    hl:[[2,28],[6,28],[6,32],[2,32]],
+    tl:[[2,28],[6,28],[6,32],[2,32]],
+    extra:[
+      {t:'poly',clip:1,sh:1,pts:[[0,30],[128,30],[150,70],[0,70]],c:[246,196,0]},                // capot moteur jaune
+      {t:'poly',clip:1,sh:1,pts:[[128,30],[134,30],[156,70],[150,70]],c:[244,244,248]},           // liseré blanc
+      {t:'poly',clip:1,sh:1,pts:[[290,10],[340,10],[340,40],[290,40]],c:[246,196,0]},             // bout du nez jaune
+      {t:'poly',pts:[[0,30],[24,30],[26,60],[0,60]],c:[22,52,140]},                               // dérive d'aileron arrière
+      {t:'poly',pts:[[0,55],[30,55],[30,60],[0,60]],c:[246,196,0]},{t:'rect',x:0,h:47,w:28,hh:3,c:[246,196,0]},
+      {t:'poly',pts:[[296,4],[336,4],[336,12],[300,12]],c:[22,52,140]},{t:'rect',x:300,h:10,w:36,hh:2,c:[246,196,0]},   // aileron avant
+      {t:'disc',x:173,h:60,r:5,c:[40,90,210]},{t:'rect',x:171,h:60,w:6,hh:2,c:[250,214,40]},     // casque bleu et jaune
+      {t:'disc',x:150,h:62,r:3,c:[10,10,14]},
+      {t:'poly',pts:[[186,26],[198,26],[198,38],[188,38]],c:[10,10,14]},
+      {t:'rect',x:70,h:12,w:140,hh:3,c:[24,24,30]},
+      {t:'line',a:[214,20],b:[300,22],c:0.5},
+      {t:'rect',x:1,h:31,w:4,hh:3,c:[255,40,40]}
     ]}
 };
 // convertit [x,h] -> [x,y] une fois
@@ -434,6 +539,7 @@ function tone(c, f) { return f <= 1 ? [c[0] * f, c[1] * f, c[2] * f] : [c[0] + (
 
 function Buf(L, H) { this.L = L; this.H = H; this.d = new Uint8ClampedArray(L * H * 4); this.sil = new Uint8Array(L * H); }
 Buf.prototype.px = function (x, y, c, sil) {
+  if (!c) return;
   x = Math.floor(x); y = Math.floor(y);
   if (x < 0 || y < 0 || x >= this.L || y >= this.H) return;
   const i = (y * this.L + x) * 4;
@@ -477,6 +583,7 @@ Buf.prototype.line = function (x0, y0, x1, y1, c, sil) {
 
 const _bodyCache = {};
 function getBody(style, color, look) {
+  if (PROFILES[style].livery) { color = PROFILES[style].livery; look = null; }   // livrée verrouillée
   const lk = lookOf({look});
   const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize, lk.hood, lk.roof, lk.lights, lk.banner, lk.exhaustTip].join('|');
   if (_bodyCache[key]) return _bodyCache[key];
@@ -658,7 +765,11 @@ function getBody(style, color, look) {
   // 6) accessoires propres à chaque voiture
   for (const e of p.extra) {
     if (e.wing && lk.spoiler) continue;                       // aileron d'origine remplacé
-    if (e.t === 'poly') b.poly(e.pts, col(e.c), true);
+    if (e.t === 'poly' && (e.clip || e.sh)) {                // aplat de livrée : ombré comme la carrosserie, limité à la silhouette
+      const base = typeof e.c === 'number' ? tone(C, e.c) : e.c;
+      b.poly(e.pts, (x, y) => e.clip && !b.sil[y * L + x] ? null : e.sh ? paint(base, x, y) : base, true);
+    }
+    else if (e.t === 'poly') b.poly(e.pts, col(e.c), true);
     else if (e.t === 'rect') b.rect(e.x, e.y - e.hh + 1, e.w, e.hh, typeof e.c === 'number' ? ((x, y) => tone(C, e.c + bay(x, y) * 0.05)) : e.c, true);
     else if (e.t === 'disc') b.disc(e.x, e.y, e.r, col(e.c), true);
     else if (e.t === 'line' && typeof e.c !== 'number') b.line(e.a[0], e.a[1], e.b[0], e.b[1], e.c, true);
@@ -780,6 +891,7 @@ function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color) {
 /* Dessine une voiture : x = arrière-gauche, y = sol, s = échelle (sprite) */
 function drawCar(ctx, style, color, x, y, s, o) {
   o = o || {};
+  if (PROFILES[style].livery) o = Object.assign({}, o, {look: null});
   const p = PROFILES[style], lk = lookOf({look: o.look}), body = getBody(style, color, lk);
   const lean = o.lean || 0, WS = lk.wheelSize || 0, r = p.wr + WS;
   const drop = Math.min(lk.height || 0, p.sill - 2 - (lk.kit >= 2 ? 4 : lk.kit ? 3 : 0));

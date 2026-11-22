@@ -270,7 +270,7 @@ const Race = {
     ctx.lineWidth = 4; ctx.strokeStyle = grd; ctx.beginPath(); ctx.arc(cx, cy, R - 10, a0, ang(rpm)); ctx.stroke();
     // graduations
     ctx.fillStyle = '#c9cdf0'; ctx.font = `600 13px ${UIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (let r = 0; r <= maxR; r += 1000) {
+    for (let r = 0; r <= maxR; r += (red > 14000 ? 2000 : 1000)) {
       const a = ang(r), c = Math.cos(a), si = Math.sin(a);
       ctx.strokeStyle = r >= red ? '#ff4a5a' : '#e8ebff'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(cx + c * (R - 20), cy + si * (R - 20)); ctx.lineTo(cx + c * (R - 13), cy + si * (R - 13)); ctx.stroke();

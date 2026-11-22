@@ -34,6 +34,7 @@ const Game = {
   lookPrice(cs, id, v) { return this.lookOwned(cs, id, v) ? 0 : VISUAL.find(x => x.id === id).opts.find(x => x.v === v).p; },
   applyLook(changes) {
     const cs = this.car(); let total = 0;
+    if (CARS[cs.id].livery) return false;                 // livrée officielle verrouillée
     for (const [id, v] of Object.entries(changes)) total += this.lookPrice(cs, id, v);
     if (this.save.money < total) return false;
     this.save.money -= total; cs.owned = cs.owned || []; cs.look = Object.assign(lookOf(cs), changes);
@@ -70,7 +71,7 @@ const Game = {
     this.save.engines.splice(i, 1, cs.engine);
     cs.engine = id; this.persist(); return true;
   },
-  paint(color) { const cs = this.car(); if (this.save.money < 50 && cs.color !== color) return false; if (cs.color !== color) this.save.money -= 50; cs.color = color; this.persist(); return true; },
+  paint(color) { const cs = this.car(); if (CARS[cs.id].livery) return false; if (this.save.money < 50 && cs.color !== color) return false; if (cs.color !== color) this.save.money -= 50; cs.color = color; this.persist(); return true; },
 
   oppColor(i) { return ['#d04040', '#40a0d0', '#d0a030', '#50b060', '#a050d0', '#e0e0e0', '#e07030', '#3050c0', '#e050a0', '#30c0b0', '#c0c030', '#181820'][i % 12]; },
   ladderOpp(i) { const c = CLANS.find(k => k.boss === i || k.members.includes(i)); return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), Math.min(1, i / 11)), clan: c && c.name, emblem: c && c.emblem, boss: !!c && c.boss === i}); },

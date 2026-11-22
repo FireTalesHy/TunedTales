@@ -5,8 +5,8 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.10.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
-[![Voitures](https://img.shields.io/badge/voitures-24-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
+[![Version](https://img.shields.io/badge/version-1.11.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Voitures](https://img.shields.io/badge/véhicules-29-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
 <img src="docs/screenshots/garage.png" alt="Le garage de Tuned Tales" width="860">
@@ -62,6 +62,7 @@ Tu débarques avec une **Twingo 2 de 75 ch** et 600 € en poche. Enchaîne les 
 | Renault Clio RS | F4R 2.0 · 197 ch | 6 500 € |
 | Mazda MX-5 NB | BP 1.8 · 140 ch | 11 000 € |
 | Honda Civic Type R EP3 | K20A VTEC · 215 ch | 12 000 € |
+| 🏍️ Suzuki Hayabusa | 1340 4 cyl. moto · 197 ch | 16 000 € |
 | Peugeot RCZ | 1.6 THP · 200 ch | 18 000 € |
 | BMW M3 E46 | S54 · 343 ch | 22 000 € |
 | Nissan Silvia S15 | SR20DET · 250 ch | 25 000 € |
@@ -70,14 +71,18 @@ Tu débarques avec une **Twingo 2 de 75 ch** et 600 € en poche. Enchaîne les 
 | Mazda RX-7 FD | 13B-REW rotatif · 280 ch | 40 000 € |
 | Mitsubishi Lancer Evo IX | 4G63T · 290 ch | 45 000 € |
 | Nissan Skyline R34 | RB26DETT · 300 ch | 50 000 € |
+| Dodge Viper GTS | 8.0 V10 · 456 ch | 55 000 € |
 | Ford Mustang GT 2025 | Coyote 5.0 V8 · 486 ch | 60 000 € |
 | Lexus RC F | 2UR-GSE 5.0 V8 · 477 ch | 75 000 € |
 | Porsche 911 GT3 (997) | Mezger 3.6 · 415 ch | 120 000 € |
+| Lancia 037 Rally | 2.0 compresseur · 325 ch | 180 000 € |
 | Nissan GT-R R35 | VR38DETT · 485 ch | 250 000 € |
 | McLaren 720S | M840T V8 biturbo · 720 ch | 320 000 € |
 | Lamborghini Huracán | V10 5.2 · 610 ch | 450 000 € |
 | Lexus LFA | 1LR-GUE V10 · 560 ch | 1 000 000 € |
+| Pagani Huayra | AMG 6.0 V12 biturbo · 730 ch | 2 800 000 € |
 | Ferrari 250 Testa Rossa | Colombo V12 · 300 ch | 5 000 000 € |
+| 🔒 Renault R25 F1 (livrée officielle) | RS25 3.0 V10 · 900 ch | 7 500 000 € |
 | 👑 **Formule 1** | **V6 turbo hybride · 1 000 ch** | **10 000 000 €** |
 
 Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2JZ, c'est possible).
@@ -107,7 +112,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.10.0 « Trois nouvelles caisses »** — Peugeot 205 GTI, Subaru Impreza WRX STI et Lamborghini Huracán.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.11.0 « Légendes »** — Lancia 037, Suzuki Hayabusa, Renault R25 F1 (livrée verrouillée), Pagani Huayra, Dodge Viper GTS.
 
 ## 🙏 Crédits
 

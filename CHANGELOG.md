@@ -4,6 +4,15 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 💨 v1.6.2 — Impression de vitesse · 22 novembre 2026
+- Flou de mouvement sur le décor, de plus en plus fort avec la vitesse.
+- La caméra « encaisse » l'accélération : la voiture recule dans l'image puis revient.
+- Vibrations, traînées de vitesse dans le ciel et au sol, poussières, vignette qui se resserre.
+- Nitro : coup de poing visuel (flou renforcé, aberration chromatique légère, teinte bleutée).
+- Souffle du vent qui monte avec la vitesse.
+
+---
+
 ## 🔧 v1.6.1 — Correctif d'affichage · 22 novembre 2026
 - Les fichiers du jeu sont versionnés : après une mise à jour, le navigateur recharge forcément la nouvelle interface (fini le bouton COURSES sans style et le menu décalé dus à l'ancienne feuille de style en cache).
 - Menus adaptés aux petits écrans (mobile en paysage, tablettes).

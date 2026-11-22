@@ -39,7 +39,7 @@ const Race = {
     Sound.resume();
     UI.raceStart();
   },
-  stop() { this.active = false; this.state = 'idle'; Sound.stopAll(); this.plV = this.aiV = null; },
+  stop() { this.active = false; this.state = 'idle'; Sound.stopAll(); Sound.wind(0); this.camLag = 0; this.plV = this.aiV = null; },
 
   setMsg(m, c) { this.msg = m; this.msgC = c || '#fff'; this.msgT = 1.4; },
 
@@ -125,6 +125,7 @@ const Race = {
 
   updateSound() {
     if (!Sound.ready) return;
+    Sound.wind(this.state === 'done' ? 0 : this.pl.v);
     if (!this.plV) this.plV = Sound.engine(this.plCar.engine, this.plCar.parts, {vol: 1});
     if (!this.aiV) this.aiV = Sound.engine(this.opp.engine, this.opp.parts, {vol: 0.3, distant: true});
     const s = this.pl, a = this.ai, sp = this.plSpec;
@@ -149,11 +150,22 @@ const Race = {
     const cs = this.plCar, dP = this.pl.x, dA = this.ai.x;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.imageSmoothingEnabled = false;
-    const sh = this.shake > 0 ? Math.round((Math.random() - 0.5) * this.shake * 2) : 0;
-    ctx.save(); ctx.translate(0, sh);
+    // ---- impression de vitesse : vibrations, caméra qui encaisse, flou de mouvement ----
+    const v = this.pl.v, kv = clamp((v - 8) / 60, 0, 1), nitro = this.pl.nitroOn && this.pl.nitroLeft > 0;
+    const vib = kv * 1.6 + (nitro ? 1.5 : 0);
+    const sh = Math.round((this.shake > 0 ? (Math.random() - 0.5) * this.shake * 2 : 0) + (Math.random() - 0.5) * vib * 2);
+    const shx = Math.round((Math.random() - 0.5) * vib);
+    ctx.save(); ctx.translate(shx, sh);
     drawEnvironment(ctx, dP, this.t);
-
-    const plX = 96, AIG = 200, PLG = 250;
+    const blur = Math.round(kv * 22 + (nitro ? 14 : 0));
+    if (blur > 2) {                                   // flou de mouvement : copies décalées du décor
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      for (let k = 1; k <= 3; k++) { ctx.globalAlpha = 0.28; ctx.drawImage(ctx.canvas, 0, 0, 960, 540, blur * k / 3, 0, 960, 540); }
+      ctx.restore();
+    }
+    // la caméra « encaisse » l'accélération : la voiture recule un peu dans l'image puis revient
+    this.camLag = (this.camLag || 0) + ((clamp(this.pl.accel, 0, 12) * 2.2 + (nitro ? 10 : 0)) - (this.camLag || 0)) * 0.06;
+    const plX = Math.round(96 - this.camLag), AIG = 200, PLG = 250;
     const aiX = clamp(plX + (dA - dP) * PPM, -190, W + 60);
     const aiStyle = CARS[this.opp.car].style, plStyle = CARS[cs.id].style, oc = this.opp.color;
     const aiO = {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v, look: this.opp.look};
@@ -177,12 +189,31 @@ const Race = {
       g.addColorStop(0, `rgba(225,225,235,${a})`); g.addColorStop(1, 'rgba(225,225,235,0)');
       ctx.fillStyle = g; ctx.fillRect(bx + p.x * 2 - r, by + p.y * 2 - r, r * 2, r * 2);
     }
-    // traits de vitesse
-    if (this.pl.v > 30) {
-      ctx.fillStyle = `rgba(255,255,255,${Math.min(0.18, (this.pl.v - 30) / 200)})`;
-      for (let i = 0; i < 10; i++) { const yy = 300 + ((i * 53 + this.t * 900) % 230), xx = (i * 197 + this.t * 2600) % 960; ctx.fillRect(960 - xx, Math.round(yy), 90, 1); }
+    // traits de vitesse (sol + ciel), poussières, vignette
+    if (kv > 0.05) {
+      const n = Math.round(6 + kv * 34 + (nitro ? 20 : 0)), sp = 900 + v * 60;
+      for (let i = 0; i < n; i++) {
+        const yy = i % 3 === 0 ? 30 + ((i * 37) % 250) : 300 + ((i * 53 + i * i) % 236);
+        const len = 40 + kv * 220 + (i % 5) * 20, xx = ((i * 197 + this.t * sp * (0.7 + (i % 4) * 0.15)) % (960 + len));
+        const g = ctx.createLinearGradient(960 - xx, 0, 960 - xx + len, 0);
+        const a = (i % 3 === 0 ? 0.06 : 0.14) * kv + (nitro ? 0.08 : 0);
+        g.addColorStop(0, `rgba(255,255,255,${a})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = g; ctx.fillRect(Math.round(960 - xx), Math.round(yy), Math.round(len), i % 7 === 0 ? 2 : 1);
+      }
+      ctx.fillStyle = `rgba(200,190,170,${0.35 * kv})`;
+      for (let i = 0; i < 18 * kv; i++) { const x = 960 - ((i * 151 + this.t * v * 22) % 1000), y = 492 + ((i * 29) % 40); ctx.fillRect(Math.round(x), y, 2 + (i % 3), 1); }
     }
     ctx.restore();
+    if (kv > 0.15 || nitro) {
+      const vg = ctx.createRadialGradient(480, 300, 260 - kv * 60, 480, 300, 620);
+      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(${nitro ? '10,40,80' : '0,0,0'},${0.18 + kv * 0.35 + (nitro ? 0.15 : 0)})`);
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, 960, 540);
+    }
+    if (nitro) {                                       // coup de poing visuel de la nitro (aberration chromatique légère)
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.07;
+      ctx.drawImage(ctx.canvas, -4, 0); ctx.drawImage(ctx.canvas, 4, 0);
+      ctx.restore();
+    }
     this.drawHud(ctx);
   },
   drawNitro(ctx, sim, x, y) {

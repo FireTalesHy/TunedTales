@@ -191,6 +191,19 @@ const Sound = {
       this.voices.delete(v);
     }, f * 1000 + 200);
   },
+  /* souffle du vent : bruit filtré qui monte avec la vitesse (m/s) */
+  wind(v) {
+    if (!this.ctx || !this.noiseBuf) return;
+    if (!this._wind) {
+      const n = this.noise(true), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
+      f.type = 'bandpass'; f.Q.value = 0.6; f.frequency.value = 500; g.gain.value = 0;
+      n.connect(f); f.connect(g); g.connect(this.master); n.start();
+      this._wind = {f, g};
+    }
+    const k = Math.min(1, Math.max(0, v / 70)), t = this.ctx.currentTime;
+    this._wind.g.gain.setTargetAtTime(k * k * 0.22, t, 0.15);
+    this._wind.f.frequency.setTargetAtTime(400 + k * 1400, t, 0.15);
+  },
   stopAll() { for (const v of [...this.voices]) this.stop(v, 0.2); },
 
   /* démonstration : ralenti → coup de gaz jusqu'au rupteur → lâcher */

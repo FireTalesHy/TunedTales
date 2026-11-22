@@ -32,7 +32,7 @@ const Game = {
   },
   owns(id) { return !!this.save.cars[id]; },
   priceMult(cs) { return 0.5 + ENGINES[cs.engine].hp / 160; },
-  partPrice(cs, part, tier) { return Math.round(part.tiers[tier].p * this.priceMult(cs) / 10) * 10; },
+  partPrice(cs, part, tier) { return Math.round(part.tiers[tier].p * this.priceMult(cs) * (1 - this.perk('parts')) / 10) * 10; },
 
   buyCar(id) {
     const c = CARS[id];
@@ -63,11 +63,43 @@ const Game = {
   paint(color) { const cs = this.car(); if (this.save.money < 50 && cs.color !== color) return false; if (cs.color !== color) this.save.money -= 50; cs.color = color; this.persist(); return true; },
 
   oppColor(i) { return ['#d04040', '#40a0d0', '#d0a030', '#50b060', '#a050d0', '#e0e0e0', '#e07030', '#3050c0', '#e050a0', '#30c0b0', '#c0c030', '#181820'][i % 12]; },
-  ladderOpp(i) { return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), i / 11)}); },
+  ladderOpp(i) { const c = CLANS.find(k => k.boss === i || k.members.includes(i)); return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), Math.min(1, i / 11)), clan: c && c.name, emblem: c && c.emblem, boss: !!c && c.boss === i}); },
 
   /* ---------------- CONTRATS ---------------- */
   baseReward(t400) { return 160 * Math.pow(18.5 / t400, 6.5); },
-  streakMult(n) { return Math.min(2.5, 1 + 0.2 * (n || 0)); },
+  streakMult(n) { return Math.min(2.5 + this.perk('streak'), 1 + 0.2 * (n || 0)); },
+  /* ---------------- CLANS ---------------- */
+  crew() { return Object.assign({name: 'Tuned Tales', color: '#19e6ff'}, this.save.crew || {}); },
+  setCrew(name, color) { this.save.crew = {name: (name || '').trim().slice(0, 24) || 'Tuned Tales', color: color || this.crew().color}; this.persist(); },
+  clanOf(idx) { return CLANS.find(c => c.boss === idx || c.members.includes(idx)); },
+  clanDefeated(c) { return !!this.save.wins[c.boss]; },
+  clanUnlocked(i) { return i === 0 || this.clanDefeated(CLANS[i - 1]); },
+  bossUnlocked(c) { return c.members.every(m => this.save.wins[m]); },
+  /* ---- territoires : revenus passifs ---- */
+  turf(id) {
+    const c = CLANS.find(k => k.id === id); if (!c || !this.clanDefeated(c)) return null;
+    this.save.turf = this.save.turf || {};
+    if (!this.save.turf[id]) this.save.turf[id] = {lvl: 1, last: Date.now()};
+    return this.save.turf[id];
+  },
+  turfRate(id) { const t = this.turf(id); return t ? Math.round(TURF[id].base * (1 + 0.6 * (t.lvl - 1))) : 0; },
+  turfCap(id) { const t = this.turf(id); return t ? 6 + 3 * (t.lvl - 1) : 0; },          // heures accumulables
+  turfPending(id) { const t = this.turf(id); if (!t) return 0; const h = Math.min(this.turfCap(id), (Date.now() - t.last) / 3600000); return Math.floor(h * this.turfRate(id)); },
+  turfUpCost(id) { const t = this.turf(id); return t && t.lvl < 5 ? Math.round(TURF[id].base * 10 * t.lvl * t.lvl / 10) * 10 : 0; },
+  totalTurfRate() { return CLANS.reduce((a, c) => a + this.turfRate(c.id), 0); },
+  totalPending() { return CLANS.reduce((a, c) => a + this.turfPending(c.id), 0); },
+  collectTurf(id) {
+    let g = 0;
+    for (const c of CLANS) if (!id || c.id === id) { const p = this.turfPending(c.id); if (p > 0) { g += p; this.save.turf[c.id].last = Date.now(); } }
+    if (g) { this.save.money += g; this.persist(); UI.refreshTop(); }
+    return g;
+  },
+  upgradeTurf(id) {
+    const t = this.turf(id), cost = this.turfUpCost(id);
+    if (!t || !cost || this.save.money < cost) return false;
+    this.collectTurf(id); this.save.money -= cost; t.lvl++; this.persist(); return true;
+  },
+  perk(type) { let v = 0; if (this.save) for (const c of CLANS) if (c.perk.type === type && this.clanDefeated(c)) v += c.perk.v; return v; },
   /* valeur d'une voiture : prix catalogue + moteur swappé + 60 % des pièces */
   carValue(c) {
     const id = c.id || c.car, e = ENGINES[c.engine], base = Math.max(3000, CARS[id].price);
@@ -136,7 +168,15 @@ const Game = {
     let reward = 0, lines = [];
     if (opp.kind === 'ladder') {
       const o = OPPONENTS[opp.idx];
-      if (res.win) { const first = !s.wins[opp.idx]; reward = first ? o.reward : Math.round(o.reward * 0.4); s.wins[opp.idx] = true; res.first = first; lines.push([first ? 'Victoire (1re fois)' : 'Victoire (déjà gagnée : 40%)', reward]); }
+      if (res.win) {
+        const first = !s.wins[opp.idx]; reward = first ? o.reward : Math.round(o.reward * 0.4); s.wins[opp.idx] = true; res.first = first;
+        lines.push([first ? 'Victoire (1re fois)' : 'Revanche (40 %)', reward]);
+        const clan = this.clanOf(opp.idx);
+        if (first && clan && clan.boss === opp.idx) {
+          res.lore = clan.id; lines.push([`${clan.emblem} ${clan.name} rejoint ${this.crew().name} · ${clan.perk.label}`, 0, 'info']);
+          if (clan.id === 'cercle' && !this.owns('tr250')) { s.cars.tr250 = {id: 'tr250', engine: 'colombo', parts: {}, color: CARS.tr250.color, owned: []}; lines.push(['🏎️ Ferrari 250 Testa Rossa du Fantôme', 0, 'car']); }
+        }
+      }
       else { reward = Math.max(20, Math.round(o.reward * 0.1)); lines.push(['Prime de participation', reward]); }
     } else {
       if (opp.type === 'pink') {
@@ -149,6 +189,7 @@ const Game = {
         }
       } else if (res.win) {
         reward = opp.reward; lines.push(['Contrat rempli', opp.reward]);
+        if (this.perk('contracts')) { const b = Math.round(opp.reward * this.perk('contracts')); reward += b; lines.push(['🌙 Bonus Nuit Blanche', b]); }
         if (opp.type === 'bet') { reward += opp.stake; lines.push(['Mise remportée', opp.stake]); }
         if (opp.type === 'reflex' && res.zone >= 0.9) { const b = Math.round(opp.reward * 0.5); reward += b; lines.push(['Bonus maîtrise du régime', b]); }
         if (opp.type === 'launch' && res.launchQ > 0.95) { const b = Math.round(opp.reward * 0.4); reward += b; lines.push(['Bonus départ parfait', b]); }
@@ -164,6 +205,7 @@ const Game = {
       s.streak = (s.streak || 0) + 1;
     } else { if (s.streak >= 2) lines.push([`Série de ${s.streak} victoires terminée`, 0, 'info']); s.streak = 0; }
     res.streak = s.streak;
+    if (reward > 0 && this.perk('all')) { const b = Math.round(reward * this.perk('all')); reward += b; lines.push(['⭕ Bonus du Cercle', b]); }
     res.reward = reward; res.lines = lines; s.money = Math.max(0, s.money + reward);
     if (res.et && !res.fs) { const k = s.current; if (!s.best[k] || res.et < s.best[k]) { s.best[k] = res.et; res.record = true; } }
     this.persist();
@@ -192,3 +234,7 @@ const CONTRACT_TYPES = [
 ];
 const RIVALS = ['Lucas', 'Inès', 'Nico', 'Mehdi', 'Chloé', 'Karim', 'Jess', 'Théo', 'Sami', 'Lina', 'Bastien', 'Yuki', 'Enzo', 'Manon', 'Rayan', 'Léo', 'Sacha', 'Nora', 'Hugo', 'Maëlle', 'Diego', 'Ana'];
 const RIVAL_TAGS = ['Street racer', 'Préparateur du dimanche', 'Fils à papa', 'Ancien pilote', 'Youtubeur auto', 'Livreur pressé', 'Roi du parking', 'Mécano de nuit', 'Collectionneur', 'Team JDM', 'Fan de stance', 'Chasseur de chronos'];
+
+/* revenus de base des territoires (€ / heure de temps réel, même jeu fermé) */
+const TURF = {cles: {base: 250, name: 'Garage de la zone industrielle'}, nuit: {base: 700, name: 'Paris clandestins des quais'},
+              twin: {base: 1800, name: 'Atelier moteurs du port'}, kings: {base: 4500, name: 'Péage de l\'autoroute'}, cercle: {base: 12000, name: 'Circuit privé du Cercle'}};

@@ -35,6 +35,7 @@ const Race = {
     this.fs = false; this.rt = null; this.launchAt = Infinity; this.plLaunchRpm = 0;
     this.state = 'stage'; this.active = true; this.wheelAng = 0; this.aiWheelAng = 0;
     this.shiftCount = 0; this.perfectShifts = 0; this.aiGear = 0; this.zoneT = 0; this.countT = 0; this.zoneFrac = 0;
+    this.knockAt = Math.random() < Math.max(0, (this.plSpec.risk - 0.35) * 1.2) ? 1.5 + Math.random() * 3.5 : Infinity; this.knocked = false;
     Sound.stopAll(); this.plV = this.aiV = null;
     Sound.resume();
     UI.raceStart();
@@ -102,6 +103,7 @@ const Race = {
       if (this.pl.spin && Math.random() < 0.5) this.puff('pl');
     }
     if (this.ai.spin && Math.random() < 0.3) this.puff('ai');
+    if (!this.knocked && this.pl.launched && this.pl.t > this.knockAt) { this.knocked = true; this.plSpec.knockMul = 0.82; this.setMsg('CLIQUETIS ! −18 %', '#ff4a5a'); this.shake = 4; if (this.plV) Sound.pops(1, 6); }
     this.wheelAng += (this.pl.spin ? 40 : this.pl.v / this.plSpec.r) * dt;
     this.aiWheelAng += (this.ai.spin ? 40 : this.ai.v / this.aiSpec.r) * dt;
     if (this.state === 'race' && this.pl.fin && (!this.ai.launched || this.ai.fin)) this.finish();
@@ -296,7 +298,7 @@ const Race = {
     ctx.textAlign = 'right'; ctx.fillStyle = gc; ctx.font = `700 15px ${UIF}`;
     ctx.fillText(`${gap >= 0 ? '+' : '−'}${Math.abs(gap).toFixed(1)} m`, qx + 214, 88);
     ctx.fillStyle = '#c9cdf0'; ctx.font = `600 12px ${UIF}`; ctx.textAlign = 'left';
-    ctx.fillText(`vs ${this.opp.name} · ${CARS[this.opp.car].name}`, qx + 16, 110);
+    ctx.fillText(`${this.opp.emblem ? this.opp.emblem + ' ' : ''}vs ${this.opp.name}${this.opp.boss ? ' (BOSS)' : ''} · ${CARS[this.opp.car].name}`, qx + 16, 110);
     // --- barre de progression ---
     const mx = 300, my = 520, mw = 360;
     ctx.fillStyle = 'rgba(10,12,30,0.65)'; roundRect(ctx, mx - 10, my - 12, mw + 20, 24, 12); ctx.fill();

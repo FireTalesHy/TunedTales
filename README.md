@@ -5,13 +5,13 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.6.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
-[![Voitures](https://img.shields.io/badge/voitures-13-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
+[![Version](https://img.shields.io/badge/version-1.7.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Voitures](https://img.shields.io/badge/voitures-21-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
 <img src="docs/screenshots/garage.png" alt="Le garage de Tuned Tales" width="860">
 
-*Commence en Twingo 2. Finis en Lexus LFA à un million.*
+*Commence en Twingo 2. Finis en Formule 1 à dix millions.*
 
 </div>
 
@@ -53,21 +53,29 @@ Tu débarques avec une **Twingo 2 de 75 ch** et 600 € en poche. Enchaîne les 
 
 ## 🚗 Le garage
 
-| Voiture | Moteur d'origine | Transmission | Prix |
-|---|---|---|---:|
-| Renault Twingo 2 | D4F 1.2 · 75 ch | Traction | *offerte* |
-| Renault Clio RS | F4R 2.0 · 197 ch | Traction | 6 500 € |
-| Mazda MX-5 NB | BP 1.8 · 140 ch | Propulsion | 11 000 € |
-| Honda Civic Type R EP3 | K20A VTEC · 215 ch | Traction | 12 000 € |
-| Peugeot RCZ | 1.6 THP · 200 ch | Traction | 18 000 € |
-| BMW M3 E46 | S54 · 343 ch | Propulsion | 22 000 € |
-| Nissan Silvia S15 | SR20DET · 250 ch | Propulsion | 25 000 € |
-| Toyota Supra A80 | 2JZ-GTE · 320 ch | Propulsion | 35 000 € |
-| Mitsubishi Lancer Evo IX | 4G63T · 290 ch | Intégrale | 45 000 € |
-| Nissan Skyline R34 | RB26DETT · 300 ch | Intégrale | 50 000 € |
-| Porsche 911 GT3 (997) | Mezger 3.6 · 415 ch | Propulsion | 120 000 € |
-| Nissan GT-R R35 | VR38DETT · 485 ch | Intégrale | 250 000 € |
-| 👑 **Lexus LFA** | **1LR-GUE V10 · 560 ch** | Propulsion | **1 000 000 €** |
+| Voiture | Moteur d'origine | Prix |
+|---|---|---:|
+| Renault Twingo 2 | D4F 1.2 · 75 ch | *offerte* |
+| Ford Focus Mk1 | Zetec 1.6 · 100 ch | 3 000 € |
+| Nissan Terrano II | TD27 turbo diesel · 125 ch | 5 000 € |
+| Renault Clio RS | F4R 2.0 · 197 ch | 6 500 € |
+| Mazda MX-5 NB | BP 1.8 · 140 ch | 11 000 € |
+| Honda Civic Type R EP3 | K20A VTEC · 215 ch | 12 000 € |
+| Peugeot RCZ | 1.6 THP · 200 ch | 18 000 € |
+| BMW M3 E46 | S54 · 343 ch | 22 000 € |
+| Nissan Silvia S15 | SR20DET · 250 ch | 25 000 € |
+| Toyota Supra A80 | 2JZ-GTE · 320 ch | 35 000 € |
+| Mazda RX-7 FD | 13B-REW rotatif · 280 ch | 40 000 € |
+| Mitsubishi Lancer Evo IX | 4G63T · 290 ch | 45 000 € |
+| Nissan Skyline R34 | RB26DETT · 300 ch | 50 000 € |
+| Ford Mustang GT 2025 | Coyote 5.0 V8 · 486 ch | 60 000 € |
+| Lexus RC F | 2UR-GSE 5.0 V8 · 477 ch | 75 000 € |
+| Porsche 911 GT3 (997) | Mezger 3.6 · 415 ch | 120 000 € |
+| Nissan GT-R R35 | VR38DETT · 485 ch | 250 000 € |
+| McLaren 720S | M840T V8 biturbo · 720 ch | 320 000 € |
+| Lexus LFA | 1LR-GUE V10 · 560 ch | 1 000 000 € |
+| Ferrari 250 Testa Rossa | Colombo V12 · 300 ch | 5 000 000 € |
+| 👑 **Formule 1** | **V6 turbo hybride · 1 000 ch** | **10 000 000 €** |
 
 Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2JZ, c'est possible).
 
@@ -78,6 +86,8 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 - 🔊 **Sons moteurs simulés physiquement** pour chaque moteur, sifflement de turbo, dump valve, pétarades.
 - 🎨 **Personnalisation visuelle** : 12 catégories, de la peinture nacrée au kit widebody.
 - 📜 **Contrats** générés selon ta voiture + 12 **légendes de la ville** à battre.
+- ⚔️ **5 clans** à faire tomber, des **chapitres de lore** à chaque boss, des **territoires** qui rapportent des revenus passifs.
+- 🧠 **Cartographie ECU** : allumage, richesse, boost, rupteur, antipatinage, flat shift, anti-lag… attention au cliquetis.
 - 🔥 **Séries de victoires** jusqu'à ×2,5 et 🏴 **courses au titre de propriété** : gagne la voiture de ton rival… ou perds la tienne.
 - 💼 **Petits boulots** : livraison de pizzas, station de lavage, serrage au couple.
 - 💾 **Sauvegarde automatique** dans le navigateur.
@@ -93,7 +103,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.6.0 « Gros billets »** — séries de victoires, courses au titre de propriété, vente de voitures.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.7.0 « La ville est à toi »** — clans, lore, revenus passifs, cartographie ECU, 8 nouvelles voitures dont la Formule 1.
 
 ## 🙏 Crédits
 

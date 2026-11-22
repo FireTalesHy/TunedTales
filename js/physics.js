@@ -44,10 +44,18 @@ function ensureCurve(e) {
 }
 
 /* Construit les caractéristiques complètes d'une voiture (moteur + pièces) */
-function makeSpec(carId, engineId, parts) {
+const ECU_DEFAULT = {timing: 0, lean: 0, boost: 1, revlim: 0, tq1: 1, flat: false, alag: false};
+function makeSpec(carId, engineId, parts, ecuMap) {
   const c = CARS[carId], e = ENGINES[engineId]; ensureCurve(e);
   const P = parts || {}, t = id => P[id] || 0;
-  const red = e.red + 250 * UP.cam[t('cam')];
+  // cartographie ECU : chaque réglage n'est actif que si le niveau de reprog le permet
+  const lvl = t('ecu'), M = Object.assign({}, ECU_DEFAULT, ecuMap || {});
+  if (lvl < 1) { M.timing = 0; M.lean = 0; }
+  if (lvl < 2) { M.boost = 1; M.revlim = 0; M.tq1 = 1; }
+  if (lvl < 3) { M.flat = false; M.alag = false; }
+  const hasTurbo = e.turbo || t('turbo') > 0;
+  if (!hasTurbo) { M.boost = 1; M.alag = false; }
+  const red = e.red + 250 * UP.cam[t('cam')] + M.revlim;
   const boostK = e.turbo ? 0.7 : 1;
   const spec = {
     carId, engineId, parts: P,
@@ -55,9 +63,10 @@ function makeSpec(carId, engineId, parts) {
     mu: c.mu + UP.tires[t('tires')], frac: c.frac, eff: c.eff, r: c.r,
     cd: c.cd * UP.aero[t('aero')], A: c.A, drive: c.drive,
     gears: c.gears.map(g => g * UP.gearbox[t('gearbox')]), final: c.final,
-    red, idle: IDLE, shiftTime: UP.clutch[t('clutch')], clutchEff: UP.clutchEff[t('clutch')],
+    red, idle: IDLE, shiftTime: UP.clutch[t('clutch')] * (M.flat ? 0.6 : 1), clutchEff: UP.clutchEff[t('clutch')],
     nitro: t('nitro') > 0 ? {dur: 4, boost: UP.nitro[t('nitro')]} : null, tqRpm: e.tqRpm,
-    turbo: e.turbo || t('turbo') > 0,
+    turbo: hasTurbo, map: M, tq1: M.tq1, alag: M.alag, knockMul: 1,
+    risk: clamp((Math.max(0, M.timing - 2) * 9 + M.lean * 28 + Math.max(0, M.boost - 1.15) * 120 + M.revlim / 25) / 100, 0, 1),
     spoolTime: 0.3 + 0.14 * t('turbo') + (e.turbo ? 0.1 : 0)       // temps de remontée en pression après un passage
   };
   const gI = 1 + UP.intake[t('intake')], gE = 1 + UP.exhaust[t('exhaust')], gC = 1 + UP.ecu[t('ecu')];
@@ -66,10 +75,10 @@ function makeSpec(carId, engineId, parts) {
     const sp = spool == null ? 1 : spool;
     r = Math.max(r, 500);
     let T = e._K * engineShape(e, r, e._kd);
-    T *= gI * gE * gC;
+    T *= gI * gE * gC * (1 + 0.012 * M.timing) * (1 + 0.06 * M.lean);
     T *= 1 + 0.06 * camT * ((r / e.red - 0.55) / 0.45);
-    T *= 1 + boost * sm((r - 1800) / 1800) * sp;
-    if (e.turbo) T *= 1 - 0.22 * (1 - sp) * sm((r - 1800) / 1800);
+    T *= 1 + boost * M.boost * sm((r - 1800) / 1800) * sp;
+    if (e.turbo) T *= (1 - 0.22 * (1 - sp) * sm((r - 1800) / 1800)) * (1 + 0.3 * (M.boost - 1) * sm((r - 1800) / 1800) * sp);
     if (nitroOn && spec.nitro) T *= 1 + spec.nitro.boost;
     return T;
   };
@@ -82,7 +91,7 @@ function makeSpec(carId, engineId, parts) {
   spec.hp = hp; spec.hpRpm = hpR; spec.tq = tq; spec.tqPeakRpm = tqR;
   return spec;
 }
-function specOf(carState) { return makeSpec(carState.id, carState.engine, carState.parts); }
+function specOf(carState) { return makeSpec(carState.id, carState.engine, carState.parts, carState.map); }
 
 /* ---- Simulation ---- */
 function createSim() {
@@ -98,7 +107,7 @@ function bestLaunchRpm(spec) {
   return Math.min(spec.red * 0.72, spec.tqRpm + 700);
 }
 function simLaunch(s, spec, rpm, q) {
-  s.spool = spec.turbo ? 0.55 : 1;
+  s.spool = spec.turbo ? (spec.alag ? 1 : 0.55) : 1;
   s.launched = true; s.slip = true; s.slipRpm = Math.max(rpm, spec.idle);
   s.launchMult = clamp(q, 0.4, 1) * spec.clutchEff / 0.96;
   s.nitroLeft = spec.nitro ? spec.nitro.dur : 0;
@@ -107,7 +116,7 @@ function simShift(s, spec, quality) {
   if (s.gear >= spec.gears.length - 1 || s.shiftT > 0) return false;
   s.gear++; s.slip = false;
   s.shiftT = spec.shiftTime * (quality >= 0.93 ? 0.85 : 1);
-  if (spec.turbo) s.spool = 0.25;                                   // la pression retombe à chaque passage
+  if (spec.turbo) s.spool = spec.alag ? 0.65 : 0.25;                                   // la pression retombe à chaque passage
   return true;
 }
 function stepSim(s, spec, dt) {
@@ -124,7 +133,7 @@ function stepSim(s, spec, dt) {
   s.limiter = rpm >= spec.red;
   if (s.shiftT > 0) s.shiftT -= dt;
   else {
-    T = spec.torque(Math.min(rpm, spec.red), s.nitroOn && s.nitroLeft > 0, s.spool) * (s.limiter ? 0.12 : 1);
+    T = spec.torque(Math.min(rpm, spec.red), s.nitroOn && s.nitroLeft > 0, s.spool) * (s.limiter ? 0.12 : 1) * (s.gear === 0 ? (spec.tq1 || 1) : 1) * (spec.knockMul || 1);
     if (spec.turbo && s.spool < 1) s.spool = Math.min(1, s.spool + dt / spec.spoolTime);
   }
   if (s.nitroOn && s.nitroLeft > 0 && T > 0) s.nitroLeft -= dt;

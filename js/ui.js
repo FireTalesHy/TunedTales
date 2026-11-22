@@ -11,8 +11,9 @@ const UI = {
     const cs = Game.car(), sp = specOf(cs), best = Game.save.best[cs.id];
     $('carname').textContent = CARS[cs.id].name;
     const wins = Object.keys(Game.save.wins).length;
-    $('homecard').innerHTML = `<div class="hc-t">TA VOITURE</div><div class="hc-n">${CARS[cs.id].name}</div>
+    $('homecard').innerHTML = `<div class="hc-t">${Game.crew().name.toUpperCase()} · TA VOITURE</div><div class="hc-n">${CARS[cs.id].name}</div>
       <div class="muted">${ENGINES[cs.engine].name} · ${CARS[cs.id].drive}</div>
+      ${Game.totalTurfRate() ? `<div class="hc-inc">💰 ${money(Game.totalPending())} à encaisser · ${money(Game.totalTurfRate())}/h</div>` : ''}
       <div class="hc-s"><span><b>${Math.round(sp.hp)} ch</b>puissance</span><span><b>${best ? best.toFixed(2) + ' s' : '—'}</b>record 400 m</span><span><b>${wins}/${OPPONENTS.length}</b>victoires</span></div>`;
   },
 
@@ -52,7 +53,7 @@ const UI = {
       <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
       <button class="tab ${tab === 'pink' ? 'on' : ''}" data-act="tab" data-v="pink">🏴 Courses au titre</button>
-      <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">👑 Légendes de la ville <small>${Object.keys(Game.save.wins).length}/${OPPONENTS.length}</small></button></div>`;
+      <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">⚔️ Clans <small>${CLANS.filter(c => Game.clanDefeated(c)).length}/${CLANS.length}</small></button></div>`;
     if (tab === 'contracts') {
       const list = Game.contracts(); Game.persist();
       const st = Game.save.streak || 0, sm = Game.streakMult(st);
@@ -68,25 +69,70 @@ const UI = {
       if (!list.length) h += `<div class="box">🔒 Il te faut <b>au moins 2 voitures</b> pour mettre un titre en jeu (sinon tu risquerais de te retrouver à pied). Passe à la concession !</div>`;
       else { h += '<div class="contracts">'; list.forEach((o, i) => { h += this.contractCard(o, i, spec, est, 'p'); }); h += '</div>'; }
     } else {
-      h += '<div class="grid">';
-      OPPONENTS.forEach((o, i) => {
-        const os = makeSpec(o.car, o.engine, o.parts), oe = estimateBest(os);
-        const done = Game.save.wins[i], diff = est.t400 - oe.t400;
-        const level = diff > 0.6 ? ['Difficile', 'hard'] : diff > -0.4 ? ['Serré', 'mid'] : ['Facile', 'easy'];
-        h += `<div class="card ${done ? 'done' : ''}"><div class="ctop"><span class="pill d-${level[1]}">${level[0]}</span><span class="muted">#${i + 1}</span></div>
-          <canvas class="thumb" data-car="${o.car}" data-color="${Game.oppColor(i)}" data-look='${JSON.stringify(Game.ladderOpp(i).look)}' width="300" height="116"></canvas>
-          <div class="ctitle">${o.name}${done ? ' <span class="good">✔</span>' : ''}</div><div class="muted">${o.tag}</div>
-          <div class="kv"><span>Voiture</span><b>${CARS[o.car].name}</b></div>
-          <div class="kv"><span>Moteur</span><b>${ENGINES[o.engine].name}</b></div>
-          <div class="kv"><span>Puissance</span><b>${Math.round(os.hp)} ch</b></div>
-          <div class="kv"><span>400 m (est.)</span><b>${oe.t400.toFixed(2)} s</b></div>
-          <div class="rewardrow"><span class="muted">${done ? 'Revanche (40 %)' : 'Récompense'}</span><b class="gold">${money(done ? o.reward * 0.4 : o.reward)}</b></div>
-          <button class="btn" data-act="race" data-v="l${i}">DÉFIER ▶</button></div>`;
-      });
-      h += '</div>';
+      h += this.rClans();
     }
     return h;
   },
+  /* ---------------- CLANS ---------------- */
+  rClans() {
+    const crew = Game.crew(), joined = CLANS.filter(c => Game.clanDefeated(c));
+    let h = `<div class="crew" style="--cc:${crew.color}"><div class="crew-emb">${crew.name.slice(0, 2).toUpperCase()}</div>
+      <div class="crew-main"><div class="eyebrow">TON CLAN</div>
+        <div class="crew-edit"><input id="crewname" maxlength="24" value="${crew.name.replace(/"/g, '&quot;')}" aria-label="Nom de ton clan">
+        <div class="crew-cols">${['#19e6ff', '#ff2bd6', '#ffd23f', '#3dff7a', '#ff7a1a', '#9b6bff', '#ff3b5c', '#f4f4f8'].map(c => `<button class="crew-col ${c === crew.color ? 'sel' : ''}" style="background:${c}" data-act="crewcol" data-v="${c}" aria-label="Couleur"></button>`).join('')}</div>
+        <button class="btn small" data-act="crewsave">ENREGISTRER</button></div>
+        <div class="crew-joined">${joined.length ? joined.map(c => `<span class="chip" style="border-color:${c.color}">${c.emblem} ${c.name} · <b>${c.perk.label}</b></span>`).join('') : '<span class="muted">Aucun clan rallié pour l\'instant. Bats un boss pour qu\'il rejoigne ton clan et t\'offre un bonus permanent.</span>'}</div>
+      </div></div>`;
+    const rate = Game.totalTurfRate(), pend = Game.totalPending();
+    h += `<div class="income"><div><div class="eyebrow">REVENUS DU CLAN</div><b class="inc-rate">${money(rate)} / h</b>
+        <span class="muted">${rate ? 'Tes territoires rapportent même quand le jeu est fermé (plafond d\'heures par territoire).' : 'Bats le chef d\'un clan pour prendre son territoire et toucher des revenus passifs.'}</span></div>
+      <div class="inc-pend"><span class="muted">À encaisser</span><b class="gold">${money(pend)}</b>
+      <button class="btn ${pend ? '' : 'off'}" data-act="collect" data-v="all">💰 ENCAISSER TOUT</button></div></div>`;
+    CLANS.forEach((c, ci) => {
+      const open = Game.clanUnlocked(ci), done = Game.clanDefeated(c), bossOpen = Game.bossUnlocked(c);
+      const respect = c.members.filter(m => Game.save.wins[m]).length + (done ? 1 : 0);
+      h += `<section class="clan ${open ? '' : 'locked'} ${done ? 'won' : ''}" style="--cc:${c.color}">
+        <header class="clan-head"><span class="clan-emb">${c.emblem}</span><div><b>${c.name}</b><span class="muted"> · ${c.turf}</span>
+          <div class="clan-perk">Bonus si vaincu : <b>${c.perk.label}</b></div></div>
+          <div class="clan-resp"><span>RESPECT</span><div class="rbar"><div style="width:${respect / 3 * 100}%"></div></div></div>
+          ${done ? `<button class="btn small ghostbtn" data-act="lore" data-v="${c.id}">📖 ${LORE[c.id].title.split(' — ')[0]}</button>` : ''}</header>`;
+      if (done) {
+        const t = Game.turf(c.id), cost = Game.turfUpCost(c.id), pc = Game.turfPending(c.id);
+        h += `<div class="turf"><span>🏴 Territoire : <b>${TURF[c.id].name}</b> · niv. ${t.lvl}/5</span><span>${money(Game.turfRate(c.id))} / h · plafond ${Game.turfCap(c.id)} h</span>
+          <span class="gold">${money(pc)} en attente</span>
+          <button class="btn small ${pc ? '' : 'off'}" data-act="collect" data-v="${c.id}">ENCAISSER</button>
+          ${cost ? `<button class="btn small ghostbtn ${Game.save.money >= cost ? '' : 'off'}" data-act="turfup" data-v="${c.id}">⬆ DÉVELOPPER · ${money(cost)}</button>` : '<span class="good">NIVEAU MAX</span>'}</div>`;
+      }
+      if (!open) { h += `<div class="clan-lock">🔒 Bats d'abord le chef de « ${CLANS[ci - 1].name} » pour être pris au sérieux sur ce territoire.</div></section>`; return; }
+      h += '<div class="clan-row">';
+      for (const idx of [...c.members, c.boss]) {
+        const o = OPPONENTS[idx], isBoss = idx === c.boss, won = Game.save.wins[idx], lockB = isBoss && !bossOpen;
+        const lo = Game.ladderOpp(idx), os = makeSpec(o.car, o.engine, o.parts), oe = estimateBest(os);
+        h += `<div class="card ${isBoss ? 'boss' : ''} ${won ? 'done' : ''}">
+          <div class="ctop">${isBoss ? '<span class="pill d-hard">👑 BOSS</span>' : '<span class="pill type">Membre</span>'}${won ? '<span class="good">✔ battu</span>' : ''}</div>
+          <canvas class="thumb" data-car="${o.car}" data-color="${lo.color}" data-look='${JSON.stringify(lo.look)}' width="300" height="116"></canvas>
+          <div class="ctitle">${o.name}</div><div class="muted">${o.tag}</div>
+          <div class="kv"><span>Voiture</span><b>${CARS[o.car].name}</b></div>
+          <div class="kv"><span>Puissance · 400 m</span><b>${Math.round(os.hp)} ch · ${oe.t400.toFixed(2)} s</b></div>
+          <div class="rewardrow"><span class="muted">${won ? 'Revanche (40 %)' : 'Récompense'}</span><b class="gold">${money(won ? o.reward * 0.4 : o.reward)}</b></div>
+          ${lockB ? '<button class="btn off" data-act="noop">🔒 BATS SES MEMBRES</button>' : `<button class="btn" data-act="race" data-v="l${idx}">${isBoss ? 'DÉFIER LE BOSS ▶' : 'DÉFIER ▶'}</button>`}</div>`;
+      }
+      h += '</div></section>';
+    });
+    return h;
+  },
+  toast(msg) {
+    let t = $('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('on'); clearTimeout(this._tt); this._tt = setTimeout(() => t.classList.remove('on'), 1800);
+  },
+  showLore(id) {
+    const L = LORE[id], c = CLANS.find(k => k.id === id), r = $('result');
+    r.classList.remove('hidden'); $('racebtns').classList.add('hidden');
+    r.innerHTML = `<div class="rbox lore" style="--cc:${c.color}"><div class="eyebrow">${c.emblem} ${c.name.toUpperCase()} · BOUGIE D'OR ${CLANS.indexOf(c) + 1}/5</div>
+      <h2>${L.title}</h2><p class="lore-text">${L.text(Game.crew().name)}</p>
+      <div class="rbtns"><button class="btn" data-act="lore-close">CONTINUER</button></div></div>`;
+  },
+
   contractCard(o, i, spec, est, pre) {
     pre = pre || 'c';
     const T = CONTRACT_TYPES.find(t => t.id === o.type), os = makeSpec(o.car, o.engine, o.parts);
@@ -277,9 +323,35 @@ const UI = {
     const sel = PARTS.find(p => p.id === this.tuneSel);
     if (sel && (cs.parts[sel.id] || 0) < sel.tiers.length) {
       const pp = Object.assign({}, cs.parts); pp[sel.id] = (pp[sel.id] || 0) + 1;
-      prev = makeSpec(cs.id, cs.engine, pp); prevEst = estimateBest(prev);
+      prev = makeSpec(cs.id, cs.engine, pp, cs.map); prevEst = estimateBest(prev);
     }
     return {cs, spec, est, prev, prevEst, sel};
+  },
+  /* ---- cartographie ECU ---- */
+  ecuPanel(cs, spec) {
+    const lvl = (cs.parts && cs.parts.ecu) || 0, M = Object.assign({}, ECU_DEFAULT, cs.map || {}), turbo = spec.turbo;
+    if (!lvl) return `<div class="box ecu locked"><b class="ecu-t">🧠 CARTOGRAPHIE ECU</b><p class="muted">Achète la <b>Reprogrammation</b> (niveau 1 minimum) pour accéder aux réglages du calculateur : avance à l'allumage, richesse, pression de turbo, rupteur, antipatinage, flat shift, anti-lag…</p></div>`;
+    const sl = (id, label, min, max, step, val, need, fmtv, hint) => {
+      const off = lvl < need || (id === 'boost' && !turbo);
+      return `<label class="ecu-row ${off ? 'off' : ''}"><span class="ecu-l">${label}<small>${off ? (id === 'boost' && !turbo ? 'Moteur atmosphérique' : 'Reprog niv. ' + need) : hint}</small></span>
+        <input type="range" min="${min}" max="${max}" step="${step}" value="${val}" data-ecu="${id}" ${off ? 'disabled' : ''}><b class="ecu-v">${fmtv(val)}</b></label>`;
+    };
+    const ck = (id, label, need, hint) => {
+      const off = lvl < need || (id === 'alag' && !turbo);
+      return `<label class="ecu-ck ${off ? 'off' : ''}"><input type="checkbox" data-ecu="${id}" ${M[id] ? 'checked' : ''} ${off ? 'disabled' : ''}><span>${label}<small>${off ? (id === 'alag' && !turbo ? 'Turbo requis' : 'Reprog niv. ' + need) : hint}</small></span></label>`;
+    };
+    const risk = Math.round(spec.risk * 100), knock = Math.round(Math.max(0, (spec.risk - 0.35) * 1.2) * 100);
+    const rc = risk < 35 ? 'var(--gd)' : risk < 60 ? 'var(--gold)' : 'var(--bad)';
+    return `<div class="box ecu"><div class="ecu-h"><b class="ecu-t">🧠 CARTOGRAPHIE ECU</b><span class="muted">Reprog niv. ${lvl}/3</span>
+        <button class="btn small ghostbtn" data-act="ecureset">Réinitialiser</button></div>
+      ${sl('timing', 'Avance à l\'allumage', -2, 6, 1, M.timing, 1, v => (v > 0 ? '+' : '') + v + '°', '+1,2 % de puissance par degré')}
+      ${sl('lean', 'Richesse du mélange', 0, 1, 0.1, M.lean, 1, v => v < 0.35 ? 'Riche' : v < 0.7 ? 'Neutre' : 'Pauvre', 'Pauvre = +6 % mais chauffe')}
+      ${sl('boost', 'Pression de turbo', 0.7, 1.5, 0.05, M.boost, 2, v => '×' + (+v).toFixed(2), 'Plus de pression, plus de couple')}
+      ${sl('revlim', 'Rupteur', 0, 800, 100, M.revlim, 2, v => '+' + v + ' tr/min', 'Tirer plus loin chaque rapport')}
+      ${sl('tq1', 'Couple en 1re (antipatinage)', 0.6, 1, 0.05, M.tq1, 2, v => Math.round(v * 100) + ' %', 'Limite le patinage au départ')}
+      <div class="ecu-cks">${ck('flat', 'Flat shift', 3, 'Passages 40 % plus rapides')}${ck('alag', 'Anti-lag / launch control', 3, 'Turbo gonflé au départ et entre les rapports')}</div>
+      <div class="ecu-risk"><span>Contrainte moteur</span><div class="bar"><div style="width:${Math.max(3, risk)}%;background:${rc}"></div></div>
+        <b style="color:${rc}">${risk} %</b><small class="muted">${knock ? `Risque de cliquetis en course : ${knock} % (−18 % de puissance)` : 'Aucun risque de cliquetis'}</small></div></div>`;
   },
   rTuning() {
     const {cs, spec, est, prev, prevEst, sel} = this.tuneData();
@@ -304,6 +376,7 @@ const UI = {
       <div class="cols tune"><div><div class="box"><canvas id="chart" width="560" height="300"></canvas>
       <div class="legend"><span><i style="background:#ff9a2e"></i>Puissance (ch)</span><span><i style="background:#3ec8ff"></i>Couple (Nm)</span>
       <span><i class="dash"></i>Aperçu amélioration</span><span><i class="dot"></i>Origine</span></div></div>
+      ${this.ecuPanel(cs, spec)}
       <div class="box stats">`;
     for (const [label, val, pv, f, dir, max, sub] of stats) {
       let dTxt = '';
@@ -326,7 +399,7 @@ const UI = {
       else {
         const price = Game.partPrice(cs, part, lvl);
         const pp = Object.assign({}, cs.parts); pp[part.id] = lvl + 1;
-        const ps = makeSpec(cs.id, cs.engine, pp), pe = estimateBest(ps);
+        const ps = makeSpec(cs.id, cs.engine, pp, cs.map), pe = estimateBest(ps);
         const dhp = Math.round(ps.hp - spec.hp), dt = pe.t400 - est.t400;
         body = `<div class="tier">Niv. ${lvl + 1} : ${part.tiers[lvl].n}</div>
           <div class="prev"><span class="${dhp > 0 ? 'good' : dhp < 0 ? 'bad' : 'muted'}">${dhp >= 0 ? '+' : ''}${dhp} ch</span>
@@ -413,7 +486,8 @@ const UI = {
       <span>Passages parfaits</span><b>${res.perfect}/${res.shifts}</b></div>
       ${res.record ? '<div class="gold">⭐ NOUVEAU RECORD POUR CETTE VOITURE</div>' : ''}
       <div class="payout">${lines}<div class="pl total"><span>Total</span><b class="${res.reward >= 0 ? 'gold' : 'bad'}">${res.reward >= 0 ? '+' : '−'} ${money(Math.abs(res.reward))}</b></div></div>
-      <div class="rbtns">${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
+      ${res.lore ? `<div class="lore-unlock">🕯️ <b>Bougie d'or obtenue</b> — un nouveau chapitre de l'histoire est débloqué</div>` : ''}
+      <div class="rbtns">${res.lore ? `<button class="btn" data-act="lore" data-v="${res.lore}">📖 LIRE LE CHAPITRE</button>` : ''}${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
   }
 };
 

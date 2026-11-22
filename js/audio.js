@@ -22,6 +22,14 @@ const ENGINE_SOUND = {
   vr38:  {cyl: 6, intake: 95,  exhaust: 100, extractor: 105, pipe: 150, ign: 0.016, gIn: 0.3,  gBlock: 0.35, gOut: 0.9},
   thp:   {cyl: 4, intake: 100, exhaust: 100, extractor: 95,  pipe: 160, ign: 0.016, gIn: 0.3,  gBlock: 0.35, gOut: 0.95},
   lr1:   {cyl: 10, intake: 60, exhaust: 60,  extractor: 55,  pipe: 90,  ign: 0.013, gIn: 0.5,  gBlock: 0.25, gOut: 0.55},
+  zetec: {cyl: 4, intake: 100, exhaust: 100, extractor: 95,  pipe: 150, ign: 0.016, gIn: 0.35, gBlock: 0.35, gOut: 1.0},
+  td27:  {cyl: 4, intake: 130, exhaust: 130, extractor: 140, pipe: 180, ign: 0.022, gIn: 0.2,  gBlock: 0.55, gOut: 0.9},
+  r13b:  {cyl: 3, intake: 60,  exhaust: 55,  extractor: 50,  pipe: 90,  ign: 0.012, gIn: 0.5,  gBlock: 0.2,  gOut: 0.9},
+  coyote:{cyl: 8, intake: 130, exhaust: 130, extractor: 140, pipe: 160, ign: 0.019, gIn: 0.25, gBlock: 0.3,  gOut: 0.4},
+  ur2:   {cyl: 8, intake: 110, exhaust: 110, extractor: 120, pipe: 140, ign: 0.017, gIn: 0.3,  gBlock: 0.3,  gOut: 0.42},
+  m840t: {cyl: 8, intake: 100, exhaust: 100, extractor: 110, pipe: 150, ign: 0.016, gIn: 0.3,  gBlock: 0.3,  gOut: 0.4},
+  colombo:{cyl: 12, intake: 60, exhaust: 60, extractor: 55,  pipe: 90,  ign: 0.013, gIn: 0.5,  gBlock: 0.2,  gOut: 0.4},
+  f1v6:  {cyl: 6, intake: 45,  exhaust: 45,  extractor: 40,  pipe: 70,  ign: 0.010, gIn: 0.6,  gBlock: 0.2,  gOut: 0.8},
   ls3:   {cyl: 8, intake: 140, exhaust: 140, extractor: 150, pipe: 170, ign: 0.02,  gIn: 0.25, gBlock: 0.3,  gOut: 0.38}
 };
 // variantes de silencieux testées stables (action 0.1) : moins d'éléments = son plus libre

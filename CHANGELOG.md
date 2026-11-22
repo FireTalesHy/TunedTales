@@ -4,6 +4,38 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## ⚔️ v1.7.0 — « La ville est à toi » · 23 novembre 2026
+
+### ⚔️ Clans (remplacent les Légendes de la ville)
+- **5 clans** à faire tomber, chacun avec son territoire : Les Clés de 12, Nuit Blanche, Twin Turbo Familia, Midnight Kings et **Le Cercle**.
+- Bats les membres pour gagner le **respect** et débloquer le **boss** ; chaque clan vaincu rejoint ton clan avec un **bonus permanent** (pièces −10 %, contrats +15 %, petits boulots +30 %, série jusqu'à ×3, toutes les récompenses +25 %).
+- **Ton clan** : choisis son nom et sa couleur.
+- **Revenus passifs** : chaque territoire conquis rapporte de l'argent en continu, même jeu fermé (plafond d'heures), à encaisser et à **développer** jusqu'au niveau 5.
+
+### 📖 Lore
+- Un **chapitre d'histoire** se débloque à chaque boss battu : les bougies d'or, le Fantôme, l'Architecte… et une surprise au bout.
+
+### 🧠 Cartographie ECU
+- Nouveau panneau dans le Tuning : avance à l'allumage, richesse, pression de turbo, rupteur, couple en 1re (antipatinage), flat shift, anti-lag / launch control.
+- Réglages débloqués selon le niveau de reprogrammation ; jauge de **contrainte moteur** : trop agressif, et un **cliquetis** peut te coûter 18 % de puissance en pleine course.
+
+### 🚗 8 nouvelles voitures (21 au total, toujours triées par prix)
+| Voiture | Moteur | Prix |
+|---|---|---|
+| Ford Focus Mk1 | Zetec 1.6 · 100 ch | 3 000 € |
+| Nissan Terrano II | TD27 2.7 turbo diesel · 125 ch | 5 000 € |
+| Mazda RX-7 FD | 13B-REW rotatif · 280 ch | 40 000 € |
+| Ford Mustang GT 2025 | Coyote 5.0 V8 · 486 ch | 60 000 € |
+| Lexus RC F | 2UR-GSE 5.0 V8 · 477 ch | 75 000 € |
+| McLaren 720S | M840T V8 biturbo · 720 ch | 320 000 € |
+| Ferrari 250 Testa Rossa | Colombo V12 · 300 ch | 5 000 000 € |
+| **Formule 1** | V6 turbo hybride · 1 000 ch | **10 000 000 €** |
+
+### 🎨 Carrosserie : 5 nouvelles catégories
+- Capot (ouïes, carbone, carbone ventilé), toit (carbone, écope), phares (xénon, fumés, angel eyes), bandeau de pare-soleil, sorties d'échappement (grosse, quadruple, centrale, latérale).
+
+---
+
 ## 💨 v1.6.2 — Impression de vitesse · 22 novembre 2026
 - Flou de mouvement sur le décor, de plus en plus fort avec la vitesse.
 - La caméra « encaisse » l'accélération : la voiture recule dans l'image puis revient.

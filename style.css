@@ -352,3 +352,60 @@ h3{font-size:24px;color:var(--ac)}
   .racehead{gap:10px}
   .you2 .thumb{width:140px}
 }
+
+/* ---------- clans ---------- */
+.crew{display:flex;gap:18px;align-items:center;margin-bottom:16px;padding:14px 18px;clip-path:var(--cut);background:linear-gradient(120deg,color-mix(in srgb,var(--cc) 22%,transparent),rgba(5,9,20,.9) 55%);box-shadow:inset 0 0 0 1px var(--cc)}
+.crew-emb{flex:none;width:72px;height:72px;display:grid;place-items:center;font-family:var(--hd);font-size:38px;font-style:italic;color:#04060c;background:var(--cc);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);box-shadow:0 0 30px var(--cc)}
+.crew-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.crew-edit{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.crew-edit input{font-family:var(--hd);font-size:26px;font-style:italic;text-transform:uppercase;letter-spacing:1px;color:#fff;background:rgba(0,0,0,.35);border:0;box-shadow:inset 0 0 0 1px var(--bd2);padding:4px 12px 0;width:min(320px,100%);transform:skewX(-10deg)}
+.crew-cols{display:flex;gap:6px}.crew-col{width:22px;height:22px;border:0;cursor:pointer;transform:skewX(-14deg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}.crew-col.sel{outline:2px solid #fff;outline-offset:2px}
+.crew-joined{display:flex;flex-wrap:wrap;gap:6px}
+.clan{margin-bottom:18px;padding:12px 14px 14px;clip-path:var(--cut);background:linear-gradient(160deg,rgba(14,26,48,.92),rgba(5,9,20,.94));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cc) 45%,transparent)}
+.clan.won{box-shadow:inset 0 0 0 2px var(--cc),inset 0 0 50px color-mix(in srgb,var(--cc) 14%,transparent)}
+.clan.locked{opacity:.55}
+.clan-head{display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.clan-emb{font-size:34px;filter:drop-shadow(0 0 10px var(--cc))}
+.clan-head b{font-family:var(--hd);font-size:30px;font-style:italic;text-transform:uppercase;letter-spacing:1px;color:var(--cc)}
+.clan-perk{font-size:13px;color:var(--mu)}.clan-perk b{font-family:var(--ui);font-size:13px;font-style:normal;text-transform:none;color:#fff;letter-spacing:0}
+.clan-resp{margin-left:auto;display:flex;flex-direction:column;gap:4px;min-width:140px}
+.clan-resp span{font-family:var(--hd);font-size:15px;font-style:italic;letter-spacing:2px;color:var(--mu)}
+.rbar{height:8px;transform:skewX(-20deg);background:rgba(255,255,255,.08)}.rbar>div{height:100%;background:var(--cc);box-shadow:0 0 10px var(--cc)}
+.clan-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.clan-row .card.boss{box-shadow:inset 0 0 0 2px var(--cc),inset 0 0 40px color-mix(in srgb,var(--cc) 15%,transparent)!important}
+.clan-lock{padding:14px;color:var(--mu)}
+@media(max-width:900px){.clan-row{grid-template-columns:1fr}}
+.rbox.lore{max-width:640px;text-align:left;box-shadow:inset 0 0 0 2px var(--cc),0 0 60px color-mix(in srgb,var(--cc) 30%,transparent)}
+.rbox.lore h2{color:var(--cc);font-size:40px;margin:6px 0 10px}
+.lore-text{white-space:pre-line;font-size:16px;line-height:1.65;color:#dfe9ff;margin:0 0 16px}
+.lore-unlock{margin:8px 0;padding:8px 12px;clip-path:var(--cut-s);background:rgba(255,210,63,.12);box-shadow:inset 0 0 0 1px rgba(255,210,63,.5);color:#ffe9a0}
+#result{position:fixed!important;inset:0;z-index:8}
+
+/* ---------- cartographie ECU ---------- */
+.ecu{display:flex;flex-direction:column;gap:8px}
+.ecu-h{display:flex;align-items:center;gap:12px}.ecu-h .btn{margin-left:auto}
+.ecu-t{font-family:var(--hd);font-size:24px;font-style:italic;letter-spacing:1px;color:var(--ac)}
+.ecu-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 92px;gap:12px;align-items:center;font-size:14px}
+.ecu-l{display:flex;flex-direction:column;font-weight:700}.ecu-l small{font-weight:600;font-size:11px;color:var(--mu)}
+.ecu-row input[type=range]{width:100%;accent-color:var(--ac)}
+.ecu-v{font-family:var(--hd);font-size:22px;font-style:italic;text-align:right;color:#fff}
+.ecu-row.off,.ecu-ck.off{opacity:.42}
+.ecu-cks{display:flex;gap:18px;flex-wrap:wrap}
+.ecu-ck{display:flex;gap:8px;align-items:flex-start;font-weight:700;font-size:14px;cursor:pointer}.ecu-ck input{accent-color:var(--ac2);width:18px;height:18px;margin-top:2px}
+.ecu-ck small{display:block;font-weight:600;font-size:11px;color:var(--mu)}
+.ecu-risk{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;margin-top:4px}
+.ecu-risk span{font-family:var(--hd);font-size:18px;font-style:italic;letter-spacing:1px}
+.ecu-risk small{grid-column:1/-1}
+.ecu.locked p{margin:6px 0 0}
+/* ---------- revenus du clan ---------- */
+.income{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px;padding:14px 18px;clip-path:var(--cut);flex-wrap:wrap;
+  background:linear-gradient(120deg,rgba(255,210,63,.16),rgba(5,9,20,.9) 55%);box-shadow:inset 0 0 0 1px rgba(255,210,63,.5)}
+.income>div:first-child{display:flex;flex-direction:column;gap:2px;max-width:560px}
+.inc-rate{font-family:var(--hd);font-size:38px;font-style:italic;line-height:1;color:var(--gold)}
+.inc-pend{display:flex;align-items:center;gap:14px}.inc-pend b{font-family:var(--hd);font-size:32px;font-style:italic}
+.turf{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:-2px 0 12px;padding:8px 12px;clip-path:var(--cut-s);background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cc) 40%,transparent);font-size:14px}
+.turf b{color:var(--cc)}
+#homecard .hc-inc{margin-top:6px;font-weight:700;color:var(--gold)}
+#toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,30px);opacity:0;z-index:20;padding:10px 22px 6px;font-family:var(--hd);font-size:26px;font-style:italic;color:#04060c;
+  background:linear-gradient(180deg,#ffe78a,#ffd23f);clip-path:var(--cut-s);transition:opacity .2s,transform .2s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}

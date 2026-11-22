@@ -229,6 +229,135 @@ const PROFILES = {
       {t:'rect',x:0,h:14,w:30,hh:5,c:[18,18,22]},
       {t:'rect',x:8,h:15,w:3,hh:3,c:[200,204,212]},{t:'rect',x:13,h:15,w:3,hh:3,c:[200,204,212]},{t:'rect',x:18,h:15,w:3,hh:3,c:[200,204,212]},
       {t:'line',a:[84,30],b:[210,34],c:0.6}
+    ]},
+  /* ---- Ford Focus Mk1 : « New Edge », phares et feux triangulaires ---- */
+  focus: {L:250, wr:18, wheels:[40,196], sill:12, belt:58, spokes:5, bodyBumpers:true,
+    body:[[3,12],[0,22],[1,40],[2,58],[5,72],[10,82],[20,87],[40,89],[116,89],[132,87],[150,80],[172,66],[194,57],[218,52],[236,47],[246,40],[249,28],[247,16],[240,12]],
+    glass:[[18,60],[19,72],[24,80],[36,85],[116,85],[130,83],[146,77],[166,66],[182,60]],
+    pillars:[[60,66],[108,114]], doors:[62,110,184], handle:[116,55], mirror:172,
+    hl:[[206,55],[238,49],[244,43],[214,44]],
+    tl:[[1,48],[8,48],[14,74],[4,72]],
+    extra:[
+      {t:'poly',pts:[[228,20],[248,22],[248,30],[230,30]],c:[14,14,18]},
+      {t:'line',a:[50,36],b:[192,38],c:0.6},
+      {t:'rect',x:0,h:15,w:5,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Nissan Terrano II : 4x4 haut perché, roue de secours sur le hayon ---- */
+  terrano: {L:246, wr:22, wheels:[48,192], sill:24, belt:62, spokes:6, bodyBumpers:true,
+    body:[[8,24],[4,30],[4,52],[6,66],[8,84],[14,92],[28,95],[132,95],[148,92],[160,80],[170,68],[180,64],[226,62],[240,58],[246,48],[246,32],[242,24]],
+    glass:[[20,64],[22,84],[30,90],[130,90],[146,86],[156,76],[164,66]],
+    pillars:[[58,64],[100,106]], doors:[100,168], handle:[106,58], mirror:160,
+    hl:[[222,60],[240,57],[244,50],[224,52]],
+    tl:[[5,40],[10,40],[10,62],[5,62]],
+    extra:[
+      {t:'rect',x:30,h:96,w:100,hh:2,c:[30,30,34]},
+      {t:'rect',x:8,h:24,w:236,hh:9,c:[44,46,50]},
+      {t:'disc',x:5,h:60,r:14,c:[18,18,22]},{t:'disc',x:5,h:60,r:8,c:[120,126,138]},{t:'disc',x:5,h:60,r:3,c:[40,42,48]},
+      {t:'poly',pts:[[228,26],[246,28],[246,40],[230,38]],c:[20,20,24]},
+      {t:'line',a:[60,48],b:[186,50],c:0.6}
+    ]},
+
+  /* ---- Mazda RX-7 FD : courbes rondes, nez plongeant, grand aileron arceau ---- */
+  rx7: {L:257, wr:19, wheels:[52,197], sill:10, belt:54, spokes:5, bodyBumpers:true,
+    body:[[5,10],[0,20],[0,34],[3,46],[10,54],[30,58],[54,62],[70,68],[88,73],[108,74],[128,73],[142,68],[162,56],[180,50],[206,46],[230,40],[248,32],[256,24],[254,14],[246,10]],
+    glass:[[66,56],[82,66],[100,71],[126,70],[140,65],[156,55]],
+    pillars:[[110,113]], doors:[74,162], handle:[82,50], mirror:150,
+    hl:[[236,32],[250,29],[252,25],[238,27]],
+    tl:[[1,40],[12,42],[12,48],[1,47]],
+    extra:[
+      {t:'line',a:[226,41],b:[250,33],c:[20,20,24]},
+      {t:'rect',wing:1,x:12,h:56,w:3,hh:11,c:1.0},{t:'rect',wing:1,x:38,h:60,w:3,hh:7,c:1.0},
+      {t:'poly',wing:1,pts:[[4,66],[46,66],[46,69],[4,69]],c:1.05},{t:'line',wing:1,a:[4,69],b:[46,69],c:[236,238,244]},
+      {t:'poly',pts:[[230,12],[254,14],[255,22],[232,21]],c:[12,12,16]},
+      {t:'poly',pts:[[166,32],[174,33],[174,40],[166,39]],c:[12,12,16]},
+      {t:'line',a:[60,32],b:[194,34],c:0.6},
+      {t:'rect',x:0,h:14,w:6,hh:3,c:[200,204,212]}
+    ]},
+
+  /* ---- Ford Mustang GT 2025 : capot long, fastback, feux à trois barres ---- */
+  mustang: {L:289, wr:21, wheels:[62,228], sill:12, belt:60, spokes:5, bodyBumpers:true,
+    body:[[6,12],[0,24],[0,44],[4,56],[14,60],[40,62],[60,66],[78,74],[98,80],[124,82],[146,80],[164,72],[186,62],[214,58],[252,55],[274,50],[286,42],[288,30],[285,16],[276,12]],
+    glass:[[80,62],[96,72],[112,77],[140,77],[156,72],[176,62]],
+    pillars:[[128,132]], doors:[100,186], handle:[108,56], mirror:176,
+    hl:[[252,54],[276,50],[282,44],[256,46]],
+    tl:[[1,50],[10,52],[10,60],[1,59]],
+    extra:[
+      {t:'rect',x:1,h:51,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:54,w:8,hh:1,c:[255,120,110]},{t:'rect',x:1,h:57,w:8,hh:1,c:[255,120,110]},
+      {t:'poly',wing:1,pts:[[8,61],[30,62],[30,64],[8,63]],c:0.9},
+      {t:'rect',x:222,h:57,w:14,hh:2,c:[12,12,16]},
+      {t:'poly',pts:[[262,16],[288,18],[288,40],[266,38]],c:[12,12,16]},
+      {t:'line',a:[70,34],b:[224,36],c:0.6},
+      {t:'rect',x:0,h:15,w:6,hh:4,c:[200,204,212]},{t:'rect',x:8,h:15,w:6,hh:4,c:[200,204,212]}
+    ]},
+
+  /* ---- Lexus RC F : calandre en sablier, feux en L, quadruple échappement ---- */
+  rcf: {L:282, wr:20, wheels:[58,222], sill:12, belt:60, spokes:10, bodyBumpers:true,
+    body:[[6,12],[0,22],[0,42],[3,56],[10,62],[36,64],[56,66],[74,74],[94,80],[118,82],[140,80],[160,72],[182,62],[212,58],[246,55],[266,50],[278,42],[281,30],[278,16],[270,12]],
+    glass:[[76,64],[90,74],[108,79],[136,79],[152,74],[172,64]],
+    pillars:[[124,128]], doors:[96,182], handle:[104,57], mirror:172,
+    hl:[[248,54],[270,50],[276,44],[252,47]],
+    tl:[[1,48],[14,50],[14,58],[1,57]],
+    extra:[
+      {t:'poly',pts:[[258,14],[281,16],[281,40],[262,36]],c:[10,10,14]},
+      {t:'line',a:[254,45],b:[264,39],c:[230,240,255]},
+      {t:'line',a:[184,61],b:[246,57],c:1.6},
+      {t:'poly',pts:[[200,34],[210,36],[210,46],[202,44]],c:[12,12,16]},
+      {t:'poly',wing:1,pts:[[8,63],[28,64],[28,66],[8,65]],c:[26,26,32]},
+      {t:'line',a:[64,34],b:[218,36],c:0.6},
+      {t:'rect',x:0,h:15,w:6,hh:4,c:[200,204,212]},{t:'rect',x:8,h:15,w:6,hh:4,c:[200,204,212]}
+    ]},
+
+  /* ---- McLaren 720S : moteur central, verrière en goutte, énorme prise d'air de porte ---- */
+  mc720: {L:272, wr:20, wheels:[58,214], sill:9, belt:50, spokes:10, bodyBumpers:true,
+    body:[[6,10],[0,20],[0,34],[3,44],[12,50],[40,54],[70,60],[92,68],[114,72],[134,72],[150,68],[168,58],[186,48],[210,42],[236,36],[256,30],[268,24],[271,16],[266,10]],
+    glass:[[90,52],[104,64],[118,69],[134,69],[148,62],[160,52]],
+    pillars:[], doors:[100,172], handle:[110,48], mirror:156, noHandle:true,
+    hl:[[238,36],[258,30],[262,26],[242,30]],
+    tl:[[1,42],[14,44],[14,46],[1,45]],
+    extra:[
+      {t:'poly',pts:[[64,22],[102,24],[102,48],[76,44]],c:[12,12,16]},
+      {t:'line',a:[68,30],b:[100,31],c:[50,52,60]},{t:'line',a:[70,38],b:[100,39],c:[50,52,60]},
+      {t:'poly',pts:[[236,38],[262,30],[264,24],[240,30]],c:[16,16,20]},
+      {t:'poly',wing:1,pts:[[6,53],[42,54],[42,56],[6,55]],c:[26,26,32]},
+      {t:'rect',x:236,h:10,w:34,hh:3,c:[20,20,26]},
+      {t:'rect',x:2,h:12,w:30,hh:6,c:[18,18,22]},
+      {t:'rect',x:14,h:22,w:6,hh:4,c:[200,204,212]}
+    ]},
+
+  /* ---- Ferrari 250 Testa Rossa (1958) : ailes « ponton », cockpit ouvert ---- */
+  tr250: {L:252, wr:18, wheels:[42,180], sill:14, belt:54, spokes:12, bodyBumpers:true, open:true, noHandle:true, noMirror:true, noSkirt:true,
+    body:[[4,14],[0,22],[0,36],[4,46],[16,52],[40,54],[62,56],[76,62],[86,60],[96,55],[150,55],[164,58],[190,58],[214,54],[234,46],[248,36],[251,26],[248,18],[240,14]],
+    glass:[[116,55],[124,65],[138,65],[132,55]],
+    pillars:[], doors:[98,140], handle:[0,0], mirror:0,
+    hl:[[232,44],[246,40],[248,36],[234,38]], hlRound:[240,41,5],
+    tl:[[1,38],[6,38],[6,42],[1,42]],
+    extra:[
+      {t:'poly',pts:[[150,14],[178,14],[172,40],[152,46]],c:[16,14,16]},
+      {t:'disc',x:108,h:56,r:5,c:[226,196,150]},{t:'rect',x:104,h:50,w:9,hh:6,c:[220,220,226]},
+      {t:'rect',x:100,h:16,w:50,hh:3,c:[200,204,212]},
+      {t:'disc',x:120,h:36,r:9,c:[240,240,236]},{t:'rect',x:118,h:32,w:4,hh:8,c:[20,20,24]},
+      {t:'line',a:[196,52],b:[226,48],c:0.6}
+    ]},
+
+  /* ---- Formule 1 : monoplace, roues découvertes, ailerons, halo ---- */
+  f1: {L:336, wr:22, wheels:[62,276], sill:14, belt:52, spokes:6, bodyBumpers:true, open:true, noArch:true, noHandle:true, noMirror:true, noSkirt:true, noLights:true, noDoors:true,
+    body:[[24,18],[26,40],[60,48],[110,56],[140,64],[156,66],[166,60],[178,50],[204,42],[244,36],[290,32],[318,28],[332,24],[333,20],[300,20],[256,22],[214,18],[200,14],[150,12],[90,12],[60,14],[40,16]],
+    glass:[[168,57],[178,60],[184,55],[172,53]],
+    pillars:[], doors:[], handle:[0,0], mirror:0,
+    hl:[[2,28],[6,28],[6,32],[2,32]],
+    tl:[[2,28],[6,28],[6,32],[2,32]],
+    extra:[
+      {t:'poly',pts:[[0,30],[24,30],[26,60],[0,60]],c:[20,20,26]},
+      {t:'poly',pts:[[0,55],[30,55],[30,60],[0,60]],c:1.0},{t:'rect',x:0,h:47,w:28,hh:3,c:1.0},
+      {t:'poly',pts:[[296,4],[336,4],[336,12],[300,12]],c:[20,20,26]},{t:'rect',x:300,h:10,w:36,hh:2,c:1.0},
+      {t:'line',a:[160,64],b:[188,58],c:[18,18,22]},{t:'line',a:[160,63],b:[188,57],c:[18,18,22]},
+      {t:'disc',x:173,h:60,r:5,c:[250,214,40]},
+      {t:'disc',x:150,h:62,r:3,c:[10,10,14]},
+      {t:'poly',pts:[[186,26],[198,26],[198,38],[188,38]],c:[10,10,14]},
+      {t:'rect',x:70,h:12,w:140,hh:3,c:[24,24,30]},
+      {t:'line',a:[214,20],b:[300,22],c:0.5},
+      {t:'rect',x:1,h:31,w:4,hh:3,c:[255,40,40]}
     ]}
 };
 // convertit [x,h] -> [x,y] une fois
@@ -296,7 +425,7 @@ Buf.prototype.line = function (x0, y0, x1, y1, c, sil) {
 const _bodyCache = {};
 function getBody(style, color, look) {
   const lk = lookOf({look});
-  const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize].join('|');
+  const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize, lk.hood, lk.roof, lk.lights, lk.banner, lk.exhaustTip].join('|');
   if (_bodyCache[key]) return _bodyCache[key];
   const p = PROFILES[style], b = new Buf(p.L, p.H), C = hexRgb(color);
   const WS = lk.wheelSize || 0;
@@ -370,6 +499,19 @@ function getBody(style, color, look) {
       b.px(x, y, paint(base, x, y));
     }
   }
+  // capot et toit (carbone, ouïes, écope)
+  const gxs = p.glass.map(q => q[0]), gx0 = Math.min(...gxs), gx1 = Math.max(...gxs);
+  const topAtB = x => { for (let y = 0; y < p.H; y++) if (inPoly(p.body, x + .5, y + .5)) return y; return bot; };
+  const carbon = (x, y) => ((x >> 1) + (y >> 1)) & 1 ? [36, 38, 46] : [20, 21, 26];
+  if (!p.open && (lk.hood === 'carbon' || lk.hood === 'carbonvent')) {
+    for (let x = gx1 + 3; x < L - 10; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 5 && y < bot - 8; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
+  }
+  if (!p.open && (lk.hood === 'vent' || lk.hood === 'carbonvent')) {
+    for (let k = 0; k < 3; k++) { const vx = gx1 + 14 + k * 11; if (vx > L - 20) break; const ty = topAtB(vx + 3); b.rect(vx, ty + 1, 7, 2, [8, 8, 12]); b.rect(vx, ty + 3, 7, 1, tone(C, 1.4)); }
+  }
+  if (!p.open && lk.roof === 'carbon') {
+    for (let x = gx0 + 3; x < gx1 - 3; x++) { const ty = topAtB(x); for (let y = ty; y < ty + 3; y++) if (b.sil[y * L + x]) b.px(x, y, y === ty ? [92, 96, 108] : carbon(x, y)); }
+  }
   // lignes de caractère / ombres sous le bouclier
   for (const e of p.extra) if (e.t === 'line' && typeof e.c === 'number') {
     for (let i = 0; i <= Math.abs(e.b[0] - e.a[0]); i++) {
@@ -395,6 +537,12 @@ function getBody(style, color, look) {
     if (p.soft === undefined && u > 0.55 && ((x * 7 + y * 3) % 23) < 2) c = c.map(v => v - 14);
     const n = bay(x, y) * 8, tf = [1, 0.6, 0.34][lk.tint || 0]; b.px(x, y, [c[0] * tf + n, c[1] * tf + n, c[2] * tf + n], true);
   }
+  // bandeau de pare-soleil
+  if (lk.banner !== 'none' && !p.open) {
+    const BC = {black: [14, 14, 18], white: [236, 238, 244], red: [200, 28, 36], blue: [30, 90, 220]}[lk.banner];
+    for (let x = 0; x < L; x++) { let first = -1; for (let y = gTop; y <= gBot; y++) if (gm(x, y)) { first = y; break; }
+      if (first < 0) continue; for (let y = first + 1; y <= first + 3; y++) if (gm(x, y) && gm(x, y + 1)) b.px(x, y, BC); }
+  }
   // appuis-tête (silhouettes dans l'habitacle)
   if (!p.soft) {
     for (const hx of [p.pillars.length ? p.pillars[0][1] + 8 : 80]) { /* pas de détail intrusif */ }
@@ -406,11 +554,9 @@ function getBody(style, color, look) {
   // 4) portes, poignées, bas de caisse
   const seam = tone(C, 0.42);
   for (const dx of p.doors) for (let y = belt + 2; y < bot - 6; y++) if (b.has(dx, y)) { b.px(dx, y, seam); b.px(dx + 1, y, tone(C, 1.4)); }
-  b.rect(p.handle[0], p.handle[1], 10, 2, [210, 214, 222]);
-  b.rect(p.handle[0], p.handle[1] + 2, 10, 1, tone(C, 0.5));
+  if (!p.noHandle) { b.rect(p.handle[0], p.handle[1], 10, 2, [210, 214, 222]); b.rect(p.handle[0], p.handle[1] + 2, 10, 1, tone(C, 0.5)); }
   const sk0 = p.wheels[0] + p.wr + 8, sk1 = p.wheels[1] - p.wr - 8;
-  b.rect(sk0, bot - 5, sk1 - sk0, 5, (x, y) => tone(C, 0.32 + bay(x, y) * 0.05), true);
-  b.rect(sk0, bot - 6, sk1 - sk0, 1, tone(C, 0.8));
+  if (!p.noSkirt) { b.rect(sk0, bot - 5, sk1 - sk0, 5, (x, y) => tone(C, 0.32 + bay(x, y) * 0.05), true); b.rect(sk0, bot - 6, sk1 - sk0, 1, tone(C, 0.8)); }
   if (!p.bodyBumpers) {
     b.rect(L - 28, bot - 12, 27, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
     b.rect(1, bot - 12, 25, 12, (x, y) => tone(C, 0.34 + bay(x, y) * 0.05), true);
@@ -418,21 +564,22 @@ function getBody(style, color, look) {
   }
   // rétroviseur
   const mx = p.mirror, my = belt - 4;
-  b.poly([[mx, my], [mx + 12, my], [mx + 14, my + 4], [mx + 10, my + 9], [mx + 1, my + 9]], (x, y) => tone(C, 0.8 + bay(x, y) * 0.1 + (my + 4 - y) * 0.02), true);
-  b.rect(mx + 2, my + 1, 8, 1, tone(C, 1.8));
-  b.rect(mx + 12, my + 2, 2, 2, [20, 20, 26]);
+  if (!p.noMirror) b.poly([[mx, my], [mx + 12, my], [mx + 14, my + 4], [mx + 10, my + 9], [mx + 1, my + 9]], (x, y) => tone(C, 0.8 + bay(x, y) * 0.1 + (my + 4 - y) * 0.02), true);
+  if (!p.noMirror) { b.rect(mx + 2, my + 1, 8, 1, tone(C, 1.8)); b.rect(mx + 12, my + 2, 2, 2, [20, 20, 26]); }
 
   // 5) feux
-  if (p.hlRound) {
+  const HLC = lk.lights === 'xenon' ? [214, 232, 255] : [226, 228, 214];
+  if (p.noLights) { /* monoplace : pas de phares */ }
+  else if (p.hlRound) {
     const [cx, cy, r] = p.hlRound;
     b.poly(p.hl, [24, 24, 30], true);
     b.disc(cx, cy, r + 2, [18, 18, 24], true); b.disc(cx, cy, r, (x, y) => ((x - cx) + (y - cy) < -2 ? [252, 252, 244] : [226, 224, 186]), true);
     b.disc(cx, cy, r * 0.45, [255, 214, 90]); b.px(cx - 3, cy - 3, [255, 255, 255]);
   } else {
-    b.poly(p.hl, (x, y) => (x + y) % 6 === 0 ? [255, 255, 255] : [226, 228, 214], true);
+    b.poly(p.hl, (x, y) => (x + y) % 6 === 0 ? [255, 255, 255] : HLC, true);
     for (let i = 0; i < p.hl.length; i++) { const q = p.hl[i], n = p.hl[(i + 1) % p.hl.length]; b.line(q[0], q[1], n[0], n[1], [28, 28, 34]); }
     let cx = 0, cy = 0; for (const q of p.hl) { cx += q[0]; cy += q[1]; } cx = Math.round(cx / p.hl.length); cy = Math.round(cy / p.hl.length);
-    b.disc(cx, cy, 5, [60, 64, 76]); b.disc(cx, cy, 3, [255, 232, 140]); b.px(cx - 1, cy - 1, [255, 255, 255]);
+    b.disc(cx, cy, 5, [60, 64, 76]); b.disc(cx, cy, 3, lk.lights === 'xenon' ? [200, 225, 255] : [255, 232, 140]); b.px(cx - 1, cy - 1, [255, 255, 255]);
     b.rect(L - 5, p.hl[3][1] - 1, 4, 5, [255, 170, 40]);
   }
   if (p.tlRound) {
@@ -446,6 +593,14 @@ function getBody(style, color, look) {
     b.poly(p.tl, (x, y) => (x + y) % 5 === 0 ? [255, 96, 84] : [200, 24, 30], true);
     const t0 = p.tl[0]; b.line(t0[0], t0[1], p.tl[1][0], p.tl[1][1], [255, 150, 130]);
   }
+  // options de phares : fumés, angel eyes
+  if (!p.noLights && lk.lights === 'smoke') {
+    for (const poly of [p.hl, p.tl].filter(Boolean)) b.poly(poly, (x, y) => { const i = (y * L + x) * 4; return [b.d[i] * 0.45, b.d[i + 1] * 0.45, b.d[i + 2] * 0.5]; });
+  }
+  if (!p.noLights && lk.lights === 'angel') {
+    let cx = 0, cy = 0; for (const q of p.hl) { cx += q[0]; cy += q[1]; } cx = cx / p.hl.length; cy = cy / p.hl.length;
+    for (let a = 0; a < 360; a += 15) { const t = a * Math.PI / 180; b.px(Math.round(cx + Math.cos(t) * 4.5), Math.round(cy + Math.sin(t) * 3), [140, 236, 255]); }
+  }
 
   // 6) accessoires propres à chaque voiture
   for (const e of p.extra) {
@@ -457,7 +612,7 @@ function getBody(style, color, look) {
   }
 
   // 6b) aileron
-  if (lk.spoiler) {
+  if (lk.spoiler && SPOILER_MOUNT[style] && !p.open) {
     const [x0, x1, mode] = SPOILER_MOUNT[style], carb = (x, y) => [24 + bay(x, y) * 10, 25 + bay(x, y) * 10, 30 + bay(x, y) * 10];
     const topAt = x => { for (let y = 0; y < p.H; y++) if (inPoly(p.body, x + .5, y + .5)) return y; return bot; };
     const roof = mode === 'roof';
@@ -472,14 +627,26 @@ function getBody(style, color, look) {
       const eh = big ? 10 : 7; b.rect(px0, py - 2, 2, eh, carb, true); b.rect(px1 - 2, py - 2, 2, eh, carb, true);
     }
   }
+  // 6c) sorties d'échappement
+  const chrome = (x, y) => (y & 1) ? [228, 232, 240] : [176, 182, 194];
+  if (lk.exhaustTip === 'twin') { b.rect(0, bot - 6, 10, 5, chrome, true); b.rect(0, bot - 5, 3, 3, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'quad') { b.rect(0, bot - 5, 9, 4, chrome, true); b.rect(0, bot - 10, 9, 4, chrome, true); b.rect(0, bot - 4, 2, 2, [10, 10, 12]); b.rect(0, bot - 9, 2, 2, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'center') { b.rect(0, bot - 8, 12, 7, chrome, true); b.rect(0, bot - 7, 4, 5, [10, 10, 12]); }
+  else if (lk.exhaustTip === 'side') { const sx = p.wheels[0] + p.wr + 8; b.rect(sx, bot - 1, 12, 4, chrome, true); b.rect(sx, bot, 3, 2, [10, 10, 12]); }
+  // écope de toit
+  if (!p.open && lk.roof === 'scoop') {
+    const cx = Math.round((gx0 + gx1) / 2), ty = topAtB(cx);
+    b.poly([[cx - 13, ty + 1], [cx - 8, ty - 5], [cx + 9, ty - 5], [cx + 12, ty + 1]], (x, y) => paint(C, x, y - 10), true);
+    b.rect(cx + 7, ty - 4, 4, 4, [8, 8, 12], true);
+  }
   // 7) passages de roues
-  for (const wx of p.wheels) {
+  if (!p.noArch) for (const wx of p.wheels) {
     const cy = GY - p.wr - WS;
     b.disc(wx, cy, p.wr + WS + 5, tone(C, 0.28), true, bot);
     b.disc(wx, cy, p.wr + WS + 3.8, [8, 8, 12], true, bot);
   }
   // 7b) kit carrosserie
-  if (lk.kit) {
+  if (lk.kit && !p.open) {
     const carb = (x, y) => [22 + bay(x, y) * 10, 23 + bay(x, y) * 10, 28 + bay(x, y) * 10];
     const sk0 = p.wheels[0] + p.wr + WS + 6, sk1 = p.wheels[1] - p.wr - WS - 6;
     b.rect(sk0 - 2, bot + 1, sk1 - sk0 + 4, lk.kit >= 2 ? 3 : 2, lk.kit >= 2 ? carb : (x, y) => paint(C, x, y + 40), true);
@@ -602,11 +769,13 @@ function drawCarLights(ctx, style, x, y, s, o) {
   };
   // phare : point lumineux + faisceau sur la route
   let hx = 0, hy = 0; for (const q of p.hl) { hx += q[0]; hy += q[1]; } hx /= p.hl.length; hy /= p.hl.length;
-  const HX = x + hx * s, HY = y - (p.H - 1 - hy) * s;
-  glow(HX, HY, 26 * s, '255,240,190', 0.55);
+  const HX = x + hx * s, HY = y - (p.H - 1 - hy) * s, HC = o.look && o.look.lights === 'xenon' ? '200,225,255' : '255,240,190';
+  if (!p.noLights) {
+  glow(HX, HY, 26 * s, HC, 0.55);
   const beam = ctx.createLinearGradient(HX, 0, HX + 220 * s, 0);
   beam.addColorStop(0, 'rgba(255,236,180,0.22)'); beam.addColorStop(1, 'rgba(255,236,180,0)');
   ctx.fillStyle = beam; ctx.beginPath(); ctx.moveTo(HX, HY - 3 * s); ctx.lineTo(HX + 220 * s, y - 30 * s); ctx.lineTo(HX + 220 * s, y + 8 * s); ctx.lineTo(HX, HY + 4 * s); ctx.closePath(); ctx.fill();
+  }
   // feux arrière
   let tx = 3, ty = p.H - 1 - 48;
   if (p.tl) { tx = 0; ty = 0; for (const q of p.tl) { tx += q[0]; ty += q[1]; } tx /= p.tl.length; ty /= p.tl.length; }

@@ -138,6 +138,14 @@ document.addEventListener('click', e => {
     case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : v[0] === 'p' ? Game.pinkSlips()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
     case 'bcat': UI.bodyCat = v; UI.render(); break;
+    case 'ecureset': { const cs = Game.car(); cs.map = {}; Game.persist(); UI.render(); break; }
+    case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) UI.toast('+ ' + money(g) + ' encaissés'); UI.render(); break; }
+    case 'turfup': if (Game.upgradeTurf(v)) UI.render(); else flash(b); break;
+    case 'crewcol': UI.crewColor = v; document.querySelectorAll('.crew-col').forEach(x => x.classList.toggle('sel', x.dataset.v === v)); break;
+    case 'crewsave': Game.setCrew($('crewname').value, UI.crewColor || Game.crew().color); UI.render(); break;
+    case 'lore': UI.showLore(v); break;
+    case 'lore-close': UI.raceTab = 'legends'; UI.go('races'); break;
+    case 'noop': break;
     case 'sellcar': {
       const c = Game.save.cars[v];
       if (c && confirm(`Vendre ta ${CARS[v].name} pour ${money(Game.carValue(c) * 0.6)} ?`)) { Game.sellCar(v); UI.render(); }
@@ -202,3 +210,12 @@ function toggleFullscreen() {
 document.addEventListener('keydown', e => { if (e.code === 'KeyF' && !e.repeat && !Jobs.active && !(e.target.closest && e.target.closest('input'))) toggleFullscreen(); });
 // en course / mini-jeu : la barre du haut se replie pour laisser tout l'écran au jeu
 setInterval(() => document.body.classList.toggle('ingame', Race.active || Jobs.active), 200);
+
+/* réglages ECU : appliqués au relâchement du curseur */
+document.addEventListener('input', e => { const el = e.target; if (!el.dataset || !el.dataset.ecu || el.type !== 'range') return;
+  const lab = el.parentElement.querySelector('.ecu-v'); if (lab) lab.textContent = '…'; });
+document.addEventListener('change', e => {
+  const el = e.target; if (!el.dataset || !el.dataset.ecu) return;
+  const cs = Game.car(); cs.map = Object.assign({}, cs.map || {}); cs.map[el.dataset.ecu] = el.type === 'checkbox' ? el.checked : +el.value;
+  Game.persist(); UI.render();
+});

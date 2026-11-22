@@ -30,7 +30,10 @@ const ENGINE_SOUND = {
   m840t: {cyl: 8, intake: 100, exhaust: 100, extractor: 110, pipe: 150, ign: 0.016, gIn: 0.3,  gBlock: 0.3,  gOut: 0.4},
   colombo:{cyl: 12, intake: 60, exhaust: 60, extractor: 55,  pipe: 90,  ign: 0.013, gIn: 0.5,  gBlock: 0.2,  gOut: 0.4},
   f1v6:  {cyl: 6, intake: 45,  exhaust: 45,  extractor: 40,  pipe: 70,  ign: 0.010, gIn: 0.6,  gBlock: 0.2,  gOut: 0.8},
-  ls3:   {cyl: 8, intake: 140, exhaust: 140, extractor: 150, pipe: 170, ign: 0.02,  gIn: 0.25, gBlock: 0.3,  gOut: 0.38}
+  ls3:   {cyl: 8, intake: 140, exhaust: 140, extractor: 150, pipe: 170, ign: 0.02,  gIn: 0.25, gBlock: 0.3,  gOut: 0.38},
+  xu9:   {cyl: 4, intake: 95,  exhaust: 95,  extractor: 85,  pipe: 130, ign: 0.016, gIn: 0.4,  gBlock: 0.35, gOut: 1.05},
+  ej25:  {cyl: 4, intake: 120, exhaust: 125, extractor: 150, pipe: 160, ign: 0.019, gIn: 0.3,  gBlock: 0.4,  gOut: 0.95},
+  v10l:  {cyl: 10, intake: 65, exhaust: 65,  extractor: 60,  pipe: 95,  ign: 0.013, gIn: 0.45, gBlock: 0.25, gOut: 0.55}
 };
 // variantes de silencieux testées stables (action 0.1) : moins d'éléments = son plus libre
 const MASTER_VOL = 0.8;

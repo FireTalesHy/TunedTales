@@ -24,7 +24,10 @@ const ENGINES = {
   m840t: {name:'M840T 4.0 V8 biturbo', kind:'V8 biturbo', hp:720, hpRpm:7500, tqRpm:5500, red:8500, mass:200, turbo:true, price:90000},
   colombo:{name:'Colombo 3.0 V12', kind:'V12 atmo',    hp:300, hpRpm:7200, tqRpm:5500, red:7600, mass:175, turbo:false, price:600000},
   f1v6:  {name:'V6 1.6 turbo hybride', kind:'V6 turbo hybride', hp:1000, hpRpm:11500, tqRpm:10500, red:12500, mass:145, turbo:true, price:3000000},
-  ls3:   {name:'LS3 V8 6.2',      kind:'V8 atmo',      hp:430, hpRpm:5900, tqRpm:4600, red:6600, mass:200, turbo:false, price:16000}
+  ls3:   {name:'LS3 V8 6.2',      kind:'V8 atmo',      hp:430, hpRpm:5900, tqRpm:4600, red:6600, mass:200, turbo:false, price:16000},
+  xu9:   {name:'XU9JA 1.9 8v',    kind:'4 cyl. atmo',  hp:130, hpRpm:6000, tqRpm:4750, red:6600, mass:115, turbo:false, price:1600},
+  ej25:  {name:'EJ257 2.5 boxer', kind:'4 cyl. à plat turbo', hp:280, hpRpm:6000, tqRpm:4000, red:7000, mass:160, turbo:true, price:9000},
+  v10l:  {name:'V10 5.2 FSI',     kind:'V10 atmo',     hp:610, hpRpm:8250, tqRpm:6500, red:8700, mass:200, turbo:false, price:120000}
 };
 
 // body = masse sans moteur ; frac = part du poids sur les roues motrices ; eff = rendement transmission
@@ -91,7 +94,16 @@ const CARS = {
            gears:[3.10,2.40,1.95,1.65,1.42,1.25,1.12,1.00], color:'#e10600', style:'f1', hint:'1 000 ch, 798 kg : l\'arme absolue'},
   lfa:    {name:'Lexus LFA',         year:2011, drive:'RWD', price:1000000, engine:'lr1',
            body:1310, mu:1.32, frac:0.62, eff:0.91, r:0.34, cd:0.31, A:2.00, final:4.56,
-           gears:[3.23,2.19,1.61,1.24,1.00,0.82], color:'#f2cc2e', style:'lfa', hint:'Le V10 qui hurle à 9 000 tr/min'}
+           gears:[3.23,2.19,1.61,1.24,1.00,0.82], color:'#f2cc2e', style:'lfa', hint:'Le V10 qui hurle à 9 000 tr/min'},
+  p205:   {name:'Peugeot 205 GTI 1.9', year:1990, drive:'FWD', price:2000, engine:'xu9',
+           body:760,  mu:0.95, frac:0.55, eff:0.90, r:0.29, cd:0.35, A:1.85, final:4.06,
+           gears:[3.25,1.85,1.28,0.97,0.76], color:'#c8101e', style:'p205', hint:'La petite bombe des années 80'},
+  sti:    {name:'Subaru Impreza WRX STI', year:2006, drive:'AWD', price:32000, engine:'ej25',
+           body:1310, mu:1.10, frac:0.92, eff:0.86, r:0.32, cd:0.33, A:2.10, final:3.90,
+           gears:[3.64,2.24,1.52,1.13,0.92,0.71], color:'#1d3f9a', style:'sti', hint:'Le boxer du rallye et ses jantes dorées'},
+  huracan:{name:'Lamborghini Huracán', year:2015, drive:'AWD', price:450000, engine:'v10l',
+           body:1250, mu:1.35, frac:0.92, eff:0.88, r:0.35, cd:0.31, A:1.95, final:3.94,
+           gears:[3.13,2.59,1.96,1.54,1.22,0.97,0.77], color:'#9bd41a', style:'huracan', hint:'V10 atmo, 4 roues motrices, du vert qui pique'}
 };
 const CAR_IDS = Object.keys(CARS).sort((a, b) => CARS[a].price - CARS[b].price);   // toujours par prix croissant
 const ENGINE_IDS = Object.keys(ENGINES).sort((a, b) => ENGINES[a].price - ENGINES[b].price);
@@ -191,7 +203,7 @@ const VISUAL = [
     {v: 'purple', n: 'Violet', p: 350}, {v: 'orange', n: 'Orange', p: 350}, {v: 'red', n: 'Rouge', p: 350}]}
 ];
 // emplacement des ailerons par profil : zone de pose [x0, x1] et style de montage
-const SPOILER_MOUNT = {civic: [14, 36, 'roof'], rcz: [6, 30, 'deck'], s15: [8, 34, 'deck'], evo: [6, 44, 'deck'], gt3: [8, 46, 'deck'], r35: [6, 40, 'deck'], lfa: [6, 36, 'deck'], twingo: [12, 36, 'roof'], clio: [20, 42, 'roof'], mx5: [6, 34, 'deck'], m3: [6, 38, 'deck'], supra: [8, 44, 'deck'], skyline: [6, 40, 'deck']};
+const SPOILER_MOUNT = {sti: [6, 44, 'deck'], civic: [14, 36, 'roof'], rcz: [6, 30, 'deck'], s15: [8, 34, 'deck'], evo: [6, 44, 'deck'], gt3: [8, 46, 'deck'], r35: [6, 40, 'deck'], lfa: [6, 36, 'deck'], twingo: [12, 36, 'roof'], clio: [20, 42, 'roof'], mx5: [6, 34, 'deck'], m3: [6, 38, 'deck'], supra: [8, 44, 'deck'], skyline: [6, 40, 'deck']};
 function lookOf(o) { return Object.assign({}, LOOK_DEFAULT, (o && o.look) || {}); }
 function randomLook(rnd, level) {
   const pick = (id, maxIdx) => { const opts = VISUAL.find(v => v.id === id).opts; return opts[Math.min(opts.length - 1, Math.floor(rnd() * Math.min(opts.length, maxIdx)))].v; };

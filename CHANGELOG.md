@@ -4,6 +4,17 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🚗 v1.10.0 — « Trois nouvelles caisses » · 22 novembre 2026
+
+Trois voitures de plus à la concession (24 au total), une par gamme de prix :
+
+- 💸 **Peugeot 205 GTI 1.9** — 2 000 € · XU9JA 130 ch, 875 kg, liseré rouge. La petite bombe des années 80, idéale juste après la Twingo.
+- 🔵 **Subaru Impreza WRX STI** — 32 000 € · boxer EJ257 turbo 280 ch, transmission intégrale, écope de capot et grand aileron.
+- 🟢 **Lamborghini Huracán** — 450 000 € · V10 5.2 atmo 610 ch, 4 roues motrices, environ 3,2 s au 0-100 et 10,9 s au 400 m.
+- 🔊 Trois nouveaux sons moteur simulés (4 cylindres 8 soupapes, boxer turbo, V10), et les trois moteurs sont disponibles en swap.
+
+---
+
 ## ✨ v1.9.0 — « Néons & paillettes » · 22 novembre 2026
 
 Le jeu devient plus flatteur à l'œil, à chaque clic :

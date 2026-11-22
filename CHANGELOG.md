@@ -4,7 +4,7 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
-## ✨ v1.9.0 — « Néons & paillettes » · 24 novembre 2026
+## ✨ v1.9.0 — « Néons & paillettes » · 22 novembre 2026
 
 Le jeu devient plus flatteur à l'œil, à chaque clic :
 
@@ -18,7 +18,7 @@ Le jeu devient plus flatteur à l'œil, à chaque clic :
 
 ---
 
-## 🏁 v1.8.0 — « Jour de course » · 23 novembre 2026
+## 🏁 v1.8.0 — « Jour de course » · 22 novembre 2026
 
 Inspirée des références du genre (CSR Racing, Pixel Car Racer, Nitto 1320, Drag Racing) :
 
@@ -32,7 +32,7 @@ Inspirée des références du genre (CSR Racing, Pixel Car Racer, Nitto 1320, Dr
 
 ---
 
-## ⚔️ v1.7.0 — « La ville est à toi » · 23 novembre 2026
+## ⚔️ v1.7.0 — « La ville est à toi » · 22 novembre 2026
 
 ### ⚔️ Clans (remplacent les Légendes de la ville)
 - **5 clans** à faire tomber, chacun avec son territoire : Les Clés de 12, Nuit Blanche, Twin Turbo Familia, Midnight Kings et **Le Cercle**.

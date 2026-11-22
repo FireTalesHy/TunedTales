@@ -4,6 +4,20 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## ✨ v1.9.0 — « Néons & paillettes » · 24 novembre 2026
+
+Le jeu devient plus flatteur à l'œil, à chaque clic :
+
+- 💰 **Pluie de pièces** qui volent jusqu'à ton compteur à chaque gain (course, petit boulot, territoires, bonus quotidien), et un **compteur qui défile** et pulse.
+- 🎉 **Confettis** sur chaque victoire, en rafale quand tu fais tomber un boss.
+- ✨ **Reflet lumineux** qui balaie la carrosserie au garage et dans l'atelier, **projecteurs mobiles** dans l'atelier carrosserie.
+- 🌫️ Garage vivant : **poussière dans la lumière**, moteur au ralenti qui fait **vibrer la caisse**, fumée d'échappement.
+- ⚡ Course : **flash au départ**, rapport engagé qui **« pop »** à chaque passage.
+- 🎬 Menus : entrées en **cascade**, boutons avec reflet, titres animés, lignes de gains qui tombent une à une, bouton COURSES qui pulse.
+- ♿ Respecte le réglage système « réduire les animations ».
+
+---
+
 ## 🏁 v1.8.0 — « Jour de course » · 23 novembre 2026
 
 Inspirée des références du genre (CSR Racing, Pixel Car Racer, Nitto 1320, Drag Racing) :

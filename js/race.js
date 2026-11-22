@@ -64,7 +64,7 @@ const Race = {
     this.zoneFrac = this.zoneT / Math.max(0.01, this.countT);
     this.plLaunchRpm = rpm; this.plLaunchQ = q;
     simLaunch(this.pl, this.plSpec, rpm, q);
-    this.pl.startT = this.t;
+    this.pl.startT = this.t; this.flash = 1;
     this.setMsg(q > 0.95 ? 'DÉPART PARFAIT' : q > 0.82 ? 'BON DÉPART' : 'DÉPART MOU', q > 0.95 ? '#4cff8a' : q > 0.82 ? '#ffd34d' : '#ff9a4a');
     this.state = 'race';
   },
@@ -72,7 +72,7 @@ const Race = {
     const sp = this.plSpec, s = this.pl, q = s.rpm / sp.red;
     if (s.gear >= sp.gears.length - 1 || s.shiftT > 0) return;
     if (q < 0.6) { this.setMsg('TROP TÔT', '#ff9a4a'); return; }
-    simShift(s, sp, q); this.shiftCount++;
+    simShift(s, sp, q); this.shiftCount++; this.gearPop = 1;
     if ((sp.parts.exhaust || 0) >= 1 || sp.alag || sp.turbo) this.flamePl = 0.2;
     Sound.shift(this.plV);
     if (q >= 0.93) { this.perfectShifts++; this.setMsg('PARFAIT', '#4cff8a'); }
@@ -148,6 +148,7 @@ const Race = {
     if (close && !this.photo) { this.photo = true; this.setMsg('PHOTO FINISH', '#ffffff'); this.msgT = 2; }
     if (this.photo && (this.pl.fin && (this.ai.fin || !this.ai.launched))) this.photo = false;
     dt *= this.photo ? 0.28 : 1;
+    if (this.gearPop > 0) this.gearPop = Math.max(0, this.gearPop - dt * 4); if (this.flash > 0) this.flash = Math.max(0, this.flash - dt * 3);
     if (this.flamePl > 0) this.flamePl -= dt; if (this.flameAi > 0) this.flameAi -= dt;
     this.acc += Math.min(dt, 0.05);
     while (this.acc >= STEP) { this.step(STEP); this.acc -= STEP; }
@@ -238,6 +239,7 @@ const Race = {
       ctx.restore();
     }
     this.drawHud(ctx);
+    if (this.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${this.flash * 0.35})`; ctx.fillRect(0, 0, 960, 540); }
   },
   drawNitro(ctx, sim, x, y) {
     if (!(sim.nitroOn && sim.nitroLeft > 0)) return;
@@ -281,7 +283,8 @@ const Race = {
     ctx.restore();
     ctx.fillStyle = '#1a1c38'; ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = 'rgba(255,154,46,0.6)'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.font = `700 34px ${UIF}`; ctx.fillText(s.gear + 1, cx, cy + 1);
+    const gp = 1 + (this.gearPop || 0) * 0.6; ctx.save(); ctx.translate(cx, cy + 1); ctx.scale(gp, gp);
+    ctx.fillStyle = this.gearPop > 0.1 ? '#7ff3ff' : '#fff'; ctx.font = `700 34px ${UIF}`; ctx.fillText(s.gear + 1, 0, 0); ctx.restore();
     ctx.font = `700 26px ${UIF}`; ctx.fillText(Math.round(s.v * 3.6), cx, cy + 56);
     ctx.fillStyle = '#9097c0'; ctx.font = `600 11px ${UIF}`; ctx.fillText('KM/H', cx, cy + 75);
     // LED de passage

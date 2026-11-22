@@ -7,7 +7,7 @@ const UI = {
   screen: 'home', tuneSel: null, garageCar: null,
 
   refreshTop() {
-    $('cash').textContent = money(Game.save.money);
+    this.animCash(Game.save.money);
     const cs = Game.car(), sp = specOf(cs), best = Game.save.best[cs.id];
     $('carname').textContent = CARS[cs.id].name;
     const wins = Object.keys(Game.save.wins).length;
@@ -23,17 +23,29 @@ const UI = {
     $('menu').classList.toggle('hidden', name !== 'home'); $('homecard').classList.toggle('hidden', name !== 'home'); $('racego').classList.toggle('hidden', name !== 'home');
     $('racebtns').classList.add('hidden'); $('result').classList.add('hidden');
     Race.stop(); Jobs.stop();
-    if (name === 'home') { panel.classList.add('hidden'); this.refreshTop(); return; }
+    if (name === 'home') { panel.classList.add('hidden'); this._lastScreen = null; this.refreshTop(); return; }
     panel.classList.remove('hidden');
     this.render();
   },
 
+  /* compteur d'argent qui défile vers sa nouvelle valeur */
+  animCash(target) {
+    const el = $('cash'); if (this._cash == null) { this._cash = target; el.textContent = money(target); return; }
+    if (target === this._cash) return;
+    const from = this._cash, t0 = performance.now(), d = Math.min(1200, 300 + Math.abs(target - from) / 50);
+    el.classList.remove('up', 'down'); void el.offsetWidth; el.classList.add(target > from ? 'up' : 'down');
+    this._cash = target; cancelAnimationFrame(this._cashRaf);
+    const step = now => { const u = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - u, 3); el.textContent = money(from + (target - from) * e); if (u < 1) this._cashRaf = requestAnimationFrame(step); };
+    this._cashRaf = requestAnimationFrame(step);
+  },
+  cashPing() { const el = $('cash'); el.classList.remove('ping'); void el.offsetWidth; el.classList.add('ping'); },
   render() {
     this.refreshTop();
     const fn = {body: this.rBody, jobs: this.rJobs, races: this.rRaces, garage: this.rGarage, tuning: this.rTuning, shop: this.rShop}[this.screen];
     const scroll = $('panelBody') ? $('panelBody').scrollTop : 0;
     $('panel').innerHTML = `<div class="phead"><button class="btn small" data-act="go" data-v="home">◀ ACCUEIL</button><h2>${this.title()}</h2></div><div id="panelBody">${fn.call(this)}</div>`;
     $('panelBody').scrollTop = scroll;
+    if (this._lastScreen !== this.screen) { $('panelBody').classList.add('enter'); this._lastScreen = this.screen; $('panelBody').scrollTop = 0; }
     paintThumbs();
     if (this.screen === 'tuning') this.drawChart();
     if (this.screen === 'body') this.drawShowroom();
@@ -263,21 +275,23 @@ const UI = {
     h += '</div></div></div>';
     return h.replace('%%CART%%', cart);
   },
-  drawShowroom() {
+  drawShowroom(t) {
+    t = t || performance.now() / 1000;
     const cv = $('bsview'); if (!cv) return;
     const ctx = cv.getContext('2d'), cs = Game.car(), st = CARS[cs.id].style, p = PROFILES[st], lk = this.draftLook(), col = this.draftColor();
     ctx.imageSmoothingEnabled = false;
     const g = ctx.createLinearGradient(0, 0, 0, 370); g.addColorStop(0, '#05070f'); g.addColorStop(0.61, '#0d1630'); g.addColorStop(0.62, '#0a0f1f'); g.addColorStop(1, '#03050b');
     ctx.fillStyle = g; ctx.fillRect(0, 0, 900, 370);
     // projecteurs et grille au sol
-    for (const sx of [180, 450, 720]) { const l = ctx.createRadialGradient(sx, 0, 0, sx, 0, 320); l.addColorStop(0, 'rgba(120,200,255,0.18)'); l.addColorStop(1, 'rgba(120,200,255,0)'); ctx.fillStyle = l; ctx.fillRect(sx - 320, 0, 640, 330); }
+    for (const sx0 of [180, 450, 720]) { const sx = sx0 + Math.sin(t * 0.7 + sx0) * 60; const l = ctx.createRadialGradient(sx, 0, 0, sx, 0, 320); l.addColorStop(0, 'rgba(120,200,255,0.18)'); l.addColorStop(1, 'rgba(120,200,255,0)'); ctx.fillStyle = l; ctx.fillRect(sx - 320, 0, 640, 330); }
     ctx.strokeStyle = 'rgba(25,230,255,0.12)'; ctx.lineWidth = 1;
     for (let i = -12; i <= 12; i++) { ctx.beginPath(); ctx.moveTo(450 + i * 40, 230); ctx.lineTo(450 + i * 130, 370); ctx.stroke(); }
     for (const y of [238, 252, 274, 304, 344]) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(900, y); ctx.stroke(); }
     const s = Math.min(2.5, 800 / p.L), x = Math.round(450 - p.L * s / 2), y = 344;
     ctx.save(); ctx.globalAlpha = 0.2; ctx.translate(0, y * 2 + 4); ctx.scale(1, -1); drawCar(ctx, st, col, x, y, s, {wheelAng: 0.3, look: lk}); ctx.restore();
     drawCar(ctx, st, col, x, y, s, {wheelAng: 0.3, look: lk});
-    drawCarLights(ctx, st, x, y, s, {neon: NEON_COLORS[lk.neon]});
+    const ph = (t % 4) / 1.4; if (ph < 1) drawSheen(ctx, st, col, lk, x, y, s, ph, 0.6);
+    drawCarLights(ctx, st, x, y, s, {neon: NEON_COLORS[lk.neon], look: lk});
   },
 
   /* ---------------- PETITS BOULOTS ---------------- */
@@ -312,6 +326,7 @@ const UI = {
       ${record ? '<div class="pl"><span class="gold">⭐ Nouveau meilleur score</span><b></b></div>' : ''}
       <div class="pl total"><span>Paie</span><b class="gold">+ ${money(pay)}</b></div></div>
       <div class="rbtns"><button class="btn" data-act="job" data-v="${job.id}">REJOUER</button><button class="btn ghostbtn" data-act="go" data-v="jobs">AUTRES BOULOTS</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
+    if (pay > 0) setTimeout(() => FX.coins(r.querySelector('.pl.total') || r, Math.min(30, 8 + Math.round(pay / 100))), 300);
   },
 
   /* ---------------- CONCESSION ---------------- */
@@ -548,6 +563,8 @@ const UI = {
       ${res.lore ? `<div class="lore-unlock">🕯️ <b>Bougie d'or obtenue</b> — un nouveau chapitre de l'histoire est débloqué</div>` : ''}
       <div class="rbtns">${res.lore ? `<button class="btn" data-act="lore" data-v="${res.lore}">📖 LIRE LE CHAPITRE</button>` : ''}${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>
       ${res.slip ? this.timeSlip(res, o) : ''}</div>`;
+    if (res.reward > 0) setTimeout(() => FX.coins(r.querySelector('.pl.total') || r, Math.min(30, 10 + Math.round(res.reward / 400))), 350);
+    if (res.win) { FX.confetti(res.lore ? 240 : 140); }
   },
   timeSlip(res, o) {
     const P = res.slip.pl, A = res.slip.ai, t = v => v == null ? '—' : v.toFixed(3), k = v => v ? v.toFixed(1) : '—';

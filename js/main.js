@@ -87,12 +87,23 @@ function drawGarage(ctx, t) {
   ctx.shadowBlur = on ? 14 : 0; ctx.strokeStyle = on ? '#ffd2ec' : '#5a2a48'; ctx.lineWidth = 1; ctx.strokeText('TUNED TALES', 470, 54);
   ctx.restore();
   // voiture, reflet sur l'époxy, halos
-  const s = 1.6, x = Math.round(400 - p.L * s / 2), y = 506;
+  const s = 1.6, x = Math.round(400 - p.L * s / 2), y = 506, lk = lookOf(cs);
+  // poussières qui flottent dans le cône de lumière
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 46; i++) { const px = 200 + ((i * 97 + t * (6 + i % 5) * 4) % 560), py = 40 + ((i * 53 + Math.sin(t * 0.6 + i) * 18 + t * (3 + i % 3) * 3) % 460);
+    ctx.fillStyle = `rgba(255,236,200,${0.12 + 0.18 * Math.abs(Math.sin(t * 1.3 + i))})`; ctx.fillRect(Math.round(px), Math.round(py), i % 4 ? 2 : 3, i % 4 ? 2 : 3); }
+  ctx.restore();
   ctx.save(); ctx.globalAlpha = 0.22; ctx.translate(0, y * 2 + 6); ctx.scale(1, -1);
-  const lk = lookOf(cs);
   drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3, look: lk}); ctx.restore();
+  const idle = Math.sin(t * 38) > 0.6 ? 1 : 0;                       // le moteur tourne au ralenti
+  ctx.save(); ctx.translate(0, -idle);
   drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3, look: lk});
-  drawCarLights(ctx, c.style, x, y, s, {neon: NEON_COLORS[lk.neon]});
+  const ph = (t % 5.5) / 1.6; if (ph < 1) drawSheen(ctx, c.style, cs.color, lk, x, y, s, ph, 0.55);
+  ctx.restore();
+  drawCarLights(ctx, c.style, x, y, s, {neon: NEON_COLORS[lk.neon], look: lk});
+  // fumée d'échappement au ralenti
+  for (let i = 0; i < 6; i++) { const k = ((t * 0.7 + i / 6) % 1), ex = x - 4 - k * 70, ey = y - (p.sill + 4) * s - k * 34 - Math.sin(t * 2 + i) * 4, r = 6 + k * 26;
+    const g = ctx.createRadialGradient(ex, ey, 0, ex, ey, r); g.addColorStop(0, `rgba(210,215,230,${0.16 * (1 - k)})`); g.addColorStop(1, 'rgba(210,215,230,0)'); ctx.fillStyle = g; ctx.fillRect(ex - r, ey - r, r * 2, r * 2); }
 }
 
 let last = performance.now();
@@ -101,6 +112,7 @@ function frame(now) {
   if (Race.active) { Race.update(dt); Race.draw(ctx); }
   else if (Jobs.active) { Jobs.update(dt); Jobs.draw(ctx); }
   else if (UI.screen === 'home') drawGarage(ctx, now / 1000);
+  if (UI.screen === 'body' && $('bsview')) UI.drawShowroom(now / 1000);
   requestAnimationFrame(frame);
 }
 
@@ -141,7 +153,7 @@ document.addEventListener('click', e => {
     case 'dyno': Sound.resume(); UI.dyno(); break;
     case 'dyno-close': UI.dynoStop(); $('result').classList.add('hidden'); break;
     case 'ecureset': { const cs = Game.car(); cs.map = {}; Game.persist(); UI.render(); break; }
-    case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) UI.toast('+ ' + money(g) + ' encaissés'); UI.render(); break; }
+    case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) { UI.toast('+ ' + money(g) + ' encaissés'); FX.coins(b, 22); FX.sparks(b); } UI.render(); break; }
     case 'turfup': if (Game.upgradeTurf(v)) UI.render(); else flash(b); break;
     case 'crewcol': UI.crewColor = v; document.querySelectorAll('.crew-col').forEach(x => x.classList.toggle('sel', x.dataset.v === v)); break;
     case 'crewsave': Game.setCrew($('crewname').value, UI.crewColor || Game.crew().color); UI.render(); break;
@@ -198,7 +210,7 @@ document.addEventListener('click', e => {
 function flash(b) { b.classList.add('shake'); setTimeout(() => b.classList.remove('shake'), 400); }
 
 Game.load();
-setTimeout(() => { const d = Game.daily(); if (d) UI.toast(`🎁 Bonus quotidien · jour ${d.streak} : + ${money(d.amount)}`); }, 900);
+setTimeout(() => { const d = Game.daily(); if (d) { UI.toast(`🎁 Bonus quotidien · jour ${d.streak} : + ${money(d.amount)}`); FX.coins($('toast'), 20); } }, 900);
 try { if (localStorage.getItem('tt_muted') === '1') $('mutebtn').textContent = '🔇'; } catch (e) {}
 UI.refreshTop();
 document.fonts && document.fonts.load('10px "Press Start 2P"');

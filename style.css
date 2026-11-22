@@ -329,3 +329,26 @@ h3{font-size:24px;color:var(--ac)}
 #racego .rg-arrow{display:flex;align-items:center;padding:0 18px;font-size:28px;color:#04060c;background:conic-gradient(#fff 0 25%,#0b0b0f 0 50%,#fff 0 75%,#0b0b0f 0) 0 0/18px 18px;text-shadow:0 0 6px #fff}
 #racego .rg-arrow{color:transparent}
 #menu{top:44%}
+
+/* ---------- petits écrans (mobile paysage, portables bas) ---------- */
+@media (max-height: 560px) {
+  #menu{top:47%;gap:5px;width:min(290px,44vw)}
+  .mi{padding:5px 14px 3px}
+  .mi b{font-size:23px}
+  .mi small{display:none}
+  .mi::before{font-size:16px;width:22px}
+  #racego{bottom:10px}
+  #racego .rg-flag{width:38px;background-size:12px 12px}
+  #racego .rg-arrow{padding:0 10px;background-size:12px 12px}
+  #racego .rg-txt{padding:6px 14px 3px}
+  #racego .rg-txt small{display:none}
+  #racego .rg-txt b{font-size:36px}
+  .phead{padding:8px 14px}.phead h2{font-size:26px}
+  #panel{padding-top:50px}
+}
+@media (max-width: 900px) {
+  .tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .tab{white-space:nowrap;font-size:19px;padding:6px 10px 3px}
+  .racehead{gap:10px}
+  .you2 .thumb{width:140px}
+}

@@ -138,6 +138,8 @@ document.addEventListener('click', e => {
     case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : v[0] === 'p' ? Game.pinkSlips()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
     case 'bcat': UI.bodyCat = v; UI.render(); break;
+    case 'dyno': Sound.resume(); UI.dyno(); break;
+    case 'dyno-close': UI.dynoStop(); $('result').classList.add('hidden'); break;
     case 'ecureset': { const cs = Game.car(); cs.map = {}; Game.persist(); UI.render(); break; }
     case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) UI.toast('+ ' + money(g) + ' encaissés'); UI.render(); break; }
     case 'turfup': if (Game.upgradeTurf(v)) UI.render(); else flash(b); break;
@@ -196,6 +198,7 @@ document.addEventListener('click', e => {
 function flash(b) { b.classList.add('shake'); setTimeout(() => b.classList.remove('shake'), 400); }
 
 Game.load();
+setTimeout(() => { const d = Game.daily(); if (d) UI.toast(`🎁 Bonus quotidien · jour ${d.streak} : + ${money(d.amount)}`); }, 900);
 try { if (localStorage.getItem('tt_muted') === '1') $('mutebtn').textContent = '🔇'; } catch (e) {}
 UI.refreshTop();
 document.fonts && document.fonts.load('10px "Press Start 2P"');

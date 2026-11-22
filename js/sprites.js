@@ -733,6 +733,8 @@ function drawCar(ctx, style, color, x, y, s, o) {
   ctx.imageSmoothingEnabled = false;
   ctx.fillStyle = 'rgba(0,0,0,0.4)';
   ctx.beginPath(); ctx.ellipse(x + p.L * s / 2, y + 1 * s, p.L * s * 0.55, 5 * s, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';                      // ombre de contact sous chaque pneu
+  for (const wx of p.wheels) { ctx.beginPath(); ctx.ellipse(x + wx * s, y + 0.5 * s, (p.wr + 4) * s, 2.2 * s, 0, 0, Math.PI * 2); ctx.fill(); }
   ctx.save();
   if (lean) { ctx.translate(x + p.wheels[0] * s, y); ctx.rotate(-lean * 0.007); ctx.translate(-(x + p.wheels[0] * s), -y); }
   ctx.drawImage(body, x, y - (p.H - 1 - drop) * s, p.L * s, p.H * s);

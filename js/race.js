@@ -40,7 +40,7 @@ const Race = {
     Sound.resume();
     UI.raceStart();
   },
-  stop() { this.active = false; this.state = 'idle'; Sound.stopAll(); Sound.wind(0); this.camLag = 0; this.plV = this.aiV = null; },
+  stop() { this.photo = false; this.active = false; this.state = 'idle'; Sound.stopAll(); Sound.wind(0); this.camLag = 0; this.plV = this.aiV = null; },
 
   setMsg(m, c) { this.msg = m; this.msgC = c || '#fff'; this.msgT = 1.4; },
 
@@ -73,6 +73,7 @@ const Race = {
     if (s.gear >= sp.gears.length - 1 || s.shiftT > 0) return;
     if (q < 0.6) { this.setMsg('TROP TÔT', '#ff9a4a'); return; }
     simShift(s, sp, q); this.shiftCount++;
+    if ((sp.parts.exhaust || 0) >= 1 || sp.alag || sp.turbo) this.flamePl = 0.2;
     Sound.shift(this.plV);
     if (q >= 0.93) { this.perfectShifts++; this.setMsg('PARFAIT', '#4cff8a'); }
     else if (q >= 0.84) this.setMsg('BIEN', '#ffd34d');
@@ -89,12 +90,14 @@ const Race = {
       // temps passé dans la zone verte pendant le compte à rebours (à partir du 1er feu orange)
       if (this.t >= 1.0) { this.countT += dt; if (Math.abs(this.revRpm - this.launchBest) <= LAUNCH_ZONE * red) this.zoneT += dt; }
       if (this.t >= this.greenAt && !this.pl.launched) this.launchPlayer();
+      // burnout de chauffe : les pneus fument quand on monte haut dans les tours avant le départ
+      if (this.holding && this.revRpm > red * 0.55 && Math.random() < 0.45) this.puff('pl', true);
     }
     if (!this.ai.launched && this.t >= this.greenAt + this.aiReact) simLaunch(this.ai, this.aiSpec, this.aiLaunchRpm, this.aiLaunchQ);
     if (this.ai.launched && !this.ai.fin) {
       if (this.aiSpec.nitro && !this.ai.nitroOn && this.ai.t > 0.8) this.ai.nitroOn = true;
       if (this.ai.rpm >= this.aiSpec.red * this.aiShiftFrac) simShift(this.ai, this.aiSpec, 0.9);
-      if (this.ai.gear !== this.aiGear) { this.aiGear = this.ai.gear; Sound.shift(this.aiV); }
+      if (this.ai.gear !== this.aiGear) { this.aiGear = this.ai.gear; Sound.shift(this.aiV); if ((this.aiSpec.parts.exhaust || 0) >= 1 || this.aiSpec.turbo) this.flameAi = 0.2; }
     }
     if (this.ai.launched) stepSim(this.ai, this.aiSpec, dt);
     if (this.pl.launched) {
@@ -110,7 +113,7 @@ const Race = {
     if (this.t > 70 && this.state !== 'done') this.finish();
   },
 
-  puff(who) { this.particles.push({who, x: 0, y: 0, vx: -20 - Math.random() * 30, vy: -10 - Math.random() * 20, life: 0.8, max: 0.8, sz: 3 + Math.random() * 5}); },
+  puff(who, burn) { this.particles.push({who, burn, x: burn ? (Math.random() - 0.3) * 12 : 0, y: 0, vx: -20 - Math.random() * 30, vy: -10 - Math.random() * 20, life: 0.8, max: 0.8, sz: 3 + Math.random() * 5}); },
 
   finish() {
     if (this.state === 'done') return;
@@ -119,7 +122,9 @@ const Race = {
     const aiT = this.ai.fin ? this.ai.tFin + this.aiReact : 99;
     const win = plT < aiT;
     this.result = {win, plT, aiT, et: this.pl.fin ? this.pl.tFin : null, rt: this.rt, speed: this.pl.v * 3.6, t100: this.pl.t100, fs: this.fs,
-                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac};
+                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac,
+                   slip: {pl: Object.assign({et: this.pl.fin ? this.pl.tFin : null, trap: this.pl.v * 3.6, v660: (this.pl.v660 || 0) * 3.6}, this.pl.splits),
+                          ai: Object.assign({et: this.ai.fin ? this.ai.tFin : null, trap: this.ai.v * 3.6, v660: (this.ai.v660 || 0) * 3.6, rt: this.aiReact}, this.ai.splits)}};
     Game.raceDone(this.opp, this.result);
     this.setMsg(win ? 'VICTOIRE' : 'DÉFAITE', win ? '#4cff8a' : '#ff4a5a'); this.msgT = 3;
     setTimeout(() => { if (this.state === 'done') { Sound.stopAll(); this.plV = this.aiV = null; UI.showResult(this.result); } }, 1600);
@@ -138,6 +143,12 @@ const Race = {
   },
 
   update(dt) {
+    // photo finish : ralenti quand les deux voitures arrivent ensemble
+    const close = this.state === 'race' && !this.pl.fin && this.pl.x > 370 && this.ai.x > 370 && Math.abs(this.pl.x - this.ai.x) < 5;
+    if (close && !this.photo) { this.photo = true; this.setMsg('PHOTO FINISH', '#ffffff'); this.msgT = 2; }
+    if (this.photo && (this.pl.fin && (this.ai.fin || !this.ai.launched))) this.photo = false;
+    dt *= this.photo ? 0.28 : 1;
+    if (this.flamePl > 0) this.flamePl -= dt; if (this.flameAi > 0) this.flameAi -= dt;
     this.acc += Math.min(dt, 0.05);
     while (this.acc >= STEP) { this.step(STEP); this.acc -= STEP; }
     if (this.msgT > 0) this.msgT -= dt;
@@ -182,10 +193,20 @@ const Race = {
     drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, plO);
     drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: NEON_COLORS[plLook.neon], brake: this.state === 'stage'});
     this.drawNitro(ctx, this.pl, plX * 2, PLG * 2);
+    // flammes d'échappement aux passages de vitesse
+    for (const [f, X, Y, st] of [[this.flamePl, plX * 2, PLG * 2, plStyle], [this.flameAi, aiX * 2, AIG * 2, aiStyle]]) {
+      if (!(f > 0)) continue;
+      const ey = Y - (PROFILES[st].sill + 3), len = 18 + Math.random() * 26;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createRadialGradient(X - 4, ey, 0, X - 4, ey, len);
+      g.addColorStop(0, 'rgba(160,210,255,0.95)'); g.addColorStop(0.3, 'rgba(255,190,60,0.85)'); g.addColorStop(1, 'rgba(255,70,20,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(X - len * 0.55, ey, len, 5 + Math.random() * 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
     // fumée de pneus
     for (const p of this.particles) {
       const st = p.who === 'pl' ? plStyle : aiStyle;
-      const bx = ((p.who === 'pl' ? plX : aiX) + PROFILES[st].wheels[0] / 2 - 4) * 2, by = ((p.who === 'pl' ? PLG : AIG) - 4) * 2;
+      const dw = CARS[p.who === 'pl' ? cs.id : this.opp.car].drive === 'FWD' ? 1 : 0;
+      const bx = ((p.who === 'pl' ? plX : aiX) + PROFILES[st].wheels[dw] / 2 - 4) * 2, by = ((p.who === 'pl' ? PLG : AIG) - 4) * 2;
       const a = Math.max(0, p.life / p.max) * 0.55, r = p.sz * 2;
       const g = ctx.createRadialGradient(bx + p.x * 2, by + p.y * 2, 0, bx + p.x * 2, by + p.y * 2, r);
       g.addColorStop(0, `rgba(225,225,235,${a})`); g.addColorStop(1, 'rgba(225,225,235,0)');

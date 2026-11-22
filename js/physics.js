@@ -44,6 +44,7 @@ function ensureCurve(e) {
 }
 
 /* Construit les caractéristiques complètes d'une voiture (moteur + pièces) */
+const SPLITS = [18.288, 100.584, 201.168, 304.8];            // 60 ft, 330 ft, 1/8 mile, 1000 ft
 const ECU_DEFAULT = {timing: 0, lean: 0, boost: 1, revlim: 0, tq1: 1, flat: false, alag: false};
 function makeSpec(carId, engineId, parts, ecuMap) {
   const c = CARS[carId], e = ENGINES[engineId]; ensureCurve(e);
@@ -97,7 +98,7 @@ function specOf(carState) { return makeSpec(carState.id, carState.engine, carSta
 function createSim() {
   return {t: 0, x: 0, v: 0, gear: 0, rpm: IDLE, slip: false, slipRpm: 0, launchMult: 1, shiftT: 0,
           nitroOn: false, nitroLeft: -1, spool: 1, spin: false, launched: false, fin: false, tFin: 0,
-          t100: 0, vmax: 0, limiter: false, accel: 0};
+          t100: 0, vmax: 0, limiter: false, accel: 0, splits: {}};
 }
 function launchQuality(rpm, best, red) {
   const d = Math.abs(rpm - best) / (0.45 * red);
@@ -148,6 +149,7 @@ function stepSim(s, spec, dt) {
   s.v = Math.max(0, s.v + a * dt); s.x += s.v * dt; s.t += dt;
   if (!s.t100 && s.v >= 27.78) s.t100 = s.t;
   if (s.v > s.vmax) s.vmax = s.v;
+  for (const d of SPLITS) if (s.splits[d] == null && s.x >= d) { s.splits[d] = tPrev + dt * (d - xPrev) / (s.x - xPrev); if (d === 201.168) s.v660 = s.v; }
   if (!s.fin && s.x >= DIST) { s.fin = true; s.tFin = tPrev + dt * (DIST - xPrev) / (s.x - xPrev); }
 }
 

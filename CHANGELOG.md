@@ -4,6 +4,20 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🏁 v1.8.0 — « Jour de course » · 23 novembre 2026
+
+Inspirée des références du genre (CSR Racing, Pixel Car Racer, Nitto 1320, Drag Racing) :
+
+- 🧾 **Ticket de chrono** après chaque course, comme sur un vrai dragstrip : réaction, 60 ft, 330 ft, 1/8 mile (+ vitesse), 1000 ft, E.T. et vitesse finale, toi contre ton rival.
+- 📈 **Banc de puissance** dans le Tuning : la voiture sur les rouleaux, la courbe qui se trace en direct, le moteur qui prend ses tours, puissance à la roue et puissance moteur.
+- 🔥 **Burnout de chauffe** : les pneus fument quand tu montes dans les tours avant le départ.
+- 💥 **Flammes d'échappement** aux passages de vitesse (échappement préparé ou turbo), pour toi et tes rivaux.
+- 📸 **Photo finish** : ralenti quand l'arrivée se joue à quelques mètres.
+- 🎁 **Bonus quotidien** à chaque connexion, de plus en plus gros sur 7 jours d'affilée.
+- 🌑 Ombres de contact sous les pneus.
+
+---
+
 ## ⚔️ v1.7.0 — « La ville est à toi » · 23 novembre 2026
 
 ### ⚔️ Clans (remplacent les Légendes de la ville)

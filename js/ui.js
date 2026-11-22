@@ -121,6 +121,64 @@ const UI = {
     });
     return h;
   },
+  /* ---- banc de puissance animé ---- */
+  dyno() {
+    this.dynoStop();
+    const cs = Game.car(), sp = specOf(cs), c = CARS[cs.id], st = c.style, p = PROFILES[st], lk = lookOf(cs), r = $('result');
+    const loss = c.drive === 'AWD' ? 0.80 : 0.85;
+    r.classList.remove('hidden');
+    r.innerHTML = `<div class="rbox dyno"><div class="eyebrow">BANC DE PUISSANCE · ${c.drive}</div><h2>${c.name}</h2>
+      <canvas id="dynocv" width="960" height="400"></canvas>
+      <div class="rbtns"><button class="btn" data-act="dyno">↻ RELANCER</button><button class="btn ghostbtn" data-act="dyno-close">FERMER</button></div></div>`;
+    const cv = $('dynocv'), ctx = cv.getContext('2d'), t0 = performance.now(), pts = [];
+    const v = Sound.ready ? Sound.engine(cs.engine, cs.parts, {vol: 1}) : null; this._dynoV = v;
+    const rMin = 1500, rMax = sp.red, hpMax = sp.hp * 1.15, tqMax = sp.tq * 1.2, s = Math.min(1.35, 430 / p.L);
+    let ang = 0, last = t0, best = {hp: 0, r: 0, tq: 0, tr: 0};
+    const frame = now => {
+      if (!$('dynocv')) return this.dynoStop();
+      const T = (now - t0) / 1000, dt = (now - last) / 1000; last = now;
+      let rpm, load = 1;
+      if (T < 0.8) { rpm = 900; load = 0.1; } else if (T < 5.2) rpm = rMin + (rMax - rMin) * (T - 0.8) / 4.4; else if (T < 6.4) { rpm = rMax - (rMax - 900) * Math.min(1, (T - 5.2) / 1.2); load = 0.05; } else rpm = 900;
+      if (v) Sound.update(v, rpm, load, false, false, sp.turbo ? Math.min(1, Math.max(0, (T - 1) / 1.2)) : null);
+      if (T >= 0.8 && T < 5.2) {
+        const tq = sp.torque(rpm, false) * loss, hp = tq * rpm / 7127;
+        pts.push({rpm, hp, tq}); if (hp > best.hp) best = Object.assign(best, {hp, r: rpm}); if (tq > best.tq) best = Object.assign(best, {tq, tr: rpm});
+      }
+      // décor de l'atelier + rouleaux
+      ctx.fillStyle = '#070b16'; ctx.fillRect(0, 0, 960, 400);
+      const g = ctx.createRadialGradient(240, 120, 10, 240, 120, 340); g.addColorStop(0, 'rgba(25,230,255,0.16)'); g.addColorStop(1, 'rgba(25,230,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, 480, 400);
+      ctx.fillStyle = '#121a2c'; ctx.fillRect(0, 312, 480, 88); ctx.fillStyle = '#19e6ff'; ctx.fillRect(0, 312, 480, 2);
+      const x = Math.round(240 - p.L * s / 2), y = 306, dw = c.drive === 'FWD' ? [1] : c.drive === 'RWD' ? [0] : [0, 1];
+      ang += (rpm / 1200) * dt * (load > 0.5 ? 6 : 2);
+      for (const i of dw) { const rx = x + p.wheels[i] * s; ctx.fillStyle = '#2a3346'; ctx.beginPath(); ctx.arc(rx - 14, y + 12, 12, 0, Math.PI * 2); ctx.arc(rx + 14, y + 12, 12, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#4a5878'; ctx.lineWidth = 2; for (const ox of [-14, 14]) { ctx.beginPath(); ctx.moveTo(rx + ox, y + 12); ctx.lineTo(rx + ox + Math.cos(ang * 3) * 10, y + 12 + Math.sin(ang * 3) * 10); ctx.stroke(); } }
+      ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - 30, y); ctx.lineTo(x, y - 20); ctx.stroke();      // sangle
+      drawCar(ctx, st, cs.color, x, y, s, {wheelAng: ang, look: lk});
+      if (load > 0.5 && T > 0.8 && T < 5.2) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const eg = ctx.createRadialGradient(x - 6, y - 12, 0, x - 6, y - 12, 30); eg.addColorStop(0, 'rgba(255,170,60,0.35)'); eg.addColorStop(1, 'rgba(255,90,20,0)'); ctx.fillStyle = eg; ctx.fillRect(x - 40, y - 42, 70, 60); ctx.restore(); }
+      // graphique
+      const gx = 520, gy = 30, gw = 410, gh = 290, X = rr => gx + (rr - rMin) / (rMax - rMin) * gw, Yh = h => gy + gh - h / hpMax * gh, Yt = q => gy + gh - q / tqMax * gh;
+      ctx.strokeStyle = 'rgba(25,230,255,0.12)'; ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) { ctx.beginPath(); ctx.moveTo(gx, gy + gh * i / 5); ctx.lineTo(gx + gw, gy + gh * i / 5); ctx.stroke(); }
+      for (let rr = Math.ceil(rMin / 1000) * 1000; rr <= rMax; rr += 1000) { ctx.beginPath(); ctx.moveTo(X(rr), gy); ctx.lineTo(X(rr), gy + gh); ctx.stroke(); ctx.fillStyle = '#6f86a8'; ctx.font = '600 12px Rajdhani, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(rr / 1000 + 'k', X(rr), gy + gh + 16); }
+      const line = (key, Y, col) => { ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.shadowColor = col; ctx.shadowBlur = 10; ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(X(q.rpm), Y(q[key])) : ctx.moveTo(X(q.rpm), Y(q[key]))); ctx.stroke(); ctx.shadowBlur = 0; };
+      line('tq', Yt, '#3ee0ff'); line('hp', Yh, '#ff9a2e');
+      const cur = pts[pts.length - 1] || {hp: 0, tq: 0};
+      ctx.textAlign = 'left'; ctx.fillStyle = '#ff9a2e'; ctx.font = 'italic 600 46px Teko, sans-serif'; ctx.fillText(Math.round(T < 5.2 ? cur.hp : best.hp) + ' ch', gx + 6, gy + 40);
+      ctx.fillStyle = '#3ee0ff'; ctx.font = 'italic 600 30px Teko, sans-serif'; ctx.fillText(Math.round(T < 5.2 ? cur.tq : best.tq) + ' Nm', gx + 6, gy + 72);
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'right'; ctx.font = 'italic 600 34px Teko, sans-serif'; ctx.fillText(Math.round(rpm) + ' tr/min', gx + gw, gy + 40);
+      if (T >= 5.2) {
+        ctx.fillStyle = 'rgba(4,6,12,0.75)'; ctx.fillRect(gx + 60, gy + 110, gw - 120, 92);
+        ctx.textAlign = 'center'; ctx.fillStyle = '#ffd23f'; ctx.font = 'italic 600 30px Teko, sans-serif';
+        ctx.fillText(`${Math.round(best.hp)} ch à la roue @ ${Math.round(best.r / 100) * 100} tr/min`, gx + gw / 2, gy + 146);
+        ctx.fillStyle = '#c9d6f0'; ctx.font = '600 15px Rajdhani, sans-serif';
+        ctx.fillText(`≈ ${Math.round(best.hp / loss)} ch moteur (pertes de transmission ${Math.round((1 - loss) * 100)} %) · ${Math.round(best.tq)} Nm à la roue`, gx + gw / 2, gy + 176);
+      }
+      if (T > 6.8 && v) { Sound.stop(v, 0.4); this._dynoV = null; }
+      if (T < 8) this._dynoRaf = requestAnimationFrame(frame);
+    };
+    this._dynoRaf = requestAnimationFrame(frame);
+  },
+  dynoStop() { cancelAnimationFrame(this._dynoRaf); if (this._dynoV) { Sound.stop(this._dynoV, 0.2); this._dynoV = null; } },
   toast(msg) {
     let t = $('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
     t.textContent = msg; t.classList.add('on'); clearTimeout(this._tt); this._tt = setTimeout(() => t.classList.remove('on'), 1800);
@@ -371,6 +429,7 @@ const UI = {
       <b>${CARS[cs.id].name}</b> · ${ENGINES[cs.engine].name}
       <button class="btn small" data-act="tunecar" data-v="1">▶</button>
       <span class="spacer"></span>
+      <button class="btn small" data-act="dyno">📈 BANC DE PUISSANCE</button>
       <button class="btn small ghostbtn" data-act="listen" data-v="cur">🔊 Écouter le moteur</button>
       ${sel && (cs.parts[sel.id] || 0) < sel.tiers.length && ['exhaust', 'turbo', 'intake'].includes(sel.id) ? `<button class="btn small" data-act="listen" data-v="prev">🔊 Avec ${sel.name} niv. ${(cs.parts[sel.id] || 0) + 1}</button>` : ''}</div>
       <div class="cols tune"><div><div class="box"><canvas id="chart" width="560" height="300"></canvas>
@@ -474,7 +533,7 @@ const UI = {
       k === 'lost' ? `<div class="pl"><span class="bad">${l}</span><b class="bad">TITRE CÉDÉ</b></div>` : k === 'info' ? `<div class="pl"><span class="muted">${l}</span><b></b></div>` :
       `<div class="pl"><span>${l}</span><b class="${v >= 0 ? 'gold' : 'bad'}">${v >= 0 ? '+' : '−'} ${money(Math.abs(v))}</b></div>`).join('');
     const again = o.kind === 'ladder' ? `<button class="btn" data-act="race" data-v="l${o.idx}">REJOUER</button>` : `<button class="btn" data-act="go" data-v="races">NOUVEAUX CONTRATS</button>`;
-    r.innerHTML = `<div class="rbox ${res.win ? 'win' : 'lose'}"><div class="eyebrow">${o.kind === 'ladder' ? 'LÉGENDE DE LA VILLE' : 'CONTRAT'}</div>
+    r.innerHTML = `<div class="rbox has-slip ${res.win ? 'win' : 'lose'}"><div class="rmain"><div class="eyebrow">${o.kind === 'ladder' ? 'LÉGENDE DE LA VILLE' : 'CONTRAT'}</div>
       <h2>${res.win ? 'VICTOIRE' : 'DÉFAITE'}</h2>
       <div class="muted">face à ${o.name} · ${CARS[o.car].name}</div>
       <div class="rgrid"><span>Ton temps</span><b>${res.plT < 90 ? res.plT.toFixed(3) + ' s' : '—'}</b>
@@ -487,7 +546,19 @@ const UI = {
       ${res.record ? '<div class="gold">⭐ NOUVEAU RECORD POUR CETTE VOITURE</div>' : ''}
       <div class="payout">${lines}<div class="pl total"><span>Total</span><b class="${res.reward >= 0 ? 'gold' : 'bad'}">${res.reward >= 0 ? '+' : '−'} ${money(Math.abs(res.reward))}</b></div></div>
       ${res.lore ? `<div class="lore-unlock">🕯️ <b>Bougie d'or obtenue</b> — un nouveau chapitre de l'histoire est débloqué</div>` : ''}
-      <div class="rbtns">${res.lore ? `<button class="btn" data-act="lore" data-v="${res.lore}">📖 LIRE LE CHAPITRE</button>` : ''}${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>`;
+      <div class="rbtns">${res.lore ? `<button class="btn" data-act="lore" data-v="${res.lore}">📖 LIRE LE CHAPITRE</button>` : ''}${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>
+      ${res.slip ? this.timeSlip(res, o) : ''}</div>`;
+  },
+  timeSlip(res, o) {
+    const P = res.slip.pl, A = res.slip.ai, t = v => v == null ? '—' : v.toFixed(3), k = v => v ? v.toFixed(1) : '—';
+    const rows = [['R/T (réaction)', res.fs ? 'F.D.' : '0.000', t(A.rt)], ['60 ft', t(P[18.288]), t(A[18.288])], ['330 ft', t(P[100.584]), t(A[100.584])],
+      ['1/8 mile', t(P[201.168]), t(A[201.168])], ['km/h au 1/8', k(P.v660), k(A.v660)], ['1000 ft', t(P[304.8]), t(A[304.8])],
+      ['1/4 mile (E.T.)', t(P.et), t(A.et)], ['Vitesse finale', k(P.trap), k(A.trap)]];
+    const d = new Date();
+    return `<div class="slip" aria-label="Ticket de chrono"><div class="slip-h"><b>TUNED TALES DRAGWAY</b><span>402 m · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</span></div>
+      <table><thead><tr><th></th><th>GAUCHE<br><small>${Game.crew().name}</small></th><th>DROITE<br><small>${o.name}</small></th></tr></thead>
+      <tbody>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>
+      <div class="slip-w">${res.win ? '◀ VAINQUEUR' : 'VAINQUEUR ▶'}</div><div class="slip-bc"></div></div>`;
   }
 };
 

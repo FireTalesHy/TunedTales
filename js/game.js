@@ -18,6 +18,16 @@ const Game = {
   reset() { this.save = this.fresh(); this.persist(); },
 
   car() { return this.save.cars[this.save.current]; },
+  /* bonus de connexion quotidien (série de jours consécutifs, jusqu'à 7) */
+  daily() {
+    const today = new Date().toDateString(), yest = new Date(Date.now() - 864e5).toDateString(), d = this.save.daily || {};
+    if (d.day === today) return null;
+    const streak = d.day === yest ? Math.min(7, (d.streak || 0) + 1) : 1;
+    let base = 300; try { base = Math.max(300, this.baseReward(estimateBest(specOf(this.car())).t400) * 2); } catch (e) {}
+    const amount = Math.round(base * (1 + 0.25 * (streak - 1)) / 10) * 10;
+    this.save.daily = {day: today, streak}; this.save.money += amount; this.persist(); UI.refreshTop();
+    return {amount, streak};
+  },
   /* ---- personnalisation visuelle ---- */
   look(cs) { return lookOf(cs || this.car()); },
   lookOwned(cs, id, v) { const o = VISUAL.find(x => x.id === id).opts.find(x => x.v === v); return !o.p || (cs.owned || []).includes(id + ':' + v); },

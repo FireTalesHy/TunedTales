@@ -409,3 +409,18 @@ h3{font-size:24px;color:var(--ac)}
 #toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,30px);opacity:0;z-index:20;padding:10px 22px 6px;font-family:var(--hd);font-size:26px;font-style:italic;color:#04060c;
   background:linear-gradient(180deg,#ffe78a,#ffd23f);clip-path:var(--cut-s);transition:opacity .2s,transform .2s;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- ticket de chrono ---------- */
+.rbox.has-slip{max-width:860px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}
+.rmain{min-width:0}
+.slip{position:relative;padding:14px 14px 22px;background:#f4f1e8;color:#1b1b1b;font-family:'Courier New',monospace;font-size:13px;text-align:left;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);transform:rotate(1.2deg);clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),95% 100%,90% calc(100% - 8px),85% 100%,80% calc(100% - 8px),75% 100%,70% calc(100% - 8px),65% 100%,60% calc(100% - 8px),55% 100%,50% calc(100% - 8px),45% 100%,40% calc(100% - 8px),35% 100%,30% calc(100% - 8px),25% 100%,20% calc(100% - 8px),15% 100%,10% calc(100% - 8px),5% 100%,0 calc(100% - 8px))}
+.slip-h{display:flex;flex-direction:column;align-items:center;border-bottom:1px dashed #555;padding-bottom:6px;margin-bottom:6px}
+.slip-h b{font-size:15px;letter-spacing:1px}.slip-h span{font-size:11px}
+.slip table{width:100%;border-collapse:collapse}.slip th{font-size:11px;text-align:right;padding:2px}.slip th small{font-size:9px;font-weight:400}
+.slip td{padding:2px;text-align:right;border-bottom:1px dotted #bbb}.slip td:first-child{text-align:left;font-size:11px}
+.slip-w{margin-top:8px;text-align:center;font-weight:700;letter-spacing:2px}
+.slip-bc{height:22px;margin-top:6px;background:repeating-linear-gradient(90deg,#111 0 2px,transparent 2px 4px,#111 4px 5px,transparent 5px 8px,#111 8px 11px,transparent 11px 12px)}
+@media(max-width:860px){.rbox.has-slip{grid-template-columns:1fr}.slip{transform:none}}
+/* ---------- banc de puissance ---------- */
+.rbox.dyno{max-width:1000px}.rbox.dyno canvas{width:100%;height:auto;display:block;margin:8px 0 12px;clip-path:var(--cut-s)}

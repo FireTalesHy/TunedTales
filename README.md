@@ -5,7 +5,7 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.7.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.8.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
 [![Voitures](https://img.shields.io/badge/voitures-21-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
@@ -81,6 +81,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## ✨ Fonctionnalités
 
+- 🧾 **Ticket de chrono** façon dragstrip (60 ft, 330 ft, 1/8, 1000 ft, E.T.), 📈 **banc de puissance** animé, burnout, flammes d'échappement et photo finish.
 - 🔧 **Tuning complet** : admission, échappement, arbres à cames, reprog, turbo, allègement, pneus, boîte courte, embrayage, aéro, nitro.
 - 🌀 **Turbo réaliste** : temps de réponse et remontée en pression à chaque passage.
 - 🔊 **Sons moteurs simulés physiquement** pour chaque moteur, sifflement de turbo, dump valve, pétarades.
@@ -103,7 +104,7 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.7.0 « La ville est à toi »** — clans, lore, revenus passifs, cartographie ECU, 8 nouvelles voitures dont la Formule 1.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.8.0 « Jour de course »** — ticket de chrono, banc de puissance, burnout, flammes, photo finish, bonus quotidien.
 
 ## 🙏 Crédits
 

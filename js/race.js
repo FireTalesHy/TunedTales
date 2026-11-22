@@ -156,17 +156,17 @@ const Race = {
     const plX = 96, AIG = 200, PLG = 250;
     const aiX = clamp(plX + (dA - dP) * PPM, -190, W + 60);
     const aiStyle = CARS[this.opp.car].style, plStyle = CARS[cs.id].style, oc = this.opp.color;
-    const aiO = {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v};
-    const plO = {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v};
+    const aiO = {wheelAng: this.aiWheelAng, lean: clamp(this.ai.accel / 3, 0, 3), speed: this.ai.v, look: this.opp.look};
+    const plLook = lookOf(cs), plO = {wheelAng: this.wheelAng, lean: clamp(this.pl.accel / 3, 0, 3), speed: this.pl.v, look: plLook};
     for (const [st, col, X, Y, O] of [[aiStyle, oc, aiX * 2, AIG * 2, aiO], [plStyle, cs.color, plX * 2, PLG * 2, plO]]) {
       ctx.save(); ctx.globalAlpha = 0.16; ctx.translate(0, Y * 2 + 2); ctx.scale(1, -1);
       drawCar(ctx, st, col, X, Y, 1, Object.assign({}, O, {lean: 0})); ctx.restore();
     }
     drawCar(ctx, aiStyle, oc, aiX * 2, AIG * 2, 1, aiO);
-    drawCarLights(ctx, aiStyle, aiX * 2, AIG * 2, 1, {brake: !this.ai.launched});
+    drawCarLights(ctx, aiStyle, aiX * 2, AIG * 2, 1, {brake: !this.ai.launched, neon: NEON_COLORS[lookOf(this.opp).neon]});
     this.drawNitro(ctx, this.ai, aiX * 2, AIG * 2);
     drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, plO);
-    drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: '62,224,255', brake: this.state === 'stage'});
+    drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: NEON_COLORS[plLook.neon], brake: this.state === 'stage'});
     this.drawNitro(ctx, this.pl, plX * 2, PLG * 2);
     // fumée de pneus
     for (const p of this.particles) {

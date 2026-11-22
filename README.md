@@ -6,6 +6,7 @@ Jeu de drag & tuning en pixel art (2.5D), jouable dans le navigateur — aucune 
 - Onglet Tuning : courbes puissance/couple, chiffres clés et aperçu du gain avant achat
 - Drag 402 m : réflexe de départ + passages de vitesse (mode facile), nitro
 - Contrats : 3 courses proposées à chaque fois, adaptées à ta voiture (rivaux, préparations et récompenses variés : pari, défi réflexe, départ canon…)
+- Carrosserie : finition de peinture, kits (Street, Racing, Widebody), ailerons, jantes (6 modèles, 7 couleurs, 3 tailles), vinyles, suspension (stance), vitres teintées, néons — avec aperçu avant achat
 - Petits boulots en mini-jeux (livraison de pizzas, station de lavage, serrage au couple) : le score est converti en argent
 - Sons moteurs simulés physiquement par moteur (4, 6, 8 cylindres), sifflement de turbo, dump valve et pétarades selon l'échappement
 - Sauvegarde automatique (localStorage)

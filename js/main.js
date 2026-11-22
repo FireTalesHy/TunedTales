@@ -89,9 +89,10 @@ function drawGarage(ctx, t) {
   // voiture, reflet sur l'époxy, halos
   const s = 1.6, x = Math.round(400 - p.L * s / 2), y = 506;
   ctx.save(); ctx.globalAlpha = 0.22; ctx.translate(0, y * 2 + 6); ctx.scale(1, -1);
-  drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3}); ctx.restore();
-  drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3});
-  drawCarLights(ctx, c.style, x, y, s, {neon: '62,224,255'});
+  const lk = lookOf(cs);
+  drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3, look: lk}); ctx.restore();
+  drawCar(ctx, c.style, cs.color, x, y, s, {wheelAng: 0.3, look: lk});
+  drawCarLights(ctx, c.style, x, y, s, {neon: NEON_COLORS[lk.neon]});
 }
 
 let last = performance.now();
@@ -136,6 +137,22 @@ document.addEventListener('click', e => {
     case 'go': UI.go(v); break;
     case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
+    case 'bcat': UI.bodyCat = v; UI.render(); break;
+    case 'bopt': {
+      const [id, val] = v.split('|'), cs = Game.car();
+      let value = id === 'color' ? val : VISUAL.find(x => x.id === id).opts[+val].v;
+      const curVal = id === 'color' ? cs.color : lookOf(cs)[id];
+      if (value === curVal) delete UI.lookDraft[id]; else UI.lookDraft[id] = value;
+      UI.render(); break;
+    }
+    case 'bcancel': UI.lookDraft = {}; UI.render(); break;
+    case 'bapply': {
+      const d = Object.assign({}, UI.lookDraft), color = d.color; delete d.color;
+      if (UI.draftCost() > Game.save.money) { flash(b); break; }
+      if (color && !Game.paint(color)) { flash(b); break; }
+      if (Object.keys(d).length && !Game.applyLook(d)) { flash(b); break; }
+      UI.lookDraft = {}; UI.refreshTop(); UI.render(); break;
+    }
     case 'fullscreen': toggleFullscreen(); break;
     case 'refresh': if (Game.refreshContracts()) UI.render(); else flash(b); break;
     case 'mute': b.textContent = Sound.toggleMute() ? '🔇' : '🔊'; break;
@@ -156,6 +173,7 @@ document.addEventListener('click', e => {
     case 'tune': UI.tuneSel = v; UI.render(); break;
     case 'buypart': e.stopPropagation(); UI.tuneSel = v; if (Game.buyPart(v)) UI.render(); else flash(b); break;
     case 'tunecar': {
+      UI.lookDraft = {};
       const owned = CAR_IDS.filter(Game.owns, Game), i = owned.indexOf(Game.save.current);
       Game.save.current = owned[(i + +v + owned.length) % owned.length]; Game.persist(); UI.render(); break;
     }

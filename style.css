@@ -177,3 +177,131 @@ kbd{font-family:var(--ui);font-weight:700;font-size:11px;padding:1px 6px;border-
 #scene{max-width:calc(100dvh*16/9);max-height:calc(100vw*9/16);box-shadow:none}
 body.ingame #topbar{transform:translateY(-100%)}
 #panel{top:0;padding-top:56px}
+
+/* =====================================================================
+   THÈME « GARAGE NFS / FAST & FURIOUS » — surcharge globale
+   ===================================================================== */
+:root{
+  --bg:#04060c;--tx:#eaf6ff;--mu:#8aa0bf;--ac:#19e6ff;--ac2:#ff2bd6;--gold:#ffd23f;--gd:#3dff7a;--bad:#ff3b5c;
+  --bd:rgba(25,230,255,.22);--bd2:rgba(25,230,255,.8);
+  --hd:"Teko","Chakra Petch",sans-serif;--ui:"Rajdhani","Chakra Petch",sans-serif;
+  --cut:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  --cut-s:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+html,body{font-family:var(--ui);font-weight:600;font-size:15px}
+body{background:
+  repeating-linear-gradient(115deg,rgba(25,230,255,.025) 0 2px,transparent 2px 46px),
+  radial-gradient(1100px 520px at 85% -10%,rgba(43,109,255,.28),transparent 60%),
+  radial-gradient(900px 500px at -5% 110%,rgba(255,43,214,.18),transparent 60%),#04060c}
+/* barre du haut */
+#topbar{background:linear-gradient(180deg,rgba(3,6,14,.96),rgba(3,6,14,.75));border-bottom:0}
+#topbar::after{height:2px;background:linear-gradient(90deg,transparent,var(--ac) 20%,var(--ac2) 80%,transparent);opacity:1;box-shadow:0 0 12px var(--ac)}
+#logo{font-family:var(--hd);font-size:34px;line-height:.8;font-style:italic;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  background:linear-gradient(180deg,#ffffff 0%,#cfe9ff 45%,#5f86ad 55%,#e8f6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px rgba(25,230,255,.55))}
+#logo i{color:transparent;background:linear-gradient(180deg,#7ff3ff,#19b8ff 55%,#0a5fff);-webkit-background-clip:text;background-clip:text;margin-left:8px}
+#carname{font-family:var(--hd);font-size:22px;font-style:italic;letter-spacing:1px;text-transform:uppercase;color:#bfe9ff}
+#cash{font-family:var(--hd);font-size:24px;font-style:italic;line-height:1;padding:6px 14px 3px;border-radius:0;clip-path:var(--cut-s);background:linear-gradient(135deg,rgba(255,210,63,.22),rgba(255,210,63,.06));border:0;box-shadow:inset 0 0 0 1px rgba(255,210,63,.55)}
+.iconbtn{border-radius:0;clip-path:var(--cut-s);background:rgba(25,230,255,.08);border:0;box-shadow:inset 0 0 0 1px var(--bd)}
+/* boutons */
+.btn{font-family:var(--hd);font-size:22px;font-weight:600;font-style:italic;letter-spacing:1.5px;line-height:1;padding:10px 22px 6px;border-radius:0;
+  transform:skewX(-12deg);color:#031018;background:linear-gradient(180deg,#7ff3ff 0%,#19e6ff 45%,#0a9fd6 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35) inset,0 6px 22px rgba(25,230,255,.35);text-shadow:none}
+.btn:hover{filter:brightness(1.12);box-shadow:0 0 0 1px #fff inset,0 8px 30px rgba(25,230,255,.6)}
+.btn:active{transform:skewX(-12deg) translateY(2px)}
+.btn.small{font-size:17px;padding:7px 14px 4px}
+.btn.off{background:linear-gradient(180deg,#26324a,#1a2336);color:#6d7f9c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.ghostbtn{background:rgba(25,230,255,.06)!important;color:#bff6ff!important;box-shadow:inset 0 0 0 1px var(--bd2)!important;border:0!important}
+.ghostbtn:hover{background:rgba(25,230,255,.16)!important}
+.nitro{border-radius:0;clip-path:var(--cut-s);background:linear-gradient(180deg,#ff8bf0,#ff2bd6 50%,#a0108a);color:#fff;box-shadow:0 0 28px rgba(255,43,214,.6)}
+/* panneaux biseautés */
+.card,.contract,.jobc,.box,.part,.eng,.you2,.howto,.rbox,#homecard,.bs-stage,.bs-cats,.bs-opts,.bs-cart{border-radius:0!important;clip-path:var(--cut);border:0!important;
+  background:linear-gradient(160deg,rgba(14,26,48,.92),rgba(5,9,20,.94))!important;box-shadow:inset 0 0 0 1px var(--bd)!important}
+.card:hover,.contract:hover,.jobc:hover,.part:hover{box-shadow:inset 0 0 0 1px var(--bd2),inset 0 0 40px rgba(25,230,255,.08)!important;transform:translateY(-3px)}
+.card.sel,.eng.sel,.part.sel{box-shadow:inset 0 0 0 2px var(--ac),inset 0 0 40px rgba(25,230,255,.12)!important}
+.contract::before{height:5px;clip-path:none}
+.contract.c-easy::before{background:linear-gradient(90deg,#3dff7a,transparent)}.contract.c-mid::before{background:linear-gradient(90deg,#ffd23f,transparent)}.contract.c-hard::before{background:linear-gradient(90deg,#ff3b5c,var(--ac2),transparent)}
+.cstage,.jobc-art,.thumb{border-radius:0!important;clip-path:var(--cut-s)}
+.cstage{background:radial-gradient(ellipse at 50% 92%,rgba(25,230,255,.3),transparent 60%),linear-gradient(180deg,#0b1a33,#02040b)!important}
+.thumb{background:radial-gradient(ellipse at 50% 90%,rgba(25,230,255,.22),transparent 60%),linear-gradient(180deg,#0b1a33,#03050d);border:0}
+/* titres */
+.phead{background:linear-gradient(90deg,rgba(25,230,255,.1),rgba(3,6,14,.7) 40%);border-bottom:1px solid var(--bd)}
+.phead h2,h3,.ctitle,.cname b,.jobc-body h2,.big,.rbox h2,.tunehead b,.mi b,.hc-n{font-family:var(--hd)!important;font-style:italic;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.phead h2{font-size:34px;line-height:1;color:#fff;text-shadow:0 0 18px rgba(25,230,255,.5)}
+h3{font-size:24px;color:var(--ac)}
+.ctitle,.cname b{font-size:24px}
+.jobc-body h2{font-size:32px}
+.rbox h2{font-size:52px;line-height:1}
+.eyebrow{font-family:var(--hd);font-size:17px;font-style:italic;letter-spacing:3px;color:var(--ac)}
+.pill,.chip,.jtag,.jbadge,kbd,.jkeys kbd{border-radius:0!important;transform:skewX(-12deg)}
+.pill{font-family:var(--hd);font-size:16px;font-style:italic;letter-spacing:1px;padding:3px 10px 1px}
+.reward,.rewardrow .big{font-family:var(--hd)!important;font-size:30px!important;font-style:italic;color:var(--gold)}
+/* onglets */
+.tabs{border-bottom:1px solid var(--bd)}
+.tab{font-family:var(--hd);font-size:24px;font-style:italic;text-transform:uppercase;letter-spacing:1px;padding:8px 18px 4px;border-bottom:0;position:relative}
+.tab.on{color:#fff;text-shadow:0 0 14px rgba(25,230,255,.7)}
+.tab.on::after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:4px;transform:skewX(-30deg);background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 12px var(--ac)}
+/* menu d'accueil façon NFS */
+#menu{counter-reset:mi;gap:8px;width:min(330px,44vw)}
+.mi{border-radius:0;clip-path:none;transform:skewX(-10deg);background:linear-gradient(90deg,rgba(4,10,22,.92),rgba(4,10,22,.6));box-shadow:inset 0 0 0 1px rgba(25,230,255,.18);padding:10px 16px 8px;border:0;position:relative;overflow:hidden}
+.mi::before{counter-increment:mi;content:"0" counter(mi);font-family:var(--hd);font-size:20px;font-style:italic;color:var(--ac);opacity:.75;width:26px}
+.mi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac);box-shadow:0 0 14px var(--ac);transform:scaleY(0);transition:transform .15s}
+.mi:hover{transform:skewX(-10deg) translateX(-10px);background:linear-gradient(90deg,rgba(25,230,255,.22),rgba(4,10,22,.7));box-shadow:inset 0 0 0 1px var(--bd2),0 0 30px rgba(25,230,255,.25)}
+.mi:hover::after{transform:scaleY(1)}
+.mi .ico{display:none}
+.mi b{font-size:30px;line-height:.9;margin:0;letter-spacing:1.5px}
+.mi small{font-size:13px;color:#8fb3d6}
+#homecard .hc-t{font-family:var(--hd);font-size:17px;font-style:italic;letter-spacing:3px;color:var(--ac)}
+#homecard .hc-n{font-size:28px;line-height:1}
+#homecard .hc-s b{font-family:var(--hd);font-size:26px;font-style:italic}
+/* jauges / barres */
+.bar,.jbar{border-radius:0;transform:skewX(-20deg)}.bar>div,.jbar>div{border-radius:0;background:linear-gradient(90deg,var(--ac2),var(--ac))}
+.pip{border-radius:0;transform:skewX(-20deg)}.pip.on{background:linear-gradient(90deg,var(--ac),#7ff3ff);box-shadow:0 0 8px var(--ac)}
+.vb{border-radius:0}.vb.me{background:linear-gradient(90deg,#0a9fd6,var(--ac))}.vb.him{background:linear-gradient(90deg,#a0108a,var(--ac2))}
+.btn.jgo{font-size:26px;height:auto;padding:12px}
+.paint{border-radius:0;clip-path:var(--cut-s)}
+
+/* ---------- atelier Carrosserie ---------- */
+.bs{display:flex;flex-direction:column;gap:14px}
+.bs-stage{position:relative;padding:0!important;flex:none}
+.bs-side{flex:none}
+.bs-stage canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
+.bs-title{position:absolute;left:24px;top:16px;display:flex;flex-direction:column}
+.bs-title b{font-family:var(--hd);font-size:44px;font-style:italic;line-height:.9;text-transform:uppercase;text-shadow:0 0 20px rgba(25,230,255,.6)}
+.bs-nav{position:absolute;right:20px;top:18px;display:flex;gap:10px}
+.bs-side{display:grid;grid-template-columns:230px minmax(0,1fr);grid-template-rows:auto auto;gap:14px}
+.bs-cats{display:flex;flex-direction:column;padding:8px!important;grid-row:span 2;gap:2px}
+.bs-cat{position:relative;text-align:left;border:0;background:none;color:var(--mu);cursor:pointer;padding:7px 12px 5px;font-family:var(--ui);transform:skewX(-10deg)}
+.bs-cat b{display:block;font-family:var(--hd);font-size:22px;font-style:italic;font-weight:600;letter-spacing:1px;text-transform:uppercase;line-height:1;color:#cde7ff}
+.bs-cat small{font-size:12px}
+.bs-cat:hover{background:rgba(25,230,255,.08)}
+.bs-cat.on{background:linear-gradient(90deg,rgba(25,230,255,.28),transparent);box-shadow:inset 3px 0 0 var(--ac)}
+.bs-cat.on b{color:#fff;text-shadow:0 0 10px rgba(25,230,255,.7)}
+.bs-cat .dot{position:absolute;right:10px;top:50%;width:8px;height:8px;background:var(--ac2);box-shadow:0 0 8px var(--ac2);transform:translateY(-50%) rotate(45deg)}
+.bs-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;padding:14px!important;align-content:start}
+.bs-opt{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:74px;padding:10px 12px;border:0;cursor:pointer;color:var(--tx);text-align:left;font-family:var(--ui);
+  background:linear-gradient(160deg,rgba(25,40,70,.8),rgba(8,14,28,.9));clip-path:var(--cut-s);box-shadow:inset 0 0 0 1px rgba(25,230,255,.15);transition:box-shadow .12s,transform .12s}
+.bs-opt:hover{box-shadow:inset 0 0 0 1px var(--bd2);transform:translateY(-2px)}
+.bs-opt.sel{box-shadow:inset 0 0 0 2px var(--ac2),inset 0 0 30px rgba(255,43,214,.18)}
+.bs-opt .nm{font-family:var(--hd);font-size:21px;font-style:italic;text-transform:uppercase;line-height:1}
+.bs-opt small{font-size:12px;color:var(--mu)}
+.bs-opt .on{font-family:var(--hd);font-size:15px;font-style:italic;color:var(--gd);letter-spacing:1px}
+.bs-opt .own2{font-family:var(--hd);font-size:15px;font-style:italic;color:#9fd8ff}
+.bs-opt .pr{font-family:var(--hd);font-size:18px;font-style:italic;color:var(--gold)}
+.bs-opt.sw{min-height:64px;align-items:center;justify-content:center}
+.swatch{width:34px;height:20px;transform:skewX(-14deg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),inset 0 -6px 8px rgba(0,0,0,.3)}
+.bs-cart{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 18px!important;flex-wrap:wrap}
+.bs-cart .gold{font-family:var(--hd);font-size:30px;font-style:italic;margin-left:12px}
+.bs-actions{display:flex;gap:12px;align-items:center}
+@media(max-width:860px){.bs-side{grid-template-columns:1fr}.bs-cats{flex-direction:row;overflow-x:auto;grid-row:auto}.bs-cat{flex:0 0 auto}.bs-title b{font-size:28px}}
+
+/* atelier : aperçu fixe à gauche, choix à droite */
+.bs{display:grid!important;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.bs-left{position:sticky;top:0;display:flex;flex-direction:column;gap:14px}
+.bs-side{display:flex!important;flex-direction:column;gap:14px}
+.bs-cats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));flex-direction:unset;gap:4px}
+.bs-cat{padding:6px 10px 4px}.bs-cat b{font-size:19px}.bs-cat small{display:none}
+.bs-opts{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.bs-cart{flex-direction:column;align-items:stretch}
+.bs-cart>div:first-child{display:flex;justify-content:space-between;align-items:baseline}
+.bs-actions{justify-content:flex-end}
+@media(max-width:980px){.bs{grid-template-columns:1fr}.bs-left{position:static}.bs-cats{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -89,8 +89,8 @@ const PROFILES = {
     hl:[[254,46],[262,44],[268,39],[266,35],[256,37]],
     tl:[[1,44],[8,44],[8,52],[2,52]],
     extra:[
-      {t:'poly',pts:[[8,80],[13,82],[44,69],[40,66],[20,71],[17,62],[11,62],[10,72]],c:1.05},   // aileron relevé
-      {t:'line',a:[13,81],b:[43,69],c:[236,238,244]},
+      {t:'poly',wing:1,pts:[[8,80],[13,82],[44,69],[40,66],[20,71],[17,62],[11,62],[10,72]],c:1.05},   // aileron relevé
+      {t:'line',wing:1,a:[13,81],b:[43,69],c:[236,238,244]},
       {t:'poly',pts:[[88,22],[100,22],[100,30],[92,30]],c:[14,14,18]},                          // écope latérale
       {t:'rect',x:13,h:35,w:8,hh:2,c:[220,40,40]},{t:'rect',x:246,h:28,w:8,hh:2,c:[255,150,40]},
       {t:'rect',x:186,h:44,w:4,hh:2,c:[255,150,40]},
@@ -108,8 +108,8 @@ const PROFILES = {
     hl:[[252,41],[266,42],[272,38],[268,35],[254,35]],
     tlRound:[7,46,5],
     extra:[
-      {t:'poly',pts:[[12,72],[22,72],[20,59],[14,59]],c:0.85},                                     // jambe d'aileron
-      {t:'poly',pts:[[2,76],[26,75],[26,71],[4,72]],c:1.0},{t:'line',a:[3,76],b:[25,75],c:[236,238,244]},
+      {t:'poly',wing:1,pts:[[12,72],[22,72],[20,59],[14,59]],c:0.85},                                     // jambe d'aileron
+      {t:'poly',wing:1,pts:[[2,76],[26,75],[26,71],[4,72]],c:1.0},{t:'line',wing:1,a:[3,76],b:[25,75],c:[236,238,244]},
       {t:'rect',x:105,h:61,w:6,hh:15,c:[18,18,22]},
       {t:'line',a:[86,29],b:[196,29],c:0.45},                                                      // ligne de caisse
       {t:'poly',pts:[[193,22],[198,22],[198,30],[194,30]],c:[12,12,16]},                           // évent d'aile
@@ -184,16 +184,19 @@ Buf.prototype.line = function (x0, y0, x1, y1, c, sil) {
 };
 
 const _bodyCache = {};
-function getBody(style, color) {
-  const key = style + color;
+function getBody(style, color, look) {
+  const lk = lookOf({look});
+  const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize].join('|');
   if (_bodyCache[key]) return _bodyCache[key];
   const p = PROFILES[style], b = new Buf(p.L, p.H), C = hexRgb(color);
+  const WS = lk.wheelSize || 0;
   const L = p.L, belt = p.beltY, bot = p.bottom;
   const topY = Math.min(...p.body.map(q => q[1]));
   const col = c => typeof c === 'number' ? tone(C, c) : c;
 
   // 1) carrosserie : dégradé tramé en palette limitée
-  b.poly(p.body, (x, y) => {
+  // facteur d'éclairage de la carrosserie (réutilisé pour les vinyles), selon la finition
+  const bodyF = (x, y) => {
     const n = bay(x, y);
     let f;
     if (y < belt) { const u = (y - topY) / Math.max(1, belt - topY); f = Math.round((1.08 + 0.38 * (1 - u) + n * 0.12) / 0.08) * 0.08; }
@@ -201,8 +204,16 @@ function getBody(style, color) {
       const u = (y - belt) / (bot - belt) + n * 0.09;
       f = u < 0.05 ? 1.85 : u < 0.13 ? 1.42 : u < 0.28 ? 1.2 : u < 0.42 ? 1.04 : u < 0.5 ? 0.86 : u < 0.56 ? 0.74 : u < 0.72 ? 0.92 : u < 0.86 ? 0.78 : 0.56;
     }
-    return tone(C, f);
-  }, true);
+    if (lk.finish === 'matte') f = 1 + (f - 1) * 0.38;
+    if (lk.finish === 'metal' && ((x * 73 + y * 151) % 19 === 0)) f += 0.4;
+    return f;
+  };
+  const paint = (base, x, y) => {
+    const f = bodyF(x, y), c = tone(base, f);
+    if (lk.finish === 'pearl' && f > 1.1) { const k = Math.min(0.5, (f - 1.1) * 0.8); return [c[0] + (205 - c[0]) * k, c[1] + (225 - c[1]) * k, c[2] + (255 - c[2]) * k]; }
+    return c;
+  };
+  b.poly(p.body, (x, y) => paint(C, x, y), true);
   // capote
   if (p.soft) b.poly(p.soft, (x, y) => { const f = 0.34 + bay(x, y) * 0.05 + (y - topY) * 0.004; return [30 * f * 3, 32 * f * 3, 38 * f * 3]; }, true);
 
@@ -213,6 +224,40 @@ function getBody(style, color) {
       const t = a * Math.PI / 180, rr = p.wr + 8;
       const x = Math.round(wx - Math.cos(t) * rr), y = Math.round(cy - Math.sin(t) * rr);
       if (b.has(x, y) && y > belt) { b.px(x, y, tone(C, 1.5)); if (a % 6 === 0) b.px(x, y + 1, tone(C, 1.3)); }
+    }
+  }
+  // vinyles / motifs (sur le flanc, sous la ligne de vitre)
+  if (lk.decal !== 'none') {
+    const D = hexRgb(lk.decalColor), hb = bot - belt, lum = D[0] * 0.3 + D[1] * 0.59 + D[2] * 0.11;
+    const digit = DIGITS[(style.length * 3 + C[0]) % 10];
+    const dcx = Math.round((p.doors[0] + p.doors[1]) / 2), dcy = Math.round(belt + hb * 0.45), dr = Math.round(hb * 0.3);
+    const hit = (x, y) => {
+      const v = (y - belt) / hb;
+      switch (lk.decal) {
+        case 'side': { const th = x > L * 0.72 ? 0.16 * (1 - (x - L * 0.72) / (L * 0.3)) : 0.16; return x > 8 && x < L - 8 && Math.abs(v - 0.5) < th / 2 ? 1 : 0; }
+        case 'stripes': return x > 6 && x < L - 6 && ((v > 0.26 && v < 0.31) || (v > 0.36 && v < 0.41)) ? 1 : 0;
+        case 'checker': return x > L * 0.08 && x < L * 0.92 && v > 0.55 && v < 0.82 && ((Math.floor(x / 5) + Math.floor(y / 5)) & 1) ? 1 : 0;
+        case 'flames': {
+          if (x < L * 0.3) return 0;
+          const u = (x - L * 0.3) / (L * 0.7), amp = hb * 0.36 * Math.pow(u, 0.7), dy = Math.abs(y - (belt + hb * 0.55));
+          const edge = amp * (0.55 + 0.45 * Math.sin(x * 0.32 + y * 0.18));
+          return dy < edge ? (dy < edge * 0.45 && u > 0.35 ? 2 : 1) : 0;
+        }
+        case 'tribal': { const yc = belt + hb * (0.45 + 0.22 * Math.sin(x * 0.045)), th = 1.2 + 3.2 * Math.abs(Math.sin(x * 0.09)); return x > 10 && x < L - 10 && Math.abs(y - yc) < th ? 1 : 0; }
+        case 'number': {
+          const d2 = (x - dcx) * (x - dcx) + (y - dcy) * (y - dcy);
+          if (d2 > dr * dr) return 0;
+          const gx = Math.floor((x - dcx + 3) / 2), gy = Math.floor((y - dcy + 5) / 2);
+          return gx >= 0 && gx < 3 && gy >= 0 && gy < 5 && digit[gy][gx] === '1' ? 2 : 1;
+        }
+      }
+      return 0;
+    };
+    for (let y = belt + 1; y < bot - 3; y++) for (let x = 0; x < L; x++) {
+      if (!b.sil[y * L + x]) continue;
+      const h = hit(x, y); if (!h) continue;
+      const base = h === 2 ? (lk.decal === 'flames' ? [255, 206, 60] : lum > 128 ? [16, 16, 20] : [244, 244, 248]) : D;
+      b.px(x, y, paint(base, x, y));
     }
   }
   // lignes de caractère / ombres sous le bouclier
@@ -238,7 +283,7 @@ function getBody(style, color) {
     const d = (x * 1.0 + y * 1.7) % 46;
     if (d < 5) c = c.map(v => v + 46); else if (d < 9) c = c.map(v => v + 18);
     if (p.soft === undefined && u > 0.55 && ((x * 7 + y * 3) % 23) < 2) c = c.map(v => v - 14);
-    const n = bay(x, y) * 8; b.px(x, y, [c[0] + n, c[1] + n, c[2] + n], true);
+    const n = bay(x, y) * 8, tf = [1, 0.6, 0.34][lk.tint || 0]; b.px(x, y, [c[0] * tf + n, c[1] * tf + n, c[2] * tf + n], true);
   }
   // appuis-tête (silhouettes dans l'habitacle)
   if (!p.soft) {
@@ -294,17 +339,58 @@ function getBody(style, color) {
 
   // 6) accessoires propres à chaque voiture
   for (const e of p.extra) {
+    if (e.wing && lk.spoiler) continue;                       // aileron d'origine remplacé
     if (e.t === 'poly') b.poly(e.pts, col(e.c), true);
     else if (e.t === 'rect') b.rect(e.x, e.y - e.hh + 1, e.w, e.hh, typeof e.c === 'number' ? ((x, y) => tone(C, e.c + bay(x, y) * 0.05)) : e.c, true);
     else if (e.t === 'disc') b.disc(e.x, e.y, e.r, col(e.c), true);
     else if (e.t === 'line' && typeof e.c !== 'number') b.line(e.a[0], e.a[1], e.b[0], e.b[1], e.c, true);
   }
 
+  // 6b) aileron
+  if (lk.spoiler) {
+    const [x0, x1, mode] = SPOILER_MOUNT[style], carb = (x, y) => [24 + bay(x, y) * 10, 25 + bay(x, y) * 10, 30 + bay(x, y) * 10];
+    const topAt = x => { for (let y = 0; y < p.H; y++) if (inPoly(p.body, x + .5, y + .5)) return y; return bot; };
+    const roof = mode === 'roof';
+    if (lk.spoiler === 1) {
+      const ty = topAt(x0 + 2);
+      b.poly([[x0 - 2, ty - (roof ? 3 : 4)], [x0 + 16, ty - 1], [x0 + 16, ty + 2], [x0, ty + 2]], (x, y) => paint(C, x, y), true);
+    } else {
+      const big = lk.spoiler === 3, deck = Math.min(topAt(x0 + 6), topAt(x1 - 6));
+      const py = Math.max(2, deck - (roof ? (big ? 8 : 5) : (big ? 18 : 11))), px0 = x0 - (big ? 4 : 2), px1 = x1 + (big ? 6 : 2);
+      for (const sx of [x0 + 6, x1 - 8]) { b.rect(sx, py + 2, 2, topAt(sx) - py - 1, carb, true); if (big) b.rect(sx - 2, py - 1, 5, 1, carb, true); }
+      b.rect(px0, py, px1 - px0, 3, carb, true); b.rect(px0, py, px1 - px0, 1, [120, 124, 136], true);
+      const eh = big ? 10 : 7; b.rect(px0, py - 2, 2, eh, carb, true); b.rect(px1 - 2, py - 2, 2, eh, carb, true);
+    }
+  }
   // 7) passages de roues
   for (const wx of p.wheels) {
-    const cy = GY - p.wr;
-    b.disc(wx, cy, p.wr + 5, tone(C, 0.28), true, bot);
-    b.disc(wx, cy, p.wr + 3.8, [8, 8, 12], true, bot);
+    const cy = GY - p.wr - WS;
+    b.disc(wx, cy, p.wr + WS + 5, tone(C, 0.28), true, bot);
+    b.disc(wx, cy, p.wr + WS + 3.8, [8, 8, 12], true, bot);
+  }
+  // 7b) kit carrosserie
+  if (lk.kit) {
+    const carb = (x, y) => [22 + bay(x, y) * 10, 23 + bay(x, y) * 10, 28 + bay(x, y) * 10];
+    const sk0 = p.wheels[0] + p.wr + WS + 6, sk1 = p.wheels[1] - p.wr - WS - 6;
+    b.rect(sk0 - 2, bot + 1, sk1 - sk0 + 4, lk.kit >= 2 ? 3 : 2, lk.kit >= 2 ? carb : (x, y) => paint(C, x, y + 40), true);
+    b.rect(L - 30, bot + 1, 28, 2, carb, true);
+    if (lk.kit >= 2) {
+      b.rect(L - 36, bot + 3, 36, 1, carb, true);
+      b.poly([[L - 12, bot - 13], [L - 3, bot - 15], [L - 4, bot - 12]], carb, true);
+      b.poly([[L - 12, bot - 8], [L - 2, bot - 10], [L - 3, bot - 7]], carb, true);
+      for (let fx = 3; fx < 26; fx += 5) b.rect(fx, bot - 1, 2, 4, carb, true);
+      b.rect(1, bot + 1, 26, 1, carb, true);
+    }
+    if (lk.kit === 3) {
+      for (const wx of p.wheels) {
+        const cy = GY - p.wr - WS, R0 = p.wr + WS + 5, R1 = R0 + 4;
+        for (let y = cy - R1; y <= Math.min(bot, cy); y++) for (let x = wx - R1; x <= wx + R1; x++) {
+          const d = Math.hypot(x + .5 - wx, y + .5 - cy);
+          if (d > R0 && d <= R1) b.px(x, y, d > R1 - 1 ? tone(C, 0.35) : paint(C, x, y - 6), true);
+        }
+        for (let a = 15; a <= 165; a += 25) { const t = a * Math.PI / 180; b.px(Math.round(wx - Math.cos(t) * (R0 + 2)), Math.round(cy - Math.sin(t) * (R0 + 2)), [210, 214, 224]); }
+      }
+    }
   }
   // 8) contour pixel-art
   const o = tone(C, 0.2);
@@ -322,27 +408,39 @@ function getBody(style, color) {
   return cv;
 }
 
-/* roue détaillée : bande de roulement, flanc, lèvre, jante à 6 rayons, disque + étrier rouge */
-function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp) {
-  const half = (nsp || 6) / 2;
+/* roue détaillée : bande de roulement, flanc, lèvre, jante (plusieurs modèles), disque + étrier rouge */
+function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color) {
+  const half = (nsp || 6) / 2, st = style || 'stock', base = hexRgb(WHEEL_COLORS[color] || WHEEL_COLORS.silver);
+  const rgb = c => `rgb(${c.map(Math.round).join(',')})`;
+  const light = rgb(tone(base, color === 'chrome' ? 1.15 : 1.1)), dark = rgb(tone(base, 0.72)), hub = rgb(tone(base, 0.45));
+  const lipIn = st === 'deep' ? 0.46 : 0.64;
   for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
     const d = Math.sqrt((dx + .5) * (dx + .5) + (dy + .5) * (dy + .5));
     if (d > r) continue;
     const f = d / r;
     let c;
-    if (f > 0.86) c = f > 0.95 ? '#08080a' : ((dx + dy) & 1 ? '#17171c' : '#101014');   // bande de roulement
-    else if (f > 0.70) c = f > 0.78 ? '#2a2a32' : '#202026';                              // flanc
-    else if (f > 0.64) c = '#e8ecf4';                                                    // lèvre de jante
-    else if (f > 0.60) c = '#8a90a0';
+    if (f > 0.86) c = f > 0.95 ? '#08080a' : ((dx + dy) & 1 ? '#17171c' : '#101014');
+    else if (f > 0.70) c = f > 0.78 ? '#2a2a32' : '#202026';
+    else if (f > lipIn) c = st === 'deep' ? ((dx - dy) % 5 === 0 ? '#ffffff' : '#dfe4ee') : '#e8ecf4';
+    else if (f > lipIn - 0.04) c = '#8a90a0';
     else {
       const a = Math.atan2(dy + .5, dx + .5) - ang;
-      const sp = Math.abs(Math.sin(a * half));
-      if (f < 0.10) c = '#e6e9f0';
-      else if (f < 0.19) c = fast ? '#7a7f8c' : '#3a3d48';
-      else if ((fast ? 0.2 : sp) < 0.30 + 0.22 * f) c = Math.sin(a * half) > 0 ? '#d4d8e2' : '#aeb3c0';
+      let on;
+      if (fast) on = f < 0.55;
+      else switch (st) {
+        case 'star': on = Math.abs(Math.sin(a * 2.5)) < 0.2 + 0.32 * (1 - f); break;
+        case 'te37': on = Math.abs(Math.sin(a * 3)) < 0.42; break;
+        case 'mesh': on = Math.abs(Math.sin(a * 5)) < 0.2 || Math.abs(Math.sin(a * 5 + f * 3.2)) < 0.18; break;
+        case 'deep': on = Math.abs(Math.sin(a * 2.5)) < 0.18 + 0.12 * f; break;
+        case 'turbo': on = Math.sin(a * 9 + f * 6) > -0.25; break;
+        default: on = Math.abs(Math.sin(a * half)) < 0.30 + 0.22 * f;
+      }
+      if (f < 0.10) c = light;
+      else if (f < 0.19) c = fast ? dark : hub;
+      else if (on) c = Math.sin(a * (st === 'turbo' ? 9 : half)) > 0 ? light : rgb(base);
       else {
         const ca = Math.atan2(dy + .5, dx + .5);
-        c = (Math.abs(ca + 0.75) < 0.5 && f > 0.28 && f < 0.56) ? '#d82828' : '#34363f';      // étrier rouge fixe
+        c = (Math.abs(ca + 0.75) < 0.5 && f > 0.28 && f < 0.56) ? '#d82828' : '#34363f';
       }
     }
     ctx.fillStyle = c; ctx.fillRect(cx + dx * s, cy + dy * s, s, s);
@@ -352,30 +450,33 @@ function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp) {
 /* Dessine une voiture : x = arrière-gauche, y = sol, s = échelle (sprite) */
 function drawCar(ctx, style, color, x, y, s, o) {
   o = o || {};
-  const p = PROFILES[style], body = getBody(style, color);
-  const lean = o.lean || 0;
+  const p = PROFILES[style], lk = lookOf({look: o.look}), body = getBody(style, color, lk);
+  const lean = o.lean || 0, WS = lk.wheelSize || 0, r = p.wr + WS;
+  const drop = Math.min(lk.height || 0, p.sill - 2 - (lk.kit >= 2 ? 4 : lk.kit ? 3 : 0));
   ctx.imageSmoothingEnabled = false;
   ctx.fillStyle = 'rgba(0,0,0,0.4)';
   ctx.beginPath(); ctx.ellipse(x + p.L * s / 2, y + 1 * s, p.L * s * 0.55, 5 * s, 0, 0, Math.PI * 2); ctx.fill();
   ctx.save();
   if (lean) { ctx.translate(x + p.wheels[0] * s, y); ctx.rotate(-lean * 0.007); ctx.translate(-(x + p.wheels[0] * s), -y); }
-  ctx.drawImage(body, x, y - (p.H - 1) * s, p.L * s, p.H * s);
+  ctx.drawImage(body, x, y - (p.H - 1 - drop) * s, p.L * s, p.H * s);
   const fast = (o.speed || 0) > 45;
   for (const wx of p.wheels) {
-    const wc = wheelSprite(p, o.wheelAng || 0, fast);
-    ctx.drawImage(wc, x + (wx - p.wr) * s, y - (2 * p.wr + 1) * s, wc.width * s, wc.height * s);
+    const wc = wheelSprite(p, o.wheelAng || 0, fast, lk);
+    ctx.drawImage(wc, x + (wx - r) * s, y - (2 * r + 1) * s, wc.width * s, wc.height * s);
   }
   ctx.restore();
 }
 
 /* cache des roues : 48 angles pré-rendus par profil */
 const _wheelCache = {};
-function wheelSprite(p, ang, fast) {
+function wheelSprite(p, ang, fast, lk) {
+  lk = lk || LOOK_DEFAULT;
+  const r = p.wr + (lk.wheelSize || 0);
   const n = 48, a = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2), k = fast ? 0 : Math.round(a / (Math.PI * 2) * n) % n;
-  const key = p.wr + ':' + (p.spokes || 6) + ':' + (fast ? 'f' : k);
+  const key = [r, p.spokes || 6, lk.wheel, lk.wheelColor, fast ? 'f' : k].join(':');
   if (_wheelCache[key]) return _wheelCache[key];
-  const c = document.createElement('canvas'); c.width = c.height = 2 * p.wr + 1;
-  drawWheel(c.getContext('2d'), p.wr, p.wr, p.wr, 1, k / n * Math.PI * 2, fast, p.spokes || 6);
+  const c = document.createElement('canvas'); c.width = c.height = 2 * r + 1;
+  drawWheel(c.getContext('2d'), r, r, r, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor);
   return (_wheelCache[key] = c);
 }
 
@@ -410,3 +511,7 @@ function drawCarLights(ctx, style, x, y, s, o) {
   }
   ctx.restore();
 }
+
+/* mini-police 3x5 pour les numéros de course */
+const DIGITS = [['111','101','101','101','111'],['010','110','010','010','111'],['111','001','111','100','111'],['111','001','111','001','111'],['101','101','111','001','001'],
+                ['111','100','111','001','111'],['111','100','111','101','111'],['111','001','010','010','010'],['111','101','111','101','111'],['111','101','111','001','111']];

@@ -18,6 +18,18 @@ const Game = {
   reset() { this.save = this.fresh(); this.persist(); },
 
   car() { return this.save.cars[this.save.current]; },
+  /* ---- personnalisation visuelle ---- */
+  look(cs) { return lookOf(cs || this.car()); },
+  lookOwned(cs, id, v) { const o = VISUAL.find(x => x.id === id).opts.find(x => x.v === v); return !o.p || (cs.owned || []).includes(id + ':' + v); },
+  lookPrice(cs, id, v) { return this.lookOwned(cs, id, v) ? 0 : VISUAL.find(x => x.id === id).opts.find(x => x.v === v).p; },
+  applyLook(changes) {
+    const cs = this.car(); let total = 0;
+    for (const [id, v] of Object.entries(changes)) total += this.lookPrice(cs, id, v);
+    if (this.save.money < total) return false;
+    this.save.money -= total; cs.owned = cs.owned || []; cs.look = Object.assign(lookOf(cs), changes);
+    for (const [id, v] of Object.entries(changes)) if (!cs.owned.includes(id + ':' + v)) cs.owned.push(id + ':' + v);
+    this.persist(); return true;
+  },
   owns(id) { return !!this.save.cars[id]; },
   priceMult(cs) { return 0.5 + ENGINES[cs.engine].hp / 160; },
   partPrice(cs, part, tier) { return Math.round(part.tiers[tier].p * this.priceMult(cs) / 10) * 10; },
@@ -51,7 +63,7 @@ const Game = {
   paint(color) { const cs = this.car(); if (this.save.money < 50 && cs.color !== color) return false; if (cs.color !== color) this.save.money -= 50; cs.color = color; this.persist(); return true; },
 
   oppColor(i) { return ['#d04040', '#40a0d0', '#d0a030', '#50b060', '#a050d0', '#e0e0e0', '#e07030', '#3050c0', '#e050a0', '#30c0b0', '#c0c030', '#181820'][i % 12]; },
-  ladderOpp(i) { return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i)}); },
+  ladderOpp(i) { return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), i / 11)}); },
 
   /* ---------------- CONTRATS ---------------- */
   baseReward(t400) { return 160 * Math.pow(18.5 / t400, 5.5); },
@@ -87,7 +99,7 @@ const Game = {
       const reward = Math.max(60, Math.round(base * D.mult * rnd(0.9, 1.15) / 10) * 10);
       out.push({kind: 'contract', diff: D.k, diffLabel: D.label, skill: D.skill, car: best.car, engine: best.engine, parts: best.parts,
         color: pick(PAINTS), name: pick(RIVALS), tag: pick(RIVAL_TAGS), type: type.id, reward,
-        stake: type.id === 'bet' ? Math.round(reward * 0.6 / 10) * 10 : 0, est: best.t});
+        stake: type.id === 'bet' ? Math.round(reward * 0.6 / 10) * 10 : 0, est: best.t, look: randomLook(Math.random, D.k === 'hard' ? 0.8 : D.k === 'mid' ? 0.5 : 0.25)});
     }
     return out;
   },

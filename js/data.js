@@ -80,3 +80,49 @@ const OPPONENTS = [
 ];
 
 const PAINTS = ['#e8c020','#f2f2f2','#c42020','#3a78d0','#2a2a30','#30a050','#e87820','#9040c0','#e060a0','#20b8c8'];
+
+/* ============ PERSONNALISATION VISUELLE ============ */
+const LOOK_DEFAULT = {finish: 'gloss', kit: 0, spoiler: 0, wheel: 'stock', wheelColor: 'silver', wheelSize: 0,
+                      decal: 'none', decalColor: '#111216', height: 0, tint: 0, neon: 'none'};
+const WHEEL_COLORS = {silver: '#c5cad6', black: '#2a2c33', gold: '#d6ab45', bronze: '#a0703e', white: '#eceff5', red: '#c8303a', chrome: '#f2f5fb'};
+const NEON_COLORS = {cyan: '62,224,255', pink: '255,61,180', green: '90,255,120', purple: '170,90,255', orange: '255,150,40', red: '255,50,60'};
+const VISUAL = [
+  {id: 'finish', name: 'Peinture', sub: 'Finition', opts: [
+    {v: 'gloss', n: 'Brillante', p: 0}, {v: 'matte', n: 'Mate', p: 400}, {v: 'metal', n: 'Métallisée', p: 600}, {v: 'pearl', n: 'Nacrée', p: 900}]},
+  {id: 'kit', name: 'Kit carrosserie', sub: 'Boucliers & bas de caisse', opts: [
+    {v: 0, n: 'Origine', p: 0}, {v: 1, n: 'Street', d: 'Lame avant + bas de caisse', p: 900},
+    {v: 2, n: 'Racing', d: 'Splitter, canards, diffuseur', p: 2200}, {v: 3, n: 'Widebody', d: 'Élargisseurs rivetés + kit Racing', p: 4500}]},
+  {id: 'spoiler', name: 'Aileron', sub: 'Appui arrière', opts: [
+    {v: 0, n: 'Origine', p: 0}, {v: 1, n: 'Becquet ducktail', p: 500}, {v: 2, n: 'Aileron GT', p: 1400}, {v: 3, n: 'Col de cygne', p: 2600}]},
+  {id: 'wheel', name: 'Jantes', sub: 'Modèle', opts: [
+    {v: 'stock', n: 'Origine', p: 0}, {v: 'star', n: 'Étoile 5 branches', p: 700}, {v: 'te37', n: 'Rayons forgés 6', p: 900},
+    {v: 'mesh', n: 'Maille', p: 1100}, {v: 'deep', n: 'Deep dish', p: 1300}, {v: 'turbo', n: 'Turbofan', p: 1000}]},
+  {id: 'wheelColor', name: 'Couleur jantes', sub: 'Teinte', opts: [
+    {v: 'silver', n: 'Argent', p: 0}, {v: 'black', n: 'Noir', p: 300}, {v: 'white', n: 'Blanc', p: 300}, {v: 'gold', n: 'Or', p: 450},
+    {v: 'bronze', n: 'Bronze', p: 450}, {v: 'red', n: 'Rouge', p: 350}, {v: 'chrome', n: 'Chrome', p: 600}]},
+  {id: 'wheelSize', name: 'Taille jantes', sub: 'Diamètre', opts: [
+    {v: 0, n: 'Origine', p: 0}, {v: 1, n: '+1 pouce', p: 500}, {v: 2, n: '+2 pouces', p: 1000}]},
+  {id: 'decal', name: 'Motifs', sub: 'Vinyles', opts: [
+    {v: 'none', n: 'Aucun', p: 0}, {v: 'side', n: 'Bande latérale', p: 400}, {v: 'stripes', n: 'Double liseré', p: 500},
+    {v: 'number', n: 'Numéro de course', p: 500}, {v: 'checker', n: 'Damier', p: 700}, {v: 'flames', n: 'Flammes', p: 900}, {v: 'tribal', n: 'Tribal', p: 1100}]},
+  {id: 'decalColor', name: 'Couleur motif', sub: 'Gratuit', colors: true, opts: [
+    {v: '#111216', n: 'Noir', p: 0}, {v: '#f4f4f8', n: 'Blanc', p: 0}, {v: '#ff3d2e', n: 'Rouge', p: 0}, {v: '#ffb21c', n: 'Orange', p: 0},
+    {v: '#ffe23d', n: 'Jaune', p: 0}, {v: '#2fe06a', n: 'Vert', p: 0}, {v: '#1fd1ff', n: 'Cyan', p: 0}, {v: '#3a5bff', n: 'Bleu', p: 0},
+    {v: '#b14dff', n: 'Violet', p: 0}, {v: '#ff4dc4', n: 'Rose', p: 0}, {v: '#9aa0ad', n: 'Gris', p: 0}]},
+  {id: 'height', name: 'Suspension', sub: 'Hauteur de caisse', opts: [
+    {v: 0, n: 'Origine', p: 0}, {v: 2, n: 'Ressorts courts −20 mm', p: 400}, {v: 4, n: 'Combinés filetés −40 mm', p: 900}, {v: 6, n: 'Stance −60 mm', p: 1500}]},
+  {id: 'tint', name: 'Vitres', sub: 'Teinte', opts: [
+    {v: 0, n: 'Claires', p: 0}, {v: 1, n: 'Teintées', p: 250}, {v: 2, n: 'Limousine', p: 450}]},
+  {id: 'neon', name: 'Néons', sub: 'Bas de caisse', opts: [
+    {v: 'none', n: 'Aucun', p: 0}, {v: 'cyan', n: 'Cyan', p: 350}, {v: 'pink', n: 'Rose', p: 350}, {v: 'green', n: 'Vert', p: 350},
+    {v: 'purple', n: 'Violet', p: 350}, {v: 'orange', n: 'Orange', p: 350}, {v: 'red', n: 'Rouge', p: 350}]}
+];
+// emplacement des ailerons par profil : zone de pose [x0, x1] et style de montage
+const SPOILER_MOUNT = {twingo: [12, 36, 'roof'], clio: [20, 42, 'roof'], mx5: [6, 34, 'deck'], m3: [6, 38, 'deck'], supra: [8, 44, 'deck'], skyline: [6, 40, 'deck']};
+function lookOf(o) { return Object.assign({}, LOOK_DEFAULT, (o && o.look) || {}); }
+function randomLook(rnd, level) {
+  const pick = (id, maxIdx) => { const opts = VISUAL.find(v => v.id === id).opts; return opts[Math.min(opts.length - 1, Math.floor(rnd() * Math.min(opts.length, maxIdx)))].v; };
+  const L = Object.assign({}, LOOK_DEFAULT), lv = 1 + Math.floor(level * 7);
+  for (const v of VISUAL) if (rnd() < 0.25 + level * 0.6) L[v.id] = pick(v.id, v.id === 'decalColor' ? 99 : lv);
+  return L;
+}

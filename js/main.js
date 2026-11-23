@@ -154,6 +154,7 @@ document.addEventListener('click', e => {
     case 'dyno-close': UI.dynoStop(); $('result').classList.add('hidden'); break;
     case 'ecureset': { const cs = Game.car(); cs.map = {}; Game.persist(); UI.render(); break; }
     case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) { UI.toast('+ ' + money(g) + ' encaissés'); FX.coins(b, 22); FX.sparks(b); } UI.render(); break; }
+    case 'claim': { const g = Game.claimChal(v); if (g) { UI.toast(`+ ${money(g.cash)} · +${g.xp} XP`); FX.coins(b, 22); FX.sparks(b); if (g.ups.length) { FX.confetti(200); UI.toast(`🎖️ Niveau de réputation ${g.ups[g.ups.length - 1].level} !`); } UI.refreshTop(); } UI.render(); break; }
     case 'turfup': if (Game.upgradeTurf(v)) UI.render(); else flash(b); break;
     case 'crewcol': UI.crewColor = v; document.querySelectorAll('.crew-col').forEach(x => x.classList.toggle('sel', x.dataset.v === v)); break;
     case 'crewsave': Game.setCrew($('crewname').value, UI.crewColor || Game.crew().color); UI.render(); break;

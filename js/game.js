@@ -74,7 +74,7 @@ const Game = {
   paint(color) { const cs = this.car(); if (CARS[cs.id].livery) return false; if (this.save.money < 50 && cs.color !== color) return false; if (cs.color !== color) this.save.money -= 50; cs.color = color; this.persist(); return true; },
 
   oppColor(i) { return ['#d04040', '#40a0d0', '#d0a030', '#50b060', '#a050d0', '#e0e0e0', '#e07030', '#3050c0', '#e050a0', '#30c0b0', '#c0c030', '#181820'][i % 12]; },
-  ladderOpp(i) { const c = CLANS.find(k => k.boss === i || k.members.includes(i)); return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), Math.min(1, i / 11)), clan: c && c.name, emblem: c && c.emblem, boss: !!c && c.boss === i}); },
+  ladderOpp(i) { const c = CLANS.find(k => k.boss === i || k.members.includes(i)); return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), Math.min(1, i / 11)), clan: c && c.name, emblem: c && c.emblem, boss: !!c && c.boss === i, cond: 'night'}); },
 
   /* ---------------- CONTRATS ---------------- */
   baseReward(t400) { return 160 * Math.pow(18.5 / t400, 6.5); },
@@ -164,13 +164,44 @@ const Game = {
       }
       used.add(best.car);
       const type = pink ? CONTRACT_TYPES.find(t => t.id === 'pink') : types[out.length];
-      const reward = Math.max(60, Math.round(base * D.mult * rnd(0.9, 1.15) / 10) * 10);
+      const cond = pickCond(), reward = Math.max(60, Math.round(base * D.mult * rnd(0.9, 1.15) * (1 + condOf(cond).bonus) / 10) * 10);
       out.push({kind: 'contract', diff: D.k, diffLabel: D.label, skill: D.skill, car: best.car, engine: best.engine, parts: best.parts,
-        color: pick(PAINTS), name: pick(RIVALS), tag: pick(RIVAL_TAGS), type: type.id, reward,
+        color: pick(PAINTS), name: pick(RIVALS), tag: pick(RIVAL_TAGS), type: type.id, reward, cond,
         stake: type.id === 'bet' ? Math.round(reward * 0.6 / 10) * 10 : 0, est: best.t, look: randomLook(Math.random, D.k === 'hard' ? 0.8 : D.k === 'mid' ? 0.5 : 0.25)});
       if (type.id === 'pink') { const o = out[out.length - 1]; o.value = this.carValue(o); o.reward = Math.round(o.value * 0.7 / 10) * 10; o.myValue = this.carValue(this.car()); }
     }
     return out;
+  },
+
+  /* ---- réputation (niveaux) ---- */
+  level() { return this.save.level || 1; },
+  xpNeed(l) { return Math.round(300 * Math.pow(l || this.level(), 1.4) / 10) * 10; },
+  repBonus() { return Math.min(0.5, 0.02 * (this.level() - 1)); },
+  addXP(n) {
+    const s = this.save, ups = [];
+    s.xp = (s.xp || 0) + n; s.level = s.level || 1;
+    while (s.xp >= this.xpNeed(s.level)) { s.xp -= this.xpNeed(s.level); s.level++; const cash = Math.round(500 * Math.pow(s.level, 1.5) / 10) * 10; s.money += cash; ups.push({level: s.level, cash}); }
+    return ups;
+  },
+  /* ---- défis ---- */
+  chalValue(c) {
+    if (c.id === 'garage') return Object.keys(this.save.cars).length;
+    if (c.id === 'boss') return CLANS.filter(k => this.clanDefeated(k)).length;
+    return (this.save.stats || {})[c.stat] || 0;
+  },
+  chalState(c) {
+    const done = (this.save.chal || {})[c.id] || 0, v = this.chalValue(c), tier = c.tiers[done];
+    const ok = tier != null && (c.lower ? v > 0 && v <= tier : v >= tier);
+    return {done, v, tier, ok, max: tier == null};
+  },
+  chalReward(c, i) { return {cash: Math.round(c.cash * Math.pow(4, i) / 10) * 10, xp: 120 * (i + 1)}; },
+  claimable() { return CHALLENGES.filter(c => this.chalState(c).ok).length; },
+  claimChal(id) {
+    const c = CHALLENGES.find(x => x.id === id), S = c && this.chalState(c);
+    if (!S || !S.ok) return null;
+    const r = this.chalReward(c, S.done); this.save.chal = this.save.chal || {}; this.save.chal[id] = S.done + 1;
+    this.save.money += r.cash; const ups = this.addXP(r.xp); let cash = r.cash; for (const u of ups) cash += u.cash;
+    this.persist(); return {cash, xp: r.xp, ups};
   },
 
   raceDone(opp, res) {
@@ -217,12 +248,59 @@ const Game = {
     } else { if (s.streak >= 2) lines.push([`Série de ${s.streak} victoires terminée`, 0, 'info']); s.streak = 0; }
     res.streak = s.streak;
     if (reward > 0 && this.perk('all')) { const b = Math.round(reward * this.perk('all')); reward += b; lines.push(['⭕ Bonus du Cercle', b]); }
+    // conditions difficiles : bonus sur les gains
+    const C = condOf(opp.cond);
+    if (res.win && reward > 0 && C.bonus && opp.kind !== 'ladder') { const b = Math.round(reward * C.bonus); reward += b; lines.push([`${C.icon} Bonus ${C.name}`, b]); }
+    // réputation : bonus permanent selon le niveau
+    const lv = this.level();
+    if (reward > 0 && lv > 1) { const b = Math.round(reward * this.repBonus()); reward += b; lines.push([`⭐ Réputation niv. ${lv}`, b]); }
+    // statistiques de pilote (pour les défis)
+    const st = s.stats = s.stats || {}, inc = (k, n) => { st[k] = (st[k] || 0) + (n == null ? 1 : n); };
+    if (res.win) inc('wins');
+    if (res.launchQ > 0.95) inc('perfLaunch');
+    inc('perfShift', res.perfect || 0);
+    if (res.burn === 'perfect') inc('perfBurn');
+    if (res.win && opp.cond === 'rain') inc('rainWins');
+    if (res.win && opp.type === 'pink') inc('pinkWins');
+    st.bestStreak = Math.max(st.bestStreak || 0, s.streak || 0);
+    if (res.et && !res.fs) { st.bestET = st.bestET ? Math.min(st.bestET, res.et) : res.et; st.bestTrap = Math.max(st.bestTrap || 0, Math.round(res.speed)); }
+    // expérience
+    let xp = (res.win ? 100 : 35) + (res.launchQ > 0.95 ? 25 : 0) + (res.perfect || 0) * 8 + (res.burn === 'perfect' ? 15 : 0) + (res.lore ? 300 : 0);
+    xp = Math.round(xp * (1 + C.bonus)); res.xp = xp;
+    lines.push([`⭐ +${xp} XP de réputation`, 0, 'info']);
+    for (const u of this.addXP(xp)) { reward += u.cash; lines.push([`🎖️ Niveau ${u.level} atteint !`, u.cash]); res.levelUp = u.level; }
     res.reward = reward; res.lines = lines; s.money = Math.max(0, s.money + reward);
     if (res.et && !res.fs) { const k = s.current; if (!s.best[k] || res.et < s.best[k]) { s.best[k] = res.et; res.record = true; } }
     this.persist();
     UI.refreshTop();
   }
 };
+
+/* conditions de piste : adhérence, puissance (air chaud / froid) et bonus de gains */
+const TRACK_CONDS = [
+  {id: 'dry',   name: 'Piste sèche',        icon: '☀️', mu: 1,    hp: 1,    bonus: 0,    w: 5},
+  {id: 'night', name: 'Nuit fraîche',       icon: '🌙', mu: 1.03, hp: 1.04, bonus: 0,    w: 3},
+  {id: 'prep',  name: 'Piste préparée',     icon: '🧪', mu: 1.12, hp: 1,    bonus: 0,    w: 2},
+  {id: 'hot',   name: 'Bitume brûlant',     icon: '🔥', mu: 0.93, hp: 0.96, bonus: 0.15, w: 2},
+  {id: 'rain',  name: 'Pluie',              icon: '🌧️', mu: 0.70, hp: 1,    bonus: 0.4,  w: 2}
+];
+function pickCond() { let t = Math.random() * TRACK_CONDS.reduce((a, c) => a + c.w, 0); for (const c of TRACK_CONDS) { t -= c.w; if (t <= 0) return c.id; } return 'dry'; }
+const condOf = id => TRACK_CONDS.find(c => c.id === id) || TRACK_CONDS[0];
+
+/* défis : paliers de plus en plus durs, récompenses en cash + réputation */
+const CHALLENGES = [
+  {id: 'wins',   icon: '🏆', name: 'Vainqueur',          stat: 'wins',       tiers: [5, 25, 100, 300],     cash: 600,  d: n => `Gagner ${n} courses`},
+  {id: 'launch', icon: '🚀', name: 'Canonnier',          stat: 'perfLaunch', tiers: [5, 25, 100, 250],     cash: 500,  d: n => `Réussir ${n} départs parfaits`},
+  {id: 'shift',  icon: '🎯', name: 'Boîte d\'orfèvre',   stat: 'perfShift',  tiers: [20, 100, 400, 1500],  cash: 500,  d: n => `Enchaîner ${n} passages parfaits`},
+  {id: 'burn',   icon: '🔥', name: 'Gomme brûlée',       stat: 'perfBurn',   tiers: [3, 20, 80, 250],      cash: 400,  d: n => `Réussir ${n} burnouts parfaits`},
+  {id: 'et',     icon: '⏱️', name: 'Chronomètre',        stat: 'bestET', lower: true, tiers: [16, 14, 12, 10.5, 9], cash: 700, d: n => `Descendre sous ${String(n).replace('.', ',')} s au 400 m`},
+  {id: 'trap',   icon: '💨', name: 'Vitesse de pointe',  stat: 'bestTrap',   tiers: [150, 200, 250, 300],  cash: 700,  d: n => `Passer la ligne à ${n} km/h`},
+  {id: 'streak', icon: '⚡', name: 'Intouchable',        stat: 'bestStreak', tiers: [3, 8, 15, 30],        cash: 800,  d: n => `Enchaîner ${n} victoires`},
+  {id: 'rain',   icon: '🌧️', name: 'Roi de la pluie',    stat: 'rainWins',   tiers: [1, 5, 20, 60],        cash: 700,  d: n => `Gagner ${n} course${n > 1 ? 's' : ''} sous la pluie`},
+  {id: 'pink',   icon: '🏴', name: 'Chasseur de titres', stat: 'pinkWins',   tiers: [1, 5, 15, 40],        cash: 1500, d: n => `Gagner ${n} titre${n > 1 ? 's' : ''} de propriété`},
+  {id: 'garage', icon: '🚗', name: 'Collectionneur',                         tiers: [3, 6, 12, 20, 35],    cash: 800,  d: n => `Posséder ${n} véhicules`},
+  {id: 'boss',   icon: '⚔️', name: 'Fléau des clans',                        tiers: [1, 3, 5],             cash: 2000, d: n => `Battre ${n} boss de clan`}
+];
 
 const CONTRACT_REFRESH = 100;
 const CONTRACT_DIFFS = [

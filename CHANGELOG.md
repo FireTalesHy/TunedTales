@@ -4,6 +4,18 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🔥 v1.15.0 — « Pilote » · 23 novembre 2026
+
+Nouvelles mécaniques de jeu :
+
+- 🔥 **Burnout de chauffe** avant chaque course : maintiens pour faire fumer les pneus et relâche quand la jauge de température est dans le vert → **+10 % d'adhérence**. Trop froid : aucun gain. Trop chaud : les pneus surchauffent et glissent.
+- 🌦️ **Conditions de piste** sur chaque contrat : ☀️ sèche, 🌙 nuit fraîche (+4 % de puissance), 🧪 piste préparée (+12 % d'adhérence), 🔥 bitume brûlant (gains +15 %) et 🌧️ **pluie** (−30 % d'adhérence, gains +40 %), avec pluie et reflets à l'écran.
+- ⭐ **Réputation** : chaque course rapporte de l'XP (victoire, départ parfait, passages parfaits, burnout réussi). Chaque niveau donne une **prime en cash** et un **bonus permanent** de +2 % sur les gains (jusqu'à +50 %). Le niveau s'affiche en haut de l'écran.
+- 🎯 **Défis** (nouvel onglet des courses) : 11 défis à paliers (victoires, départs parfaits, chrono sous 10 s, 300 km/h, pluie, titres, collection, boss…), à récupérer pour du cash et de l'XP.
+- 📊 **Statistiques de pilote** : victoires, meilleur 400 m, vitesse max, départs parfaits.
+
+---
+
 ## 🏁 v1.14.0 — « Garage plein » · 22 novembre 2026
 
 Six voitures de plus (35 véhicules au total) :

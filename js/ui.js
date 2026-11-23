@@ -8,6 +8,7 @@ const UI = {
 
   refreshTop() {
     this.animCash(Game.save.money);
+    const rep = $('rep'); if (rep) { const s = Game.save, n = Game.xpNeed(); rep.innerHTML = `<b>NIV ${Game.level()}</b><i><u style="width:${clamp((s.xp || 0) / n * 100, 0, 100)}%"></u></i>${Game.claimable() ? `<em>${Game.claimable()}</em>` : ''}`; rep.title = `Réputation : ${s.xp || 0} / ${n} XP · bonus +${Math.round(Game.repBonus() * 100)} % sur les gains`; }
     const cs = Game.car(), sp = specOf(cs), best = Game.save.best[cs.id];
     $('carname').textContent = CARS[cs.id].name;
     const wins = Object.keys(Game.save.wins).length;
@@ -62,10 +63,12 @@ const UI = {
         <div><div class="eyebrow">TA VOITURE</div><div class="big">${CARS[cs.id].name}</div>
         <div class="chips"><span class="chip">${ENGINES[cs.engine].name}</span><span class="chip">${Math.round(spec.hp)} ch</span><span class="chip">${fmt(spec.mass)} kg</span><span class="chip hl">400 m ≈ ${est.t400.toFixed(2)} s</span></div></div></div>
       <div class="howto"><b>Départ :</b> maintiens / relâche <kbd>ESPACE</kbd> (ou l'écran) pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
+      <b>Burnout :</b> avant le départ, maintiens pour chauffer les pneus et relâche dans le vert (+10 % d'adhérence).<br>
       <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
       <button class="tab ${tab === 'pink' ? 'on' : ''}" data-act="tab" data-v="pink">🏴 Courses au titre</button>
-      <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">⚔️ Clans <small>${CLANS.filter(c => Game.clanDefeated(c)).length}/${CLANS.length}</small></button></div>`;
+      <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">⚔️ Clans <small>${CLANS.filter(c => Game.clanDefeated(c)).length}/${CLANS.length}</small></button>
+      <button class="tab ${tab === 'chal' ? 'on' : ''}" data-act="tab" data-v="chal">🎯 Défis ${Game.claimable() ? `<small class="new">${Game.claimable()}</small>` : ''}</button></div>`;
     if (tab === 'contracts') {
       const list = Game.contracts(); Game.persist();
       const st = Game.save.streak || 0, sm = Game.streakMult(st);
@@ -80,10 +83,31 @@ const UI = {
       h += `<div class="pinkhead"><b>COURSES AU TITRE DE PROPRIÉTÉ</b><span>Le gagnant repart avec la voiture de l'autre. Tu mets en jeu ta voiture actuelle : <b class="bad">${CARS[cs.id].name}</b> (valeur ${money(Game.carValue(cs))}). Si tu possèdes déjà le modèle gagné, son titre est revendu 70 % de sa valeur.</span></div>`;
       if (!list.length) h += `<div class="box">🔒 Il te faut <b>au moins 2 voitures</b> pour mettre un titre en jeu (sinon tu risquerais de te retrouver à pied). Passe à la concession !</div>`;
       else { h += '<div class="contracts">'; list.forEach((o, i) => { h += this.contractCard(o, i, spec, est, 'p'); }); h += '</div>'; }
+    } else if (tab === 'chal') {
+      h += this.rChallenges();
     } else {
       h += this.rClans();
     }
     return h;
+  },
+  rChallenges() {
+    const s = Game.save, n = Game.xpNeed(), st = s.stats || {};
+    let h = `<div class="replv"><div class="replv-n"><small>RÉPUTATION</small><b>${Game.level()}</b></div>
+      <div class="replv-b"><div class="xpbar"><i style="width:${clamp((s.xp || 0) / n * 100, 0, 100)}%"></i></div>
+      <span>${fmt(s.xp || 0)} / ${fmt(n)} XP · bonus permanent <b class="gold">+${Math.round(Game.repBonus() * 100)} %</b> sur les gains de course · niveau suivant : <b class="gold">${money(Math.round(500 * Math.pow(Game.level() + 1, 1.5) / 10) * 10)}</b></span></div>
+      <div class="replv-s"><span><b>${st.wins || 0}</b>victoires</span><span><b>${st.bestET ? st.bestET.toFixed(2) + ' s' : '—'}</b>meilleur 400 m</span><span><b>${st.bestTrap ? st.bestTrap + ' km/h' : '—'}</b>vitesse max</span><span><b>${st.perfLaunch || 0}</b>départs parfaits</span></div></div>
+      <div class="chals">`;
+    for (const c of CHALLENGES) {
+      const S = Game.chalState(c), R = S.max ? null : Game.chalReward(c, S.done);
+      const prog = S.max ? 100 : c.lower ? (S.v ? clamp((c.tiers[0] * 1.15 - S.v) / (c.tiers[0] * 1.15 - S.tier) * 100, 0, 100) : 0) : clamp(S.v / S.tier * 100, 0, 100);
+      const cur = c.lower ? (S.v ? S.v.toFixed(2) + ' s' : '—') : fmt(Math.round(S.v)) + (S.max ? '' : ' / ' + fmt(S.tier));
+      h += `<div class="chal ${S.ok ? 'ready' : ''} ${S.max ? 'max' : ''}"><div class="chal-i">${c.icon}</div><div class="chal-m">
+        <div class="chal-h"><b>${c.name}</b><span class="pips">${c.tiers.map((_, i) => `<i class="${i < S.done ? 'on' : ''}"></i>`).join('')}</span></div>
+        <div class="muted">${S.max ? 'Tous les paliers sont terminés !' : c.d(S.tier)}</div>
+        <div class="xpbar sm"><i style="width:${prog}%"></i></div><div class="chal-f"><span class="muted">${cur}</span>
+        ${S.max ? '<b class="good">✔ MAÎTRISÉ</b>' : S.ok ? `<button class="btn small" data-act="claim" data-v="${c.id}">RÉCUPÉRER · ${money(R.cash)}</button>` : `<span class="gold">${money(R.cash)} · +${R.xp} XP</span>`}</div></div></div>`;
+    }
+    return h + '</div>';
   },
   /* ---------------- CLANS ---------------- */
   rClans() {
@@ -216,6 +240,7 @@ const UI = {
     const total = o.type === 'bet' ? o.reward + o.stake : o.reward, pink = o.type === 'pink';
     return `<div class="contract c-${o.diff} ${pink ? 'c-pink' : ''}">
       <div class="ctop"><span class="pill d-${o.diff}">${o.diffLabel}</span><span class="pill type">${T.icon} ${T.label}</span></div>
+      <div class="ccond c-${o.cond || 'dry'}">${condOf(o.cond).icon} ${condOf(o.cond).name}${condOf(o.cond).bonus ? ` · <b>gains +${Math.round(condOf(o.cond).bonus * 100)} %</b>` : ''}<small>${{dry: 'adhérence normale', night: 'air frais : +4 % de puissance', prep: 'colle à la piste : +12 % d\'adhérence', hot: '−7 % d\'adhérence, −4 % de puissance', rain: '−30 % d\'adhérence : dose ton départ'}[o.cond || 'dry']}</small></div>
       <div class="cstage"><canvas class="thumb big" data-car="${o.car}" data-color="${o.color}" data-look='${JSON.stringify(o.look || null)}' width="600" height="232"></canvas></div>
       <div class="cname"><b>${o.name}</b><span class="muted">${o.tag}</span></div>
       <div class="ccar">${CARS[o.car].name} <span class="muted">· ${ENGINES[o.engine].name}</span></div>
@@ -566,7 +591,8 @@ const UI = {
       <div class="rbtns">${res.lore ? `<button class="btn" data-act="lore" data-v="${res.lore}">📖 LIRE LE CHAPITRE</button>` : ''}${again}<button class="btn ghostbtn" data-act="go" data-v="tuning">TUNING</button><button class="btn ghostbtn" data-act="go" data-v="home">GARAGE</button></div></div>
       ${res.slip ? this.timeSlip(res, o) : ''}</div>`;
     if (res.reward > 0) setTimeout(() => FX.coins(r.querySelector('.pl.total') || r, Math.min(30, 10 + Math.round(res.reward / 400))), 350);
-    if (res.win) { FX.confetti(res.lore ? 240 : 140); }
+    if (res.win || res.levelUp) { FX.confetti(res.lore || res.levelUp ? 240 : 140); }
+    if (res.levelUp) setTimeout(() => this.toast(`🎖️ Niveau de réputation ${res.levelUp} !`), 900);
   },
   timeSlip(res, o) {
     const P = res.slip.pl, A = res.slip.ai, t = v => v == null ? '—' : v.toFixed(3), k = v => v ? v.toFixed(1) : '—';

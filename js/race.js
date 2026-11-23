@@ -33,7 +33,12 @@ const Race = {
     this.aiLaunchRpm = this.aiSpec.red * 0.55;
     this.msg = ''; this.msgT = 0; this.particles = []; this.result = null;
     this.fs = false; this.rt = null; this.launchAt = Infinity; this.plLaunchRpm = 0;
-    this.state = 'stage'; this.active = true; this.wheelAng = 0; this.aiWheelAng = 0;
+    // conditions de piste (les deux voitures) et burnout de chauffe avant le départ
+    const C = condOf(opp.cond); this.cond = C;
+    for (const sp of [this.plSpec, this.aiSpec]) { sp.mu *= C.mu; if (C.hp !== 1) { const t0 = sp.torque; sp.torque = (r, n, s) => t0(r, n, s) * C.hp; } }
+    this.aiSpec.mu *= 1 + 0.06 * clamp((opp.skill - 0.8) / 0.15, 0, 1);           // l'IA chauffe aussi ses pneus
+    this.tireT = 0; this.burnT = 0; this.burnUsed = false; this.burnRel = 0; this.burnQ = 'none';
+    this.state = 'burn'; this.active = true; this.wheelAng = 0; this.aiWheelAng = 0;
     this.shiftCount = 0; this.perfectShifts = 0; this.aiGear = 0; this.zoneT = 0; this.countT = 0; this.zoneFrac = 0;
     this.knockAt = Math.random() < Math.max(0, (this.plSpec.risk - 0.35) * 1.2) ? 1.5 + Math.random() * 3.5 : Infinity; this.knocked = false;
     Sound.stopAll(); this.plV = this.aiV = null;
@@ -46,7 +51,7 @@ const Race = {
 
   onDown() {
     if (!this.active) return;
-    if (this.state === 'stage') this.holding = true;
+    if (this.state === 'stage' || this.state === 'burn') this.holding = true;
     else if (this.state === 'race' && this.pl.launched && !this.pl.fin) this.shift();
   },
   onUp() {
@@ -81,7 +86,36 @@ const Race = {
     this.shake = 2;
   },
 
+  /* burnout : maintenir pour chauffer les pneus, relâcher quand la jauge est dans le vert */
+  stepBurn(dt) {
+    const sp = this.plSpec, red = sp.red;
+    this.burnT += dt;
+    if (this.holding) {
+      this.burnUsed = true; this.burnRel = 0;
+      const pw = clamp(sp.hp / sp.mass * 6, 0.4, 2.2);
+      this.tireT += dt * (0.18 + 0.16 * pw) * (this.cond.id === 'rain' ? 0.7 : 1);
+      this.revRpm = Math.min(red * 0.9, this.revRpm + 4000 * dt);
+      this.wheelAng += 40 * dt; if (Math.random() < 0.85) this.puff('pl', true);
+    } else {
+      this.revRpm = Math.max(IDLE, this.revRpm - 3500 * dt); this.tireT = Math.max(0, this.tireT - dt * 0.06);
+      if (this.burnUsed) this.burnRel += dt;
+    }
+    if ((this.burnUsed && this.burnRel > 0.45) || this.burnT > 8 || (!this.burnUsed && this.burnT > 3.2)) this.endBurn();
+  },
+  endBurn() {
+    const T = this.tireT; let g, q;
+    if (T < 0.25) { g = 1; q = 'cold'; }
+    else if (T < 0.6) { g = 1 + 0.1 * (T - 0.25) / 0.35; q = 'warm'; }
+    else if (T <= 0.95) { g = 1.1; q = 'perfect'; }
+    else { g = Math.max(0.9, 1.1 - (T - 0.95) * 0.6); q = 'hot'; }
+    this.burnQ = q; this.plSpec.mu *= g;
+    this.setMsg(q === 'perfect' ? 'PNEUS PARFAITS +10 %' : q === 'warm' ? `PNEUS TIÈDES +${Math.round((g - 1) * 100)} %` : q === 'hot' ? 'PNEUS SURCHAUFFÉS' : 'PNEUS FROIDS',
+      q === 'perfect' ? '#4cff8a' : q === 'hot' ? '#ff4a5a' : '#ffd34d');
+    this.state = 'stage'; this.t = 0; this.holding = false; this.revRpm = IDLE;
+  },
+
   step(dt) {
+    if (this.state === 'burn') { this.stepBurn(dt); return; }
     this.t += dt;
     if (this.state === 'stage') {
       const red = this.plSpec.red, lim = red * 0.98;
@@ -122,7 +156,7 @@ const Race = {
     const aiT = this.ai.fin ? this.ai.tFin + this.aiReact : 99;
     const win = plT < aiT;
     this.result = {win, plT, aiT, et: this.pl.fin ? this.pl.tFin : null, rt: this.rt, speed: this.pl.v * 3.6, t100: this.pl.t100, fs: this.fs,
-                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac,
+                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac, burn: this.burnQ, cond: this.cond.id,
                    slip: {pl: Object.assign({et: this.pl.fin ? this.pl.tFin : null, trap: this.pl.v * 3.6, v660: (this.pl.v660 || 0) * 3.6}, this.pl.splits),
                           ai: Object.assign({et: this.ai.fin ? this.ai.tFin : null, trap: this.ai.v * 3.6, v660: (this.ai.v660 || 0) * 3.6, rt: this.aiReact}, this.ai.splits)}};
     Game.raceDone(this.opp, this.result);
@@ -136,7 +170,7 @@ const Race = {
     if (!this.plV) this.plV = Sound.engine(this.plCar.engine, this.plCar.parts, {vol: 1});
     if (!this.aiV) this.aiV = Sound.engine(this.opp.engine, this.opp.parts, {vol: 0.3, distant: true});
     const s = this.pl, a = this.ai, sp = this.plSpec;
-    if (this.state === 'stage' && !s.launched) Sound.update(this.plV, this.revRpm, this.holding ? 1 : 0.12, false, this.revRpm >= sp.red * 0.97);
+    if ((this.state === 'stage' || this.state === 'burn') && !s.launched) Sound.update(this.plV, this.revRpm, this.holding ? 1 : 0.12, this.state === 'burn' && this.holding, this.revRpm >= sp.red * 0.97);
     else Sound.update(this.plV, s.rpm, this.state === 'done' ? 0.05 : s.shiftT > 0 ? 0.15 : 1, s.spin, s.limiter, sp.turbo ? s.spool : null);
     const aiStageRpm = this.t > 1 ? this.aiLaunchRpm * (0.92 + Math.sin(this.t * 9) * 0.05) : IDLE;
     Sound.update(this.aiV, a.launched ? a.rpm : aiStageRpm, a.launched ? (a.fin || this.state === 'done' ? 0.05 : a.shiftT > 0 ? 0.15 : 1) : (this.t > 1 ? 0.8 : 0.1), a.spin, a.limiter, this.aiSpec.turbo && a.launched ? a.spool : null);
@@ -192,7 +226,7 @@ const Race = {
     drawCarLights(ctx, aiStyle, aiX * 2, AIG * 2, 1, {brake: !this.ai.launched, neon: NEON_COLORS[lookOf(this.opp).neon]});
     this.drawNitro(ctx, this.ai, aiX * 2, AIG * 2);
     drawCar(ctx, plStyle, cs.color, plX * 2, PLG * 2, 1, plO);
-    drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: NEON_COLORS[plLook.neon], brake: this.state === 'stage'});
+    drawCarLights(ctx, plStyle, plX * 2, PLG * 2, 1, {neon: NEON_COLORS[plLook.neon], brake: this.state === 'stage' || this.state === 'burn'});
     this.drawNitro(ctx, this.pl, plX * 2, PLG * 2);
     // flammes d'échappement aux passages de vitesse
     for (const [f, X, Y, st] of [[this.flamePl, plX * 2, PLG * 2, plStyle], [this.flameAi, aiX * 2, AIG * 2, aiStyle]]) {
@@ -238,8 +272,29 @@ const Race = {
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(ctx.canvas, -4 * HD, 0); ctx.drawImage(ctx.canvas, 4 * HD, 0);
       ctx.restore();
     }
+    if (this.cond && this.cond.id !== 'dry' && this.cond.id !== 'prep') this.drawWeather(ctx);
     this.drawHud(ctx);
     if (this.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${this.flash * 0.35})`; ctx.fillRect(0, 0, 960, 540); }
+  },
+  drawWeather(ctx) {
+    const id = this.cond.id, T = performance.now() / 1000;
+    ctx.save();
+    if (id === 'rain') {
+      ctx.fillStyle = 'rgba(16,26,52,0.28)'; ctx.fillRect(0, 0, 960, 540);
+      ctx.strokeStyle = 'rgba(190,210,255,0.38)'; ctx.lineWidth = 1; ctx.beginPath();
+      const drift = this.pl.v * 0.25;
+      for (let i = 0; i < 160; i++) {
+        const x = ((i * 71.3 + T * (240 + drift * 40)) % 1000) - 20, y = ((i * 37.7 + T * 900 + i * i) % 580) - 20;
+        ctx.moveTo(x, y); ctx.lineTo(x - 5 - drift, y + 16);
+      }
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(180,200,255,0.06)'; ctx.fillRect(0, 380, 960, 160);          // reflets sur l'asphalte mouillé
+    } else if (id === 'night') { ctx.fillStyle = 'rgba(0,8,36,0.28)'; ctx.fillRect(0, 0, 960, 540); }
+    else if (id === 'hot') {
+      const g = ctx.createLinearGradient(0, 300, 0, 540); g.addColorStop(0, 'rgba(255,140,40,0)'); g.addColorStop(1, 'rgba(255,120,30,0.12)');
+      ctx.fillStyle = g; ctx.fillRect(0, 300, 960, 240);
+    }
+    ctx.restore();
   },
   drawNitro(ctx, sim, x, y) {
     if (!(sim.nitroOn && sim.nitroLeft > 0)) return;
@@ -333,6 +388,19 @@ const Race = {
     ctx.fillStyle = '#fff'; ctx.fillRect(mx + mw, my - 8, 2, 16);
     // --- arbre de départ ---
     if (this.state === 'stage' || this.t < this.greenAt + 2.5) this.drawTree(ctx);
+    // --- burnout : jauge de température des pneus ---
+    if (this.state === 'burn') {
+      const gx = 300, gy = 200, gw = 360, T = clamp(this.tireT / 1.3, 0, 1);
+      glassPanel(ctx, gx - 20, gy - 14, gw + 40, 84);
+      const seg = [[0, 0.25 / 1.3, '#3b8cff'], [0.25 / 1.3, 0.6 / 1.3, '#ffd34d'], [0.6 / 1.3, 0.95 / 1.3, '#4cff8a'], [0.95 / 1.3, 1, '#ff4a5a']];
+      for (const [a, b, c] of seg) { ctx.fillStyle = c; ctx.globalAlpha = 0.85; ctx.fillRect(gx + gw * a, gy + 30, gw * (b - a) - 2, 14); }
+      ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillRect(gx + gw * T - 2, gy + 24, 4, 26);
+      ctx.font = `700 15px ${UIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#dfe4ff'; ctx.fillText(`TEMPÉRATURE DES PNEUS · ${this.cond.icon} ${this.cond.name}`, 480, gy + 10);
+      const txt = !this.burnUsed ? 'BURNOUT : maintiens ESPACE pour chauffer les pneus' : this.holding ? (this.tireT > 0.95 ? '▼ TROP CHAUD, relâche !' : this.tireT >= 0.6 ? '✓ DANS LE VERT : relâche !' : '🔥 Chauffe…') : '';
+      ctx.fillStyle = this.tireT >= 0.6 && this.tireT <= 0.95 ? '#4cff8a' : this.tireT > 0.95 ? '#ff4a5a' : '#ffd34d'; ctx.fillText(txt, 480, gy + 60);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    }
     // --- consigne de départ ---
     if (this.state === 'stage') {
       const inZone = Math.abs(this.revRpm - this.launchBest) <= LAUNCH_ZONE * red;

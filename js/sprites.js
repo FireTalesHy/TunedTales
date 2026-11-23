@@ -2,7 +2,7 @@
    Toutes les coordonnées de profil sont [x, h] : x depuis l'arrière, h = hauteur au-dessus du sol (px).
    Rastérisation manuelle (pas d'anti-aliasing) avec dégradés tramés et contour pixel-art.            */
 
-const SH = 100;                       // hauteur du sprite
+const SH = 116;                       // hauteur du sprite
 const GY = SH - 1;                    // ligne de sol
 
 // c : nombre = ton de la couleur carrosserie, tableau = couleur RGB
@@ -625,6 +625,86 @@ const WHEEL_REAL = {twingo: [17, 14], p205: [17.5, 15], focus: [18.5, 15], terra
   lfa: [21, 20], huayra: [21, 20], tr250: [21, 16], r25: [20, 13], f1: [21.5, 18],
   golf2: [17.5, 14], ae86: [17.5, 14], charger: [20, 14], nsx: [19, 16], countach: [18.5, 15], chiron: [21.5, 21]};
 for (const k in WHEEL_REAL) { const p = PROFILES[k], [wr, rim] = WHEEL_REAL[k]; if (!p) continue; p.wr = wr; p.rimQ = rim * 0.0254 / (2 * wr / 60); }
+/* ==================== MODÈLE PARAMÉTRIQUE ====================
+   Chaque voiture est reconstruite à partir de ses vraies cotes (mètres) :
+   L longueur, H hauteur, WB empattement, FO porte-à-faux avant, D diamètre de roue, rim jante (pouces),
+   gc garde au sol (bas de caisse), belt ligne de caisse, tail coin arrière haut [x,h], C début de lunette [x,h],
+   R / F début et fin du pavillon (x), A base du pare-brise [x,h], N hauteur du capot à l'avant,
+   pb montant B (x), pil autres montants, rd seuil de porte arrière (4 portes), gR début des vitres (x).
+   Les accessoires propres à chaque voiture (ailerons, prises d'air, feux…) sont recalés sur les nouvelles roues. */
+const CAR_MODEL = {
+  twingo:  {L: 3.60, H: 1.47, WB: 2.37, FO: 0.70, D: 0.57, rim: 14, gc: 0.15, belt: 0.98, tail: [0.04, 1.02], C: [0.16, 1.36], R: 0.42, F: 1.95, A: [2.62, 1.00], N: 0.86, pb: 1.55, gR: 0.45},
+  p205:    {L: 3.705, H: 1.355, WB: 2.42, FO: 0.68, D: 0.58, rim: 15, gc: 0.14, belt: 0.93, tail: [0.03, 0.98], C: [0.26, 1.29], R: 0.55, F: 2.02, A: [2.62, 0.97], N: 0.80, pb: 1.58, gR: 0.62},
+  focus:   {L: 4.15, H: 1.43, WB: 2.615, FO: 0.87, D: 0.615, rim: 15, gc: 0.14, belt: 0.95, tail: [0.03, 1.00], C: [0.20, 1.34], R: 0.60, F: 2.30, A: [3.00, 1.00], N: 0.82, pb: 2.05, pil: [[1.05, 0.08]], rd: 1.15, gR: 0.50},
+  golf2:   {L: 3.985, H: 1.415, WB: 2.475, FO: 0.80, D: 0.578, rim: 14, gc: 0.14, belt: 0.92, tail: [0.03, 0.98], C: [0.30, 1.35], R: 0.62, F: 2.15, A: [2.76, 0.98], N: 0.83, pb: 1.72, gR: 0.80},
+  terrano: {L: 4.10, H: 1.80, WB: 2.45, FO: 0.80, D: 0.725, rim: 15, gc: 0.27, belt: 1.25, tail: [0.02, 1.26], C: [0.07, 1.72], R: 0.25, F: 2.35, A: [2.95, 1.24], N: 1.16, pb: 1.95, pil: [[0.95, 0.08]], gR: 0.18},
+  clio:    {L: 4.017, H: 1.484, WB: 2.585, FO: 0.83, D: 0.626, rim: 17, gc: 0.13, belt: 0.99, tail: [0.04, 1.02], C: [0.26, 1.38], R: 0.62, F: 2.25, A: [2.94, 1.02], N: 0.86, pb: 1.72, gR: 0.70},
+  ae86:    {L: 4.205, H: 1.335, WB: 2.40, FO: 0.82, D: 0.578, rim: 14, gc: 0.14, belt: 0.90, tail: [0.03, 0.95], C: [0.38, 1.00], R: 1.62, F: 2.12, A: [2.76, 0.92], N: 0.73, pb: 1.86},
+  civic:   {L: 4.14, H: 1.43, WB: 2.57, FO: 0.85, D: 0.617, rim: 17, gc: 0.14, belt: 0.97, tail: [0.03, 1.00], C: [0.13, 1.34], R: 0.48, F: 1.90, A: [3.00, 0.96], N: 0.82, pb: 1.75, gR: 0.40},
+  rcz:     {L: 4.287, H: 1.359, WB: 2.612, FO: 0.90, D: 0.671, rim: 19, gc: 0.13, belt: 0.90, tail: [0.05, 0.96], C: [0.48, 1.04], R: 1.45, F: 2.05, A: [2.95, 0.95], N: 0.76, pb: 1.95},
+  m3:      {L: 4.492, H: 1.372, WB: 2.731, FO: 0.78, D: 0.66, rim: 18, gc: 0.13, belt: 0.93, tail: [0.05, 0.98], C: [0.58, 1.02], R: 1.48, F: 2.30, A: [3.05, 0.98], N: 0.82, pb: 1.95},
+  s15:     {L: 4.445, H: 1.285, WB: 2.525, FO: 0.92, D: 0.632, rim: 16, gc: 0.12, belt: 0.86, tail: [0.05, 0.93], C: [0.62, 0.97], R: 1.52, F: 2.25, A: [2.95, 0.92], N: 0.70, pb: 1.95},
+  sti:     {L: 4.465, H: 1.425, WB: 2.525, FO: 0.93, D: 0.635, rim: 17, gc: 0.15, belt: 0.95, tail: [0.05, 1.00], C: [0.56, 1.05], R: 1.52, F: 2.50, A: [3.10, 1.00], N: 0.81, pb: 2.25, pil: [[1.10, 0.06]], rd: 1.35},
+  supra:   {L: 4.52, H: 1.275, WB: 2.55, FO: 1.00, D: 0.644, rim: 17, gc: 0.13, belt: 0.88, tail: [0.04, 0.95], C: [0.56, 1.00], R: 1.58, F: 2.20, A: [3.05, 0.88], N: 0.70, pb: 1.95},
+  rx7:     {L: 4.285, H: 1.23, WB: 2.425, FO: 0.90, D: 0.631, rim: 16, gc: 0.12, belt: 0.84, tail: [0.04, 0.88], C: [0.52, 0.95], R: 1.78, F: 2.15, A: [2.90, 0.82], N: 0.58, pb: 1.85},
+  evo:     {L: 4.49, H: 1.45, WB: 2.625, FO: 0.92, D: 0.644, rim: 17, gc: 0.15, belt: 0.97, tail: [0.05, 1.02], C: [0.56, 1.07], R: 1.55, F: 2.45, A: [3.15, 1.00], N: 0.80, pb: 2.30, pil: [[1.12, 0.06]], rd: 1.40},
+  skyline: {L: 4.60, H: 1.36, WB: 2.665, FO: 0.95, D: 0.653, rim: 18, gc: 0.12, belt: 0.95, tail: [0.05, 1.00], C: [0.62, 1.03], R: 1.62, F: 2.35, A: [3.15, 0.95], N: 0.78, pb: 2.05},
+  viper:   {L: 4.488, H: 1.194, WB: 2.444, FO: 1.08, D: 0.658, rim: 18, gc: 0.12, belt: 0.90, tail: [0.05, 0.95], C: [0.46, 0.98], R: 1.66, F: 2.05, A: [2.62, 0.88], N: 0.76, pb: 2.05},
+  mustang: {L: 4.81, H: 1.40, WB: 2.72, FO: 1.00, D: 0.687, rim: 19, gc: 0.14, belt: 1.03, tail: [0.05, 1.05], C: [0.56, 1.10], R: 1.92, F: 2.62, A: [3.32, 1.00], N: 0.96, pb: 2.35},
+  charger: {L: 5.28, H: 1.35, WB: 2.97, FO: 1.07, D: 0.67, rim: 14, gc: 0.14, belt: 0.98, tail: [0.05, 1.00], C: [0.98, 1.03], R: 1.98, F: 2.80, A: [3.45, 0.98], N: 0.97, pb: 2.40},
+  nsx:     {L: 4.405, H: 1.17, WB: 2.53, FO: 1.07, D: 0.631, rim: 16, gc: 0.12, belt: 0.85, tail: [0.03, 0.92], C: [0.95, 0.98], R: 1.88, F: 2.25, A: [2.95, 0.78], N: 0.62, pb: 2.20},
+  rcf:     {L: 4.705, H: 1.39, WB: 2.73, FO: 0.97, D: 0.66, rim: 19, gc: 0.13, belt: 0.97, tail: [0.05, 1.00], C: [0.62, 1.05], R: 1.66, F: 2.50, A: [3.20, 0.98], N: 0.82, pb: 2.25},
+  gt3:     {L: 4.46, H: 1.28, WB: 2.355, FO: 1.06, D: 0.648, rim: 19, gc: 0.10, belt: 0.88, tail: [0.04, 0.95], C: [0.30, 0.98], R: 1.86, F: 2.20, A: [2.86, 0.85], N: 0.66, pb: 2.00},
+  l037:    {L: 3.915, H: 1.245, WB: 2.44, FO: 0.85, D: 0.63, rim: 16, gc: 0.12, belt: 0.88, tail: [0.02, 1.10], C: [0.26, 1.06], R: 1.55, F: 1.95, A: [2.60, 0.88], N: 0.55, pb: 2.00},
+  r35:     {L: 4.71, H: 1.37, WB: 2.78, FO: 0.97, D: 0.712, rim: 20, gc: 0.12, belt: 0.97, tail: [0.05, 1.02], C: [0.46, 1.05], R: 1.72, F: 2.45, A: [3.15, 0.95], N: 0.85, pb: 2.30},
+  mc720:   {L: 4.543, H: 1.196, WB: 2.67, FO: 1.03, D: 0.69, rim: 20, gc: 0.10, belt: 0.82, tail: [0.02, 0.92], C: [0.40, 0.95], R: 1.92, F: 2.30, A: [3.00, 0.80], N: 0.50, pb: 2.40},
+  huracan: {L: 4.459, H: 1.165, WB: 2.62, FO: 1.03, D: 0.69, rim: 20, gc: 0.10, belt: 0.82, tail: [0.02, 0.92], C: [0.35, 0.97], R: 1.86, F: 2.30, A: [2.95, 0.78], N: 0.50, pb: 2.40},
+  countach:{L: 4.14, H: 1.07, WB: 2.45, FO: 0.95, D: 0.622, rim: 15, gc: 0.11, belt: 0.75, tail: [0.02, 0.92], C: [0.62, 0.98], R: 1.76, F: 2.25, A: [2.85, 0.72], N: 0.45, pb: 2.35},
+  lfa:     {L: 4.505, H: 1.22, WB: 2.605, FO: 0.97, D: 0.693, rim: 20, gc: 0.11, belt: 0.88, tail: [0.03, 0.95], C: [0.46, 1.00], R: 1.76, F: 2.30, A: [3.00, 0.85], N: 0.62, pb: 2.25},
+  huayra:  {L: 4.605, H: 1.169, WB: 2.795, FO: 1.00, D: 0.709, rim: 20, gc: 0.10, belt: 0.82, tail: [0.02, 0.90], C: [0.46, 0.98], R: 1.96, F: 2.40, A: [3.05, 0.80], N: 0.55, pb: 2.50},
+  chiron:  {L: 4.544, H: 1.212, WB: 2.711, FO: 1.00, D: 0.711, rim: 21, gc: 0.10, belt: 0.86, tail: [0.03, 0.95], C: [0.42, 1.00], R: 1.86, F: 2.35, A: [3.05, 0.85], N: 0.62, pb: 2.40}
+};
+function chaikin(pts, n) {
+  for (let k = 0; k < n; k++) {
+    const o = [pts[0]];
+    for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1]; o.push([a[0] * 0.75 + b[0] * 0.25, a[1] * 0.75 + b[1] * 0.25], [a[0] * 0.25 + b[0] * 0.75, a[1] * 0.25 + b[1] * 0.75]); }
+    o.push(pts[pts.length - 1]); pts = o;
+  }
+  return pts;
+}
+function buildModel(m, old) {
+  const K = 60, P = v => Math.round(v * K), L = m.L, H = m.H, gc = m.gc, RO = L - m.WB - m.FO;
+  // ligne supérieure, de l'arrière (bas) vers l'avant (bas)
+  const raw = [[0, gc + 0.14], [0, m.tail[1] - 0.1], [m.tail[0], m.tail[1]], m.C, [m.R, H - 0.025], [(m.R + m.F) / 2, H], [m.F, H - 0.02], m.A,
+    [L - 0.24, m.N], [L - 0.05, m.N - 0.1], [L, m.N - 0.24], [L, gc + 0.14]];
+  const top = chaikin(raw, 3);
+  const body = top.concat([[L - 0.08, gc + 0.02], [0.08, gc + 0.02]]);
+  const topAt = x => { for (let i = 0; i < top.length - 1; i++) { const a = top[i], b = top[i + 1]; if (a[0] <= x && b[0] >= x && b[0] > a[0]) return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); } return 0; };
+  // vitres : suivent la ligne de toit, au-dessus de la ligne de caisse
+  const gx0 = m.gR != null ? Math.max(m.C[0] + 0.07, m.gR) : m.C[0] + 0.6 * (m.R - m.C[0]), gx1 = m.A[0] - 0.03, gl = [];   // coupés / berlines : la vitre s'arrête au montant C
+  for (let x = gx0; x <= gx1; x += 0.02) { const t = topAt(x) - 0.045; if (t > m.belt + 0.03) gl.push([x, t]); }
+  const glass = gl.length > 2 ? gl.concat([[gl[gl.length - 1][0], m.belt], [gl[0][0], m.belt]]) : [[gx0, m.belt], [gx1, m.belt], [gx1, m.belt + 0.1]];
+  const pillars = [[m.pb - 0.035, m.pb + 0.035]].concat((m.pil || []).map(([x, w]) => [x - w / 2, x + w / 2]));
+  const fSeam = L - m.FO - m.D / 2 - 0.1, doors = [fSeam, m.pb + 0.03].concat(m.rd ? [m.rd] : []);
+  // remise à l'échelle des détails de l'ancien profil : X recalé sur les roues, hauteurs sur la hauteur totale
+  const oW0 = old.wheels[0], oW1 = old.wheels[1], nW0 = P(RO), nW1 = P(L - m.FO), oH = Math.max(...old.body.map(q => q[1])), nH = P(H);
+  const mx = x => nW0 + (x - oW0) * (nW1 - nW0) / (oW1 - oW0), mh = h => h * nH / oH, sx = (nW1 - nW0) / (oW1 - oW0), sh = nH / oH;
+  const mp = a => a && a.map(q => [Math.round(mx(q[0])), Math.round(mh(q[1]))]);
+  const beltPx = P(m.belt), isOldPillar = e => e.t === 'rect' && Array.isArray(e.c) && e.c[0] + e.c[1] + e.c[2] < 100 && Math.abs(e.h * sh - beltPx) < 8 && e.hh * sh > 12;
+  const extra = old.extra.filter(e => !isOldPillar(e)).map(e => Object.assign({}, e, {pts: mp(e.pts), a: e.a && [mx(e.a[0]), mh(e.a[1])], b: e.b && [mx(e.b[0]), mh(e.b[1])],
+    x: e.x != null ? mx(e.x) : e.x, h: e.h != null ? mh(e.h) : e.h, w: e.w != null ? e.w * sx : e.w, hh: e.hh != null ? e.hh * sh : e.hh, r: e.r != null ? e.r * Math.min(sx, sh) : e.r}));
+  const S = a => a.map(q => [P(q[0]), P(q[1])]);
+  return Object.assign({}, old, {
+    L: Math.round(P(L)), wr: P(m.D / 2), wheels: [nW0, nW1], sill: P(gc), belt: P(m.belt), rimQ: m.rim * 0.0254 / m.D,
+    body: S(body), glass: S(glass), pillars: pillars.map(q => [P(q[0]), P(q[1])]), doors: doors.map(P),
+    handle: [P(m.pb - 0.24), P(m.belt - 0.08)], mirror: P(m.A[0] - 0.16),
+    hl: mp(old.hl), tl: old.tl && mp(old.tl), hlRound: old.hlRound && [mx(old.hlRound[0]), mh(old.hlRound[1]), old.hlRound[2] * sh],
+    tlRound: old.tlRound && [mx(old.tlRound[0]), mh(old.tlRound[1]), old.tlRound[2] * sh], soft: old.soft && mp(old.soft), extra,
+    spoilerMap: [mx, sx]
+  });
+}
+for (const id in CAR_MODEL) if (PROFILES[id]) PROFILES[id] = buildModel(CAR_MODEL[id], PROFILES[id]);
+for (const id in CAR_MODEL) { const sm = SPOILER_MOUNT[id], p = PROFILES[id]; if (sm && p.spoilerMap) SPOILER_MOUNT[id] = [Math.round(p.spoilerMap[0](sm[0])), Math.round(p.spoilerMap[0](sm[1])), sm[2]]; }
 // convertit [x,h] -> [x,y] une fois
 for (const k in PROFILES) {
   const p = PROFILES[k]; p.H = SH;

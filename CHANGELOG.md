@@ -4,6 +4,15 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 📐 v1.17.0 — « Cotes d'origine » · 23 novembre 2026
+
+- 📐 **Tous les véhicules reconstruits avec un modèle paramétrique** basé sur leurs **vraies cotes** : longueur, hauteur, empattement, porte-à-faux avant / arrière, garde au sol, ligne de caisse et **diamètre réel des roues**, à l'échelle exacte de 60 px par mètre.
+- ✏️ **Lignes lissées** : la silhouette de chaque voiture est définie par ses points de style (hauteur du coffre, chute de la lunette, début et fin du pavillon, base du pare-brise, hauteur du capot), puis arrondie pour des courbes continues.
+- 🪟 **Vitres qui suivent le toit**, montants B (et C pour les berlines) placés à leur vraie position, portes, poignées et rétroviseurs recalés.
+- 🛞 **Roues à leur place exacte** (empattement réel) et à leur taille réelle ; tous les détails propres à chaque modèle (ailerons, prises d'air, feux, bandes Martini, compresseur…) sont recalés automatiquement sur la nouvelle base.
+
+---
+
 ## 🌃 v1.16.0 — « Underground » · 23 novembre 2026
 
 Refonte visuelle semi-réaliste inspirée de *Need for Speed Underground*, plus d'entretien et de réglages :

@@ -82,6 +82,6 @@ function drawSheen(ctx, style, color, look, x, y, s, phase, strength) {
   const cx = -p.L * 0.4 + phase * p.L * 1.8, g = c.createLinearGradient(cx - 30, 0, cx + 30, p.H);
   g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, `rgba(255,255,255,${strength || 0.5})`); g.addColorStop(1, 'rgba(255,255,255,0)');
   c.fillStyle = g; c.fillRect(0, 0, p.L, p.H); c.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.imageSmoothingEnabled = false;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.imageSmoothingEnabled = true;
   ctx.drawImage(_sheenCv, x, y - (p.H - 1 - drop) * s, p.L * s, p.H * s); ctx.restore();
 }

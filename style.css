@@ -501,3 +501,18 @@ h3{font-size:24px;color:var(--ac)}
 .ccond small{width:100%;font-weight:500;font-size:12px;color:#8d97b5}.ccond b{color:#ffd23f}
 .ccond.c-rain{border-color:#5aa0ff;background:rgba(90,160,255,.1)}.ccond.c-night{border-color:#9b6bff}.ccond.c-hot{border-color:#ff7a1a;background:rgba(255,122,26,.08)}.ccond.c-prep{border-color:#3dff7a}
 @media (max-width:820px){.replv{grid-template-columns:auto 1fr}.replv-s{grid-column:1/-1;justify-content:space-between}}
+
+/* ===== v1.16 : entretien & réglages ===== */
+.box.setup{border-left:3px solid #3dff7a}
+.wear{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;margin:8px 0}
+.wearbar{height:12px;background:rgba(255,255,255,.08);transform:skewX(-12deg);overflow:hidden}.wearbar i{display:block;height:100%;transition:width .5s}
+.setup-r{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+@media (max-width:700px){.wear{grid-template-columns:1fr auto}.wear .wearbar{grid-column:1/-1}}
+/* ambiance « underground » des menus : halos néon qui respirent derrière les panneaux */
+#panel{background:radial-gradient(ellipse 60% 40% at 8% 0%,rgba(255,43,214,.14),transparent 70%),radial-gradient(ellipse 50% 45% at 100% 100%,rgba(25,230,255,.12),transparent 70%),linear-gradient(180deg,#05070f,#070b18 60%,#04060c)!important}
+#panel::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);mix-blend-mode:overlay;z-index:0}
+#panel::after{content:"";position:fixed;left:-20%;right:-20%;bottom:-30%;height:60%;pointer-events:none;background:radial-gradient(ellipse at 50% 100%,rgba(120,60,255,.16),transparent 65%);animation:neonBreath 6s ease-in-out infinite;z-index:0}
+#panel>*{position:relative;z-index:1}
+@keyframes neonBreath{50%{opacity:.45;transform:translateY(4%)}}
+.box,.contract,.chal,.jobc{backdrop-filter:blur(6px)}
+@media (prefers-reduced-motion:reduce){#panel::after{animation:none}}

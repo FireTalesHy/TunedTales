@@ -40,6 +40,7 @@ const Race = {
     this.tireT = 0; this.burnT = 0; this.burnUsed = false; this.burnRel = 0; this.burnQ = 'none';
     this.state = 'burn'; this.active = true; this.wheelAng = 0; this.aiWheelAng = 0;
     this.shiftCount = 0; this.perfectShifts = 0; this.aiGear = 0; this.zoneT = 0; this.countT = 0; this.zoneFrac = 0;
+    this.limT = 0;
     this.knockAt = Math.random() < Math.max(0, (this.plSpec.risk - 0.35) * 1.2) ? 1.5 + Math.random() * 3.5 : Infinity; this.knocked = false;
     Sound.stopAll(); this.plV = this.aiV = null;
     Sound.resume();
@@ -137,6 +138,7 @@ const Race = {
     if (this.pl.launched) {
       if (this.pl.nitroLeft <= 0) this.pl.nitroOn = false;
       stepSim(this.pl, this.plSpec, dt);
+      if (this.pl.limiter && !this.pl.fin) this.limT += dt;
       if (this.pl.spin && Math.random() < 0.5) this.puff('pl');
     }
     if (this.ai.spin && Math.random() < 0.3) this.puff('ai');
@@ -156,7 +158,7 @@ const Race = {
     const aiT = this.ai.fin ? this.ai.tFin + this.aiReact : 99;
     const win = plT < aiT;
     this.result = {win, plT, aiT, et: this.pl.fin ? this.pl.tFin : null, rt: this.rt, speed: this.pl.v * 3.6, t100: this.pl.t100, fs: this.fs,
-                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac, burn: this.burnQ, cond: this.cond.id,
+                   perfect: this.perfectShifts, shifts: this.shiftCount, launchQ: this.plLaunchQ || 0, zone: this.zoneFrac, burn: this.burnQ, cond: this.cond.id, limT: this.limT, knocked: this.knocked, nitroUsed: !!(this.plSpec.nitro && this.pl.nitroLeft < this.plSpec.nitro.dur),
                    slip: {pl: Object.assign({et: this.pl.fin ? this.pl.tFin : null, trap: this.pl.v * 3.6, v660: (this.pl.v660 || 0) * 3.6}, this.pl.splits),
                           ai: Object.assign({et: this.ai.fin ? this.ai.tFin : null, trap: this.ai.v * 3.6, v660: (this.ai.v660 || 0) * 3.6, rt: this.aiReact}, this.ai.splits)}};
     Game.raceDone(this.opp, this.result);
@@ -460,10 +462,48 @@ function tile(ctx, img, off, y) {
   const w = img.width; let x = -(((off % w) + w) % w);
   for (; x < 960; x += w) ctx.drawImage(img, Math.round(x), y);
 }
+/* lampadaires orangés, néons et reflets étirés sur le bitume mouillé */
+const NEONS = ['255,43,214', '25,230,255', '255,210,63', '120,90,255'];
+/* reflet vertical flou sur le bitume mouillé (plusieurs passes = bords doux) */
+function streak(ctx, cx, w, col, a) {
+  for (const k of [1, 0.62, 0.32]) {
+    const g = ctx.createLinearGradient(0, 306, 0, 540); g.addColorStop(0, `rgba(${col},${a * 0.45})`); g.addColorStop(0.6, `rgba(${col},${a * 0.15})`); g.addColorStop(1, `rgba(${col},0)`);
+    ctx.fillStyle = g; ctx.fillRect(cx - w * k / 2, 306, w * k, 234);
+  }
+}
+function drawStreetLights(ctx, S, t) {
+  const gap = 300, off = ((S * 0.82) % gap + gap) % gap;
+  for (let x = -off - gap; x < 960 + gap; x += gap) {
+    const idx = Math.floor((x + S * 0.82) / gap + 1000), neon = NEONS[idx % NEONS.length], lx = Math.round(x);
+    // néon sur le mur
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const ng = ctx.createRadialGradient(lx + 150, 262, 0, lx + 150, 262, 70); ng.addColorStop(0, `rgba(${neon},0.5)`); ng.addColorStop(1, `rgba(${neon},0)`);
+    ctx.fillStyle = ng; ctx.fillRect(lx + 80, 200, 140, 120);
+    ctx.fillStyle = `rgba(${neon},0.95)`; ctx.fillRect(lx + 118, 260, 64, 3);
+    // reflet du néon sur le bitume
+    streak(ctx, lx + 150, 44, neon, 0.2);
+    // lampadaire : halo, cône, flaque de lumière et reflet vertical
+    const hg = ctx.createRadialGradient(lx, 176, 0, lx, 176, 60); hg.addColorStop(0, 'rgba(255,190,110,0.8)'); hg.addColorStop(1, 'rgba(255,170,80,0)');
+    ctx.fillStyle = hg; ctx.fillRect(lx - 60, 116, 120, 120);
+    const cg = ctx.createLinearGradient(0, 180, 0, 420); cg.addColorStop(0, 'rgba(255,180,100,0.16)'); cg.addColorStop(1, 'rgba(255,180,100,0)');
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(lx - 6, 180); ctx.lineTo(lx + 6, 180); ctx.lineTo(lx + 120, 420); ctx.lineTo(lx - 120, 420); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.translate(lx, 360); ctx.scale(1, 0.22); const pg = ctx.createRadialGradient(0, 0, 0, 0, 0, 160); pg.addColorStop(0, 'rgba(255,170,90,0.35)'); pg.addColorStop(1, 'rgba(255,170,90,0)');
+    ctx.fillStyle = pg; ctx.fillRect(-160, -160, 320, 320); ctx.restore();
+    streak(ctx, lx, 30, '255,170,90', 0.28);
+    ctx.restore();
+    // poteau et tête du lampadaire
+    ctx.fillStyle = '#0c0e18'; ctx.fillRect(lx - 2, 176, 4, 126); ctx.fillRect(lx - 2, 174, 20, 4);
+    ctx.fillStyle = '#ffe2b0'; ctx.fillRect(lx + 8, 177, 12, 3);
+  }
+}
 function drawEnvironment(ctx, dP, t) {
   envBuild();
   const S = dP * PPM * 2;                       // défilement en pixels natifs (voie proche)
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';     // décor lissé (rendu semi-réaliste)
   ctx.drawImage(ENV.sky, 0, 0);
+  // ambiance nuit urbaine façon « underground » : ciel assombri, halo violet de la ville
+  { const g = ctx.createLinearGradient(0, 0, 0, 300); g.addColorStop(0, 'rgba(2,4,18,0.78)'); g.addColorStop(0.55, 'rgba(10,8,40,0.45)'); g.addColorStop(1, 'rgba(60,20,90,0.12)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 960, 300); }
   tile(ctx, ENV.city, S * 0.03, 72);
   tile(ctx, ENV.trees, S * 0.12, 120);
   // halos des projecteurs
@@ -478,6 +518,7 @@ function drawEnvironment(ctx, dP, t) {
   }
   ctx.restore();
   tile(ctx, ENV.stands, S * 0.4, 196);
+  { const g = ctx.createLinearGradient(0, 180, 0, 300); g.addColorStop(0, 'rgba(4,6,24,0.45)'); g.addColorStop(1, 'rgba(4,6,24,0.15)'); ctx.fillStyle = g; ctx.fillRect(0, 180, 960, 120); }
   tile(ctx, ENV.wall, S * 0.8, 256);
   ctx.drawImage(ENV.track, 0, 300);
   // texture du bitume (2 profondeurs)
@@ -485,6 +526,9 @@ function drawEnvironment(ctx, dP, t) {
     const w = ENV.asph.width, off = ((S * f) % w + w) % w;
     for (let x = -off; x < 960; x += w) ctx.drawImage(ENV.asph, 0, y0 - 300, w, h, Math.round(x), y0, w, h);
   }
+  // bitume mouillé : voile froid + lampadaires au sodium et leurs reflets
+  { const g = ctx.createLinearGradient(0, 300, 0, 540); g.addColorStop(0, 'rgba(10,20,50,0.35)'); g.addColorStop(1, 'rgba(20,40,80,0.18)'); ctx.fillStyle = g; ctx.fillRect(0, 300, 960, 240); }
+  drawStreetLights(ctx, S, t);
   // bordures qui défilent
   for (let x = -((S * 0.85) % 48); x < 960; x += 48) { ctx.fillStyle = '#e6e6ee'; ctx.fillRect(Math.round(x), 300, 24, 4); ctx.fillStyle = '#c62f3a'; ctx.fillRect(Math.round(x + 24), 300, 24, 4); }
   for (let x = -((S * 1.1) % 64); x < 960; x += 64) { ctx.fillStyle = '#e6e6ee'; ctx.fillRect(Math.round(x), 532, 32, 8); ctx.fillStyle = '#c62f3a'; ctx.fillRect(Math.round(x + 32), 532, 32, 8); }
@@ -512,7 +556,7 @@ function drawEnvironment(ctx, dP, t) {
     ctx.fillStyle = '#c62f3a'; ctx.fillRect(Math.round(fx) - 6, 150, 28, 30);
     ctx.fillStyle = '#fff'; ctx.font = `700 14px ${UIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('402', Math.round(fx) + 8, 165);
   }
-  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.restore();
 }
 
 /* ---- ciel de crépuscule ---- */

@@ -5,7 +5,7 @@
 ### Drag racing & tuning en pixel art 2.5D — directement dans ton navigateur
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
-[![Version](https://img.shields.io/badge/version-1.15.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.16.0-ff2bd6?style=for-the-badge&labelColor=04060c)](CHANGELOG.md)
 [![Voitures](https://img.shields.io/badge/véhicules-35-ffd23f?style=for-the-badge&labelColor=04060c)](#-le-garage)
 ![Sans installation](https://img.shields.io/badge/aucune_installation-HTML_·_JS-3dff7a?style=for-the-badge&labelColor=04060c)
 
@@ -112,13 +112,13 @@ Tous les moteurs sont **swappables** dans toutes les voitures (oui, une Twingo 2
 ## 🛠️ Sous le capot
 
 - **100 % HTML / CSS / JavaScript**, aucune dépendance, aucun build : le site est servi tel quel par GitHub Pages.
-- Pixel art **rastérisé à la main** (pas d'images) : silhouettes relevées sur de vraies photos de profil.
+- Voitures **dessinées par le code** (pas d'images) en rendu lisse semi-réaliste : silhouettes relevées sur de vraies photos de profil.
 - Physique de drag : courbes de couple, rapports de boîte, adhérence, transfert de charge simplifié, traînée.
 - En local : ouvre `index.html` (le son moteur simulé demande `https` ou `localhost`, sinon un synthé de secours prend le relais).
 
 ## 📜 Nouveautés
 
-Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.15.0 « Pilote »** — burnout de chauffe, conditions de piste (pluie !), réputation à niveaux, défis à paliers.
+Voir le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.16.0 « Underground »** — voitures en rendu lisse semi-réaliste, décor de nuit avec néons et bitume mouillé, usure mécanique et réglages de châssis.
 
 ## 🙏 Crédits
 

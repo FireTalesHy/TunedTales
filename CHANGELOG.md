@@ -4,6 +4,19 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🌃 v1.16.0 — « Underground » · 23 novembre 2026
+
+Refonte visuelle semi-réaliste inspirée de *Need for Speed Underground*, plus d'entretien et de réglages :
+
+- 🚗 **Voitures en rendu lisse** : fini le tramage pixel. Peinture avec **reflet d'horizon**, **vernis brillant** avec reflets spéculaires, vitres teintées avec reflets diagonaux, feux et phares dégradés, pneus et jantes lissés, **ombres portées douces** et anticrénelage.
+- 🌃 **Décor de course de nuit** : ciel urbain assombri, **lampadaires au sodium** avec cônes et flaques de lumière, **néons** sur le mur, **bitume mouillé** qui reflète lampadaires et néons en longues traînées floues, décor lissé.
+- 🎛️ **Menus** : halos néon qui respirent, trame façon écran, panneaux en verre dépoli.
+- 🔧 **Usure mécanique** : chaque course use un peu la voiture (davantage sur le rupteur, en cas de cliquetis ou de pneus surchauffés). Usée, elle perd jusqu'à 15 % de puissance ; **réparation en un clic** dans le Tuning.
+- 🛠️ **Réglages de châssis** : **pression des pneus** (adhérence contre vitesse) et **rapport de pont** (accélération contre vitesse max), avec le 400 m estimé mis à jour en direct.
+- 💸 **Progression plus rapide** : gains des courses ×1,6 et des petits boulots ×1,5.
+
+---
+
 ## 🔥 v1.15.0 — « Pilote » · 23 novembre 2026
 
 Nouvelles mécaniques de jeu :

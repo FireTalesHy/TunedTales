@@ -428,6 +428,19 @@ const UI = {
     return {cs, spec, est, prev, prevEst, sel};
   },
   /* ---- cartographie ECU ---- */
+  setupPanel(cs, spec) {
+    const S = cs.setup || {}, w = cs.cond == null ? 100 : cs.cond, rc = Game.repairCost(cs), col = w > 75 ? '#3dff7a' : w > 45 ? '#ffd23f' : '#ff4a5a';
+    const tp = S.tire || 0, fd = S.final || 0;
+    const sl = (id, label, val, left, right, txt) => `<label class="ecu-row"><span class="ecu-l">${label}<small>${left} ◀ ▶ ${right}</small></span>
+      <input type="range" min="-1" max="1" step="0.25" value="${val}" data-setup="${id}"><b class="ecu-v">${txt}</b></label>`;
+    return `<div class="box setup"><div class="ecu-h"><b class="ecu-t">🛠️ ENTRETIEN & RÉGLAGES</b></div>
+      <div class="wear"><span>État mécanique</span><div class="wearbar"><i style="width:${w}%;background:${col};box-shadow:0 0 10px ${col}"></i></div><b style="color:${col}">${Math.round(w)} %</b>
+        ${rc ? `<button class="btn small ${Game.save.money >= rc ? '' : 'off'}" data-act="repair">🔧 RÉPARER · ${money(rc)}</button>` : '<span class="good small">✔ comme neuve</span>'}</div>
+      <p class="muted small">Chaque course use un peu la mécanique (davantage si tu restes sur le rupteur, en cas de cliquetis ou de pneus surchauffés). Usée, la voiture perd jusqu'à 15 % de puissance.</p>
+      ${sl('tire', 'Pression des pneus', tp, 'basse : + d\'adhérence', 'haute : + de vitesse', tp < 0 ? `${(2.2 + tp * 0.6).toFixed(1)} bar` : `${(2.2 + tp * 0.6).toFixed(1)} bar`)}
+      ${sl('final', 'Rapport de pont', fd, 'long : + de vitesse max', 'court : + d\'accélération', (spec.final).toFixed(2))}
+      <div class="setup-r"><span>400 m estimé avec ces réglages : <b class="gold">${estimateBest(spec).t400.toFixed(2)} s</b></span><button class="btn small ghostbtn" data-act="setupreset">Réglages d'origine</button></div></div>`;
+  },
   ecuPanel(cs, spec) {
     const lvl = (cs.parts && cs.parts.ecu) || 0, M = Object.assign({}, ECU_DEFAULT, cs.map || {}), turbo = spec.turbo;
     if (!lvl) return `<div class="box ecu locked"><b class="ecu-t">🧠 CARTOGRAPHIE ECU</b><p class="muted">Achète la <b>Reprogrammation</b> (niveau 1 minimum) pour accéder aux réglages du calculateur : avance à l'allumage, richesse, pression de turbo, rupteur, antipatinage, flat shift, anti-lag…</p></div>`;
@@ -477,6 +490,7 @@ const UI = {
       <div class="cols tune"><div><div class="box"><canvas id="chart" width="560" height="300"></canvas>
       <div class="legend"><span><i style="background:#ff9a2e"></i>Puissance (ch)</span><span><i style="background:#3ec8ff"></i>Couple (Nm)</span>
       <span><i class="dash"></i>Aperçu amélioration</span><span><i class="dot"></i>Origine</span></div></div>
+      ${this.setupPanel(cs, spec)}
       ${this.ecuPanel(cs, spec)}
       <div class="box stats">`;
     for (const [label, val, pv, f, dir, max, sub] of stats) {

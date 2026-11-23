@@ -24,7 +24,7 @@ const Jobs = {
   stop() { this.active = false; this.job = null; },
   end() {
     if (this.over) return; this.over = true;
-    const score = Math.round(this.g.score), pay = Math.round(score * this.job.rate * (1 + Game.perk('jobs')) * (1 + Game.perk('all')));
+    const score = Math.round(this.g.score), pay = Math.round(score * this.job.rate * (1 + Game.perk('jobs')) * (1 + Game.perk('all')) * 1.5);
     const best = Game.save.jobs = Game.save.jobs || {};
     const record = score > (best[this.job.id] || 0); if (record) best[this.job.id] = score;
     Game.save.money += pay; Game.persist(); UI.refreshTop();

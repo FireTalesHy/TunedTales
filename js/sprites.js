@@ -708,11 +708,12 @@ function scale2x(src) {
   return c;
 }
 function getBodyHD(style, color, look) { return getBody(style, color, look); }   // les carrosseries sont rastérisées nativement en HD
-const GYH = GY * HD;
+const SPR = 3;                       // résolution de rastérisation des carrosseries (rendu lisse semi-réaliste)
+const GYH = GY * SPR;
 /* version HD d'un profil : toutes les coordonnées multipliées par HD */
 function hdProfile(p) {
   if (p._hd) return p._hd;
-  const u = HD, S = a => a && a.map(q => [q[0] * u, q[1] * u]), m = v => v == null ? v : v * u;
+  const u = SPR, S = a => a && a.map(q => [q[0] * u, q[1] * u]), m = v => v == null ? v : v * u;
   return (p._hd = Object.assign({}, p, {
     L: p.L * u, H: p.H * u, wr: p.wr * u, wheels: p.wheels.map(m), sill: p.sill * u, belt: p.belt * u, bottom: p.bottom * u, beltY: p.beltY * u,
     body: S(p.body), glass: S(p.glass), soft: S(p.soft), hl: S(p.hl), tl: S(p.tl), pillars: S(p.pillars), doors: p.doors.map(m),
@@ -726,7 +727,8 @@ function getBody(style, color, look) {
   const lk = lookOf({look});
   const key = style + color + [lk.finish, lk.kit, lk.spoiler, lk.decal, lk.decalColor, lk.tint, lk.wheelSize, lk.hood, lk.roof, lk.lights, lk.banner, lk.exhaustTip].join('|');
   if (_bodyCache[key]) return _bodyCache[key];
-  const u = HD, p = hdProfile(PROFILES[style]), b = new Buf(p.L, p.H), C = hexRgb(color), GY = GYH;   // rastérisation native en HD
+  const u = SPR, p = hdProfile(PROFILES[style]), b = new Buf(p.L, p.H), C = hexRgb(color), GY = GYH;   // rastérisation fine, sans tramage
+  const bay = () => 0;                                     // rendu lisse : pas de tramage pixel-art
   const WS = (lk.wheelSize || 0) * u;
   const L = p.L, belt = p.beltY, bot = p.bottom;
   const topY = Math.min(...p.body.map(q => q[1]));
@@ -737,10 +739,12 @@ function getBody(style, color, look) {
   const bodyF = (x, y) => {
     const n = bay(x, y);
     let f;
-    if (y < belt) { const u = (y - topY) / Math.max(1, belt - topY); f = Math.round((1.08 + 0.38 * (1 - u) + n * 0.12) / 0.08) * 0.08; }
+    if (y < belt) { const u = (y - topY) / Math.max(1, belt - topY); f = 1.06 + 0.42 * (1 - u) * (1 - u); }
     else {
-      const u = (y - belt) / (bot - belt) + n * 0.09;
-      f = u < 0.05 ? 1.85 : u < 0.13 ? 1.42 : u < 0.28 ? 1.2 : u < 0.42 ? 1.04 : u < 0.5 ? 0.86 : u < 0.56 ? 0.74 : u < 0.72 ? 0.92 : u < 0.86 ? 0.78 : 0.56;
+      // reflet d'horizon continu : ciel clair en haut du flanc, ligne d'horizon sombre, sol réfléchi en bas
+      const u = clamp((y - belt) / (bot - belt), 0, 1), U = [0, 0.06, 0.16, 0.3, 0.44, 0.5, 0.56, 0.7, 0.86, 1], F = [1.62, 1.4, 1.2, 1.07, 0.95, 0.74, 0.84, 0.9, 0.74, 0.5];
+      let i = 0; while (i < U.length - 2 && u > U[i + 1]) i++;
+      const k = (u - U[i]) / (U[i + 1] - U[i]), e = k * k * (3 - 2 * k); f = F[i] + (F[i + 1] - F[i]) * e;
     }
     if (lk.finish === 'matte') f = 1 + (f - 1) * 0.38;
     if (lk.finish === 'metal' && ((x * 73 + y * 151) % 19 === 0)) f += 0.4;
@@ -758,10 +762,10 @@ function getBody(style, color, look) {
   // 2) ailes bombées : reflet au-dessus de chaque roue
   for (const wx of p.wheels) {
     const cy = GY - p.wr;
-    for (let a = 0; a <= 180; a += 1) {
+    for (let a = 0; a <= 180; a += 0.35) {
       const t = a * Math.PI / 180, rr = p.wr + 8 * u;
       const x = Math.round(wx - Math.cos(t) * rr), y = Math.round(cy - Math.sin(t) * rr);
-      if (b.has(x, y) && y > belt) { b.px(x, y, tone(C, 1.5)); if (a % 6 === 0) b.px(x, y + 1, tone(C, 1.3)); }
+      if (b.has(x, y) && y > belt) { b.px(x, y, tone(C, 1.35)); b.px(x, y + 1, tone(C, 1.15)); }
     }
   }
   // vinyles / motifs (sur le flanc, sous la ligne de vitre)
@@ -829,11 +833,10 @@ function getBody(style, color, look) {
     const edge = !gm(x - 1, y) || !gm(x + 1, y) || !gm(x, y - 1);
     if (!gm(x, y + 1)) { b.px(x, y, [196, 202, 212], true); continue; }           // liseré chromé
     if (edge) { b.px(x, y, tone(C, 0.3), true); continue; }
-    const u = (y - gTop) / Math.max(1, gBot - gTop);
-    let c = [24 + 56 * u, 40 + 78 * u, 62 + 88 * u];
-    const d = ((x + y * 1.7) / u) % 46;
-    if (d < 5) c = c.map(v => v + 46); else if (d < 9) c = c.map(v => v + 18);
-    if (p.soft === undefined && u > 0.55 && ((x * 7 + y * 3) % 23) < 2) c = c.map(v => v - 14);
+    const v = (y - gTop) / Math.max(1, gBot - gTop);
+    let c = [16 + 46 * v, 24 + 66 * v, 38 + 84 * v];
+    const d = ((x + y * 1.3) / SPR) % 70;
+    const kr = d < 16 ? Math.pow(Math.sin(d / 16 * Math.PI), 2) : d > 22 && d < 27 ? 0.5 * Math.sin((d - 22) / 5 * Math.PI) : 0; c = c.map(q => q + 70 * kr * (1 - v * 0.5));   // reflets diagonaux doux
     const n = bay(x, y) * 8, tf = [1, 0.6, 0.34][lk.tint || 0]; b.px(x, y, [c[0] * tf + n, c[1] * tf + n, c[2] * tf + n], true);
   }
   // bandeau de pare-soleil
@@ -875,7 +878,8 @@ function getBody(style, color, look) {
     b.disc(cx, cy, r + 2 * u, [18, 18, 24], true); b.disc(cx, cy, r, (x, y) => ((x - cx) + (y - cy) < -2 * u ? [252, 252, 244] : [226, 224, 186]), true);
     b.disc(cx, cy, r * 0.45, [255, 214, 90]); b.px(cx - 3 * u, cy - 3 * u, [255, 255, 255]);
   } else {
-    b.poly(p.hl, (x, y) => (x + y) % 6 === 0 ? [255, 255, 255] : HLC, true);
+    { let hy0 = 1e9, hy1 = -1e9; for (const q of p.hl) { hy0 = Math.min(hy0, q[1]); hy1 = Math.max(hy1, q[1]); }
+      b.poly(p.hl, (x, y) => { const t = (y - hy0) / Math.max(1, hy1 - hy0); return tone(HLC, 1.25 - 0.45 * t); }, true); }
     for (let i = 0; i < p.hl.length; i++) { const q = p.hl[i], n = p.hl[(i + 1) % p.hl.length]; b.line(q[0], q[1], n[0], n[1], [28, 28, 34]); }
     let cx = 0, cy = 0; for (const q of p.hl) { cx += q[0]; cy += q[1]; } cx = Math.round(cx / p.hl.length); cy = Math.round(cy / p.hl.length);
     b.disc(cx, cy, 5 * u, [60, 64, 76]); b.disc(cx, cy, 3 * u, lk.lights === 'xenon' ? [200, 225, 255] : [255, 232, 140]); b.rect(cx - u, cy - u, u, u, [255, 255, 255]);
@@ -883,13 +887,14 @@ function getBody(style, color, look) {
   }
   if (p.tlRound) {
     const [cx, cy, r] = p.tlRound;
-    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true);
+    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, [226, 34, 40], true);
     b.disc(cx, cy, r * 0.45, [255, 150, 140]);
     b.poly([[u, cy - 8 * u], [18 * u, cy - 8 * u], [18 * u, cy + 8 * u], [u, cy + 8 * u]], (x, y) => !b.has(x, y) || b.sil[y * L + x] ? [30, 10, 12] : [30, 10, 12], true);
-    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, (x, y) => (x + y) % 4 ? [226, 30, 36] : [255, 110, 100], true); b.disc(cx, cy, r * 0.45, [255, 170, 160]);
-    b.disc(cx + 10 * u, cy, r - u, (x, y) => (x + y) % 4 ? [200, 24, 30] : [240, 90, 84], true);
+    b.disc(cx, cy, r + 1.5 * u, [24, 8, 8], true); b.disc(cx, cy, r, [226, 34, 40], true); b.disc(cx, cy, r * 0.45, [255, 170, 160]);
+    b.disc(cx + 10 * u, cy, r - u, [205, 30, 36], true);
   } else {
-    b.poly(p.tl, (x, y) => (x + y) % 5 === 0 ? [255, 96, 84] : [200, 24, 30], true);
+    { let ty0 = 1e9, ty1 = -1e9; for (const q of p.tl) { ty0 = Math.min(ty0, q[1]); ty1 = Math.max(ty1, q[1]); }
+      b.poly(p.tl, (x, y) => { const t = (y - ty0) / Math.max(1, ty1 - ty0); return [230 - 70 * t, 40 + 40 * (1 - t), 44]; }, true); }
     const t0 = p.tl[0]; b.line(t0[0], t0[1], p.tl[1][0], p.tl[1][1], [255, 150, 130]);
   }
   // options de phares : fumés, angel eyes
@@ -983,7 +988,18 @@ function getBody(style, color, look) {
   for (const [x, y] of outl) b.px(x, y, o);
 
   const cv = document.createElement('canvas'); cv.width = L; cv.height = p.H;
-  cv.getContext('2d').putImageData(new ImageData(b.d, L, p.H), 0, 0);
+  const cx2 = cv.getContext('2d'); cx2.putImageData(new ImageData(b.d, L, p.H), 0, 0);
+  // vernis : reflet spéculaire diagonal et voile lumineux sur le haut de caisse
+  if (lk.finish !== 'matte') {
+    cx2.globalCompositeOperation = 'source-atop';
+    const g = cx2.createLinearGradient(L * 0.18, 0, L * 0.42, p.H);
+    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.45, 'rgba(255,255,255,0.16)'); g.addColorStop(0.55, 'rgba(255,255,255,0.05)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    cx2.fillStyle = g; cx2.fillRect(0, 0, L, p.H);
+    const g2 = cx2.createLinearGradient(L * 0.62, 0, L * 0.74, p.H);
+    g2.addColorStop(0, 'rgba(255,255,255,0)'); g2.addColorStop(0.5, 'rgba(255,255,255,0.09)'); g2.addColorStop(1, 'rgba(255,255,255,0)');
+    cx2.fillStyle = g2; cx2.fillRect(0, 0, L, p.H);
+    cx2.globalCompositeOperation = 'source-over';
+  }
   _bodyCache[key] = cv;
   return cv;
 }
@@ -1000,7 +1016,7 @@ function drawWheel(ctx, cx, cy, r, s, ang, fast, nsp, style, color, rimQ) {
     if (d > r) continue;
     const F = d / r, f = F * 0.7 / q;                        // f : rayon normalisé sur la jante (0.70 = bord de jante)
     let c;
-    if (F > q) { const t = (F - q) / (1 - q); c = t > 0.84 ? '#08080a' : t > 0.53 ? ((dx + dy) & 1 ? '#17171c' : '#101014') : t > 0.27 ? '#202026' : '#2a2a32'; }
+    if (F > q) { const t = (F - q) / (1 - q); const sh = Math.round(14 + 26 * Math.max(0, 1 - t * 1.25) * (0.6 + 0.4 * Math.max(0, -(dx + dy) / (d + 1)))); c = t > 0.9 ? '#08080a' : `rgb(${sh},${sh},${sh + 5})`; }
     else if (F > lipIn) c = st === 'deep' ? ((dx - dy) % 5 === 0 ? '#ffffff' : '#dfe4ee') : '#e8ecf4';
     else if (F > lipIn - 0.04 * q / 0.7) c = '#8a90a0';
     else {
@@ -1034,11 +1050,17 @@ function drawCar(ctx, style, color, x, y, s, o) {
   const p = PROFILES[style], lk = lookOf({look: o.look}), body = getBodyHD(style, color, lk);
   const lean = o.lean || 0, WS = lk.wheelSize || 0, r = p.wr + WS;
   const drop = Math.min(lk.height || 0, p.sill - 2 - (lk.kit >= 2 ? 4 : lk.kit ? 3 : 0));
-  ctx.imageSmoothingEnabled = false;
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.beginPath(); ctx.ellipse(x + p.L * s / 2, y + 1 * s, p.L * s * 0.55, 5 * s, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';                      // ombre de contact sous chaque pneu
-  for (const wx of p.wheels) { ctx.beginPath(); ctx.ellipse(x + wx * s, y + 0.5 * s, (p.wr + 4) * s, 2.2 * s, 0, 0, Math.PI * 2); ctx.fill(); }
+  const sm0 = ctx.imageSmoothingEnabled;
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  // ombre portée douce + ombres de contact
+  ctx.save(); ctx.translate(x + p.L * s / 2, y + 1 * s); ctx.scale(1, 0.09);
+  const sg = ctx.createRadialGradient(0, 0, 0, 0, 0, p.L * s * 0.6); sg.addColorStop(0, 'rgba(0,0,0,0.55)'); sg.addColorStop(0.7, 'rgba(0,0,0,0.3)'); sg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = sg; ctx.fillRect(-p.L * s * 0.6, -p.L * s * 0.6, p.L * s * 1.2, p.L * s * 1.2); ctx.restore();
+  for (const wx of p.wheels) {
+    ctx.save(); ctx.translate(x + wx * s, y + 0.5 * s); ctx.scale(1, 0.14);
+    const cg = ctx.createRadialGradient(0, 0, 0, 0, 0, (p.wr + 6) * s); cg.addColorStop(0, 'rgba(0,0,0,0.7)'); cg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = cg; ctx.fillRect(-(p.wr + 6) * s, -(p.wr + 6) * s, (p.wr + 6) * 2 * s, (p.wr + 6) * 2 * s); ctx.restore();
+  }
   ctx.save();
   if (lean) { ctx.translate(x + p.wheels[0] * s, y); ctx.rotate(-lean * 0.007); ctx.translate(-(x + p.wheels[0] * s), -y); }
   ctx.drawImage(body, x, y - (p.H - 1 - drop) * s, p.L * s, p.H * s);
@@ -1047,7 +1069,7 @@ function drawCar(ctx, style, color, x, y, s, o) {
     const wc = wheelSprite(p, o.wheelAng || 0, fast, lk);
     ctx.drawImage(wc, x + (wx - r) * s, y - (2 * r + 1) * s, (2 * r + 1) * s, (2 * r + 1) * s);
   }
-  ctx.restore();
+  ctx.restore(); ctx.restore(); ctx.imageSmoothingEnabled = sm0;
 }
 
 /* cache des roues : 48 angles pré-rendus par profil */
@@ -1058,8 +1080,8 @@ function wheelSprite(p, ang, fast, lk) {
   const n = 48, a = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2), k = fast ? 0 : Math.round(a / (Math.PI * 2) * n) % n;
   const key = [r, p.rimQ, p.spokes || 6, lk.wheel, lk.wheelColor, fast ? 'f' : k].join(':');
   if (_wheelCache[key]) return _wheelCache[key];
-  const R = r * HD, c = document.createElement('canvas'); c.width = c.height = 2 * R + HD;   // roue rendue nativement en HD
-  drawWheel(c.getContext('2d'), R + HD / 2, R + HD / 2, R, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor, Math.min(0.8, (p.rimQ || 0.7) + (lk.wheelSize || 0) * 0.035));
+  const R = r * SPR, c = document.createElement('canvas'); c.width = c.height = 2 * R + SPR;   // roue rendue finement
+  drawWheel(c.getContext('2d'), R + SPR / 2, R + SPR / 2, R, 1, k / n * Math.PI * 2, fast, p.spokes || 6, lk.wheel, lk.wheelColor, Math.min(0.8, (p.rimQ || 0.7) + (lk.wheelSize || 0) * 0.035));
   return (_wheelCache[key] = c);
 }
 

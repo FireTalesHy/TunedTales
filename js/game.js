@@ -77,7 +77,7 @@ const Game = {
   ladderOpp(i) { const c = CLANS.find(k => k.boss === i || k.members.includes(i)); return Object.assign({}, OPPONENTS[i], {kind: 'ladder', idx: i, color: this.oppColor(i), look: randomLook(rng(i * 97 + 13), Math.min(1, i / 11)), clan: c && c.name, emblem: c && c.emblem, boss: !!c && c.boss === i, cond: 'night'}); },
 
   /* ---------------- CONTRATS ---------------- */
-  baseReward(t400) { return 160 * Math.pow(18.5 / t400, 6.5); },
+  baseReward(t400) { return 260 * Math.pow(18.5 / t400, 6.5); },
   streakMult(n) { return Math.min(2.5 + this.perk('streak'), 1 + 0.2 * (n || 0)); },
   /* ---------------- CLANS ---------------- */
   crew() { return Object.assign({name: 'Tuned Tales', color: '#19e6ff'}, this.save.crew || {}); },
@@ -173,6 +173,11 @@ const Game = {
     return out;
   },
 
+  /* ---- entretien ---- */
+  repairCost(cs) { cs = cs || this.car(); const w = cs.cond == null ? 100 : cs.cond; return Math.round((100 - w) * (8 + this.carValue(cs) * 0.0006) / 10) * 10; },
+  repair() { const cs = this.car(), c = this.repairCost(cs); if (!c || this.save.money < c) return false; this.save.money -= c; cs.cond = 100; this.persist(); return true; },
+  setSetup(k, v) { const cs = this.car(); cs.setup = Object.assign({}, cs.setup || {}); cs.setup[k] = v; this.persist(); },
+
   /* ---- réputation (niveaux) ---- */
   level() { return this.save.level || 1; },
   xpNeed(l) { return Math.round(300 * Math.pow(l || this.level(), 1.4) / 10) * 10; },
@@ -248,6 +253,13 @@ const Game = {
     } else { if (s.streak >= 2) lines.push([`Série de ${s.streak} victoires terminée`, 0, 'info']); s.streak = 0; }
     res.streak = s.streak;
     if (reward > 0 && this.perk('all')) { const b = Math.round(reward * this.perk('all')); reward += b; lines.push(['⭕ Bonus du Cercle', b]); }
+    // usure mécanique de la voiture utilisée (le rupteur, le cliquetis et la surchauffe des pneus usent plus)
+    const cw = s.cars[s.current];
+    if (cw && Race.plCar && cw.id === Race.plCar.id) {
+      const loss = 1.5 + Math.min(6, res.limT * 2.5) + (res.knocked ? 6 : 0) + (res.burn === 'hot' ? 2 : 0) + (res.nitroUsed ? 1 : 0);
+      cw.cond = Math.max(0, Math.round(((cw.cond == null ? 100 : cw.cond) - loss) * 10) / 10); res.wear = loss;
+      if (cw.cond < 60) lines.push([`🔧 État mécanique ${Math.round(cw.cond)} % : passe au garage`, 0, 'info']);
+    }
     // conditions difficiles : bonus sur les gains
     const C = condOf(opp.cond);
     if (res.win && reward > 0 && C.bonus && opp.kind !== 'ladder') { const b = Math.round(reward * C.bonus); reward += b; lines.push([`${C.icon} Bonus ${C.name}`, b]); }

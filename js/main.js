@@ -155,6 +155,8 @@ document.addEventListener('click', e => {
     case 'ecureset': { const cs = Game.car(); cs.map = {}; Game.persist(); UI.render(); break; }
     case 'collect': { const g = Game.collectTurf(v === 'all' ? null : v); if (g) { UI.toast('+ ' + money(g) + ' encaissés'); FX.coins(b, 22); FX.sparks(b); } UI.render(); break; }
     case 'claim': { const g = Game.claimChal(v); if (g) { UI.toast(`+ ${money(g.cash)} · +${g.xp} XP`); FX.coins(b, 22); FX.sparks(b); if (g.ups.length) { FX.confetti(200); UI.toast(`🎖️ Niveau de réputation ${g.ups[g.ups.length - 1].level} !`); } UI.refreshTop(); } UI.render(); break; }
+    case 'repair': if (Game.repair()) { UI.toast('🔧 Voiture remise à neuf'); FX.sparks(b, '#3dff7a'); UI.refreshTop(); UI.render(); } else flash(b); break;
+    case 'setupreset': { const cs = Game.car(); cs.setup = {}; Game.persist(); UI.render(); break; }
     case 'turfup': if (Game.upgradeTurf(v)) UI.render(); else flash(b); break;
     case 'crewcol': UI.crewColor = v; document.querySelectorAll('.crew-col').forEach(x => x.classList.toggle('sel', x.dataset.v === v)); break;
     case 'crewsave': Game.setCrew($('crewname').value, UI.crewColor || Game.crew().color); UI.render(); break;
@@ -231,7 +233,9 @@ setInterval(() => document.body.classList.toggle('ingame', Race.active || Jobs.a
 document.addEventListener('input', e => { const el = e.target; if (!el.dataset || !el.dataset.ecu || el.type !== 'range') return;
   const lab = el.parentElement.querySelector('.ecu-v'); if (lab) lab.textContent = '…'; });
 document.addEventListener('change', e => {
-  const el = e.target; if (!el.dataset || !el.dataset.ecu) return;
+  const el = e.target;
+  if (el.dataset && el.dataset.setup) { Game.setSetup(el.dataset.setup, +el.value); UI.render(); return; }
+  if (!el.dataset || !el.dataset.ecu) return;
   const cs = Game.car(); cs.map = Object.assign({}, cs.map || {}); cs.map[el.dataset.ecu] = el.type === 'checkbox' ? el.checked : +el.value;
   Game.persist(); UI.render();
 });

@@ -92,7 +92,17 @@ function makeSpec(carId, engineId, parts, ecuMap) {
   spec.hp = hp; spec.hpRpm = hpR; spec.tq = tq; spec.tqPeakRpm = tqR;
   return spec;
 }
-function specOf(carState) { return makeSpec(carState.id, carState.engine, carState.parts, carState.map); }
+/* état mécanique (usure) et réglages de châssis : appliqués par-dessus la fiche technique */
+function wearMul(cs) { const w = cs.cond == null ? 100 : cs.cond; return 0.85 + 0.15 * w / 100; }
+function specOf(carState) {
+  const sp = makeSpec(carState.id, carState.engine, carState.parts, carState.map), S = carState.setup || {};
+  const tp = clamp(S.tire || 0, -1, 1), fd = clamp(S.final || 0, -1, 1), wm = wearMul(carState);
+  sp.mu *= 1 - 0.06 * tp; sp.roll = 0.015 * (1 - 0.6 * tp);                // pression basse : + d'adhérence, + de résistance au roulement
+  sp.final *= 1 + 0.12 * fd;                                                 // pont court : + d'accélération, − de vitesse de pointe
+  if (wm < 1) { const t0 = sp.torque; sp.torque = (r, n, s) => t0(r, n, s) * wm; sp.hp *= wm; sp.tq *= wm; }
+  sp.wear = wm;
+  return sp;
+}
 
 /* ---- Simulation ---- */
 function createSim() {
@@ -142,7 +152,7 @@ function stepSim(s, spec, dt) {
   const Ftr = spec.mu * spec.mass * G * spec.frac;
   s.spin = false;
   if (Fw > Ftr) { Fw = Ftr * 0.94; s.spin = true; }
-  const drag = 0.5 * RHO * spec.cd * spec.A * s.v * s.v, roll = 0.015 * spec.mass * G;
+  const drag = 0.5 * RHO * spec.cd * spec.A * s.v * s.v, roll = (spec.roll || 0.015) * spec.mass * G;
   const a = (Fw - drag - roll) / (spec.mass * 1.07);
   s.accel = a;
   const xPrev = s.x, tPrev = s.t;

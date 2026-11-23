@@ -68,6 +68,7 @@ const UI = {
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
       <button class="tab ${tab === 'pink' ? 'on' : ''}" data-act="tab" data-v="pink">🏴 Courses au titre</button>
       <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">⚔️ Clans <small>${CLANS.filter(c => Game.clanDefeated(c)).length}/${CLANS.length}</small></button>
+      <button class="tab ${tab === 'tour' ? 'on' : ''}" data-act="tab" data-v="tour">👑 Tournoi</button>
       <button class="tab ${tab === 'chal' ? 'on' : ''}" data-act="tab" data-v="chal">🎯 Défis ${Game.claimable() ? `<small class="new">${Game.claimable()}</small>` : ''}</button></div>`;
     if (tab === 'contracts') {
       const list = Game.contracts(); Game.persist();
@@ -83,11 +84,24 @@ const UI = {
       h += `<div class="pinkhead"><b>COURSES AU TITRE DE PROPRIÉTÉ</b><span>Le gagnant repart avec la voiture de l'autre. Tu mets en jeu ta voiture actuelle : <b class="bad">${CARS[cs.id].name}</b> (valeur ${money(Game.carValue(cs))}). Si tu possèdes déjà le modèle gagné, son titre est revendu 70 % de sa valeur.</span></div>`;
       if (!list.length) h += `<div class="box">🔒 Il te faut <b>au moins 2 voitures</b> pour mettre un titre en jeu (sinon tu risquerais de te retrouver à pied). Passe à la concession !</div>`;
       else { h += '<div class="contracts">'; list.forEach((o, i) => { h += this.contractCard(o, i, spec, est, 'p'); }); h += '</div>'; }
+    } else if (tab === 'tour') {
+      h += this.rTour(spec, est);
     } else if (tab === 'chal') {
       h += this.rChallenges();
     } else {
       h += this.rClans();
     }
+    return h;
+  },
+  rTour(spec, est) {
+    const T = Game.tour(), th = Game.tourTheme(), ok = th.ok(Game.car()), days = 7 - Math.floor((Date.now() / 864e5 + 3) % 7);
+    const eligible = Object.keys(Game.save.cars).filter(id => th.ok(Game.save.cars[id]));
+    let h = `<div class="tourhead"><div class="tour-ic">${th.icon}</div><div><div class="eyebrow">TOURNOI DE LA SEMAINE · encore ${days} jour${days > 1 ? 's' : ''}</div>
+      <b>${th.name}</b><span class="muted">${th.desc} · 3 tours à élimination directe · prime du champion <b class="gold">${money(Game.tourPrize())}</b></span></div></div>
+      <div class="bracket">${TOUR_ROUNDS.map((R, i) => `<div class="br ${T.done || i < T.round ? 'won' : i === T.round ? 'cur' : ''}"><small>${R.label}</small><b>${T.done || i < T.round ? '✔' : i === T.round ? '▶' : '·'}</b></div>`).join('<i></i>')}<i></i><div class="br final ${T.done ? 'won' : ''}"><small>Champion</small><b>👑</b></div></div>`;
+    if (T.done) h += `<div class="box champ">👑 <b>Tu as remporté le tournoi de la semaine !</b> Reviens la semaine prochaine pour un nouveau thème.</div>`;
+    else if (!ok) h += `<div class="box">🔒 Ta <b>${CARS[Game.car().id].name}</b> n'est pas admise (${th.desc.toLowerCase()}). ${eligible.length ? `Dans ton garage, tu peux engager : <b>${eligible.map(id => CARS[id].name).join(', ')}</b>.` : 'Aucune voiture de ton garage n\'est admise : passe à la concession !'}</div>`;
+    else { const o = Game.tourOpp(); Game.persist(); h += `<div class="contracts tour1">${this.contractCard(o, 0, spec, est, 't')}</div>`; }
     return h;
   },
   rChallenges() {
@@ -253,7 +267,7 @@ const UI = {
         <div class="small bad">⚠ Défaite : tu perds ta ${CARS[Game.car().id].name}</div>` :
       `<div class="rewardrow"><span class="muted">${o.type === 'bet' ? 'Gain total' : 'Récompense'}</span><b class="gold big">${money(total)}</b></div>
       ${o.type === 'bet' ? `<div class="muted small">En cas de défaite : −${money(o.stake)}</div>` : '<div class="muted small">Défaite : prime de 10 %</div>'}`}
-      <button class="btn" data-act="race" data-v="${pre}${i}">${pink ? 'METTRE MA VOITURE EN JEU ▶' : 'ACCEPTER LE CONTRAT ▶'}</button></div>`;
+      <button class="btn" data-act="race" data-v="${pre}${i}">${pink ? 'METTRE MA VOITURE EN JEU ▶' : pre === 't' ? 'ENTRER EN PISTE ▶' : 'ACCEPTER LE CONTRAT ▶'}</button></div>`;
   },
 
   /* ---------------- CARROSSERIE (personnalisation visuelle) ---------------- */
@@ -588,7 +602,7 @@ const UI = {
     const lines = (res.lines || []).map(([l, v, k]) => k === 'car' ? `<div class="pl"><span class="good">${l}</span><b class="good">AU GARAGE</b></div>` :
       k === 'lost' ? `<div class="pl"><span class="bad">${l}</span><b class="bad">TITRE CÉDÉ</b></div>` : k === 'info' ? `<div class="pl"><span class="muted">${l}</span><b></b></div>` :
       `<div class="pl"><span>${l}</span><b class="${v >= 0 ? 'gold' : 'bad'}">${v >= 0 ? '+' : '−'} ${money(Math.abs(v))}</b></div>`).join('');
-    const again = o.kind === 'ladder' ? `<button class="btn" data-act="race" data-v="l${o.idx}">REJOUER</button>` : `<button class="btn" data-act="go" data-v="races">NOUVEAUX CONTRATS</button>`;
+    const again = o.kind === 'ladder' ? `<button class="btn" data-act="race" data-v="l${o.idx}">REJOUER</button>` : o.kind === 'tour' ? `<button class="btn" data-act="tourgo">${res.champion ? 'TOURNOI' : res.win ? 'TOUR SUIVANT ▶' : 'RETENTER'}</button>` : `<button class="btn" data-act="go" data-v="races">NOUVEAUX CONTRATS</button>`;
     r.innerHTML = `<div class="rbox has-slip ${res.win ? 'win' : 'lose'}"><div class="rmain"><div class="eyebrow">${o.kind === 'ladder' ? 'LÉGENDE DE LA VILLE' : 'CONTRAT'}</div>
       <h2>${res.win ? 'VICTOIRE' : 'DÉFAITE'}</h2>
       <div class="muted">face à ${o.name} · ${CARS[o.car].name}</div>

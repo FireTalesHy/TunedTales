@@ -178,6 +178,24 @@ const Game = {
   repair() { const cs = this.car(), c = this.repairCost(cs); if (!c || this.save.money < c) return false; this.save.money -= c; cs.cond = 100; this.persist(); return true; },
   setSetup(k, v) { const cs = this.car(); cs.setup = Object.assign({}, cs.setup || {}); cs.setup[k] = v; this.persist(); },
 
+  /* ---- tournoi hebdomadaire ---- */
+  tour() {
+    const s = this.save, week = Math.floor((Date.now() / 864e5 + 3) / 7);
+    if (!s.tour || s.tour.week !== week) s.tour = {week, round: 0, done: false, opps: null, sig: null};
+    s.tour.theme = TOUR_THEMES[week % TOUR_THEMES.length].id;
+    return s.tour;
+  },
+  tourTheme() { return TOUR_THEMES.find(t => t.id === this.tour().theme); },
+  tourPrize() { const me = estimateBest(specOf(this.car())).t400; return Math.round(this.baseReward(me) * 6 / 100) * 100; },
+  tourOpp() {
+    const T = this.tour();
+    if (T.done || !this.tourTheme().ok(this.car())) return null;
+    if (!T.opps || T.sig !== this.carSig() + this.save.current) {
+      T.opps = TOUR_ROUNDS.map(R => Object.assign(this.genRivals([R], false)[0], {kind: 'tour', type: 'street', diffLabel: R.label})); T.sig = this.carSig() + this.save.current;
+    }
+    const o = T.opps[T.round]; o.round = T.round; return o;
+  },
+
   /* ---- réputation (niveaux) ---- */
   level() { return this.save.level || 1; },
   xpNeed(l) { return Math.round(300 * Math.pow(l || this.level(), 1.4) / 10) * 10; },
@@ -225,6 +243,19 @@ const Game = {
         }
       }
       else { reward = Math.max(20, Math.round(o.reward * 0.1)); lines.push(['Prime de participation', reward]); }
+    } else if (opp.kind === 'tour') {
+      const T = this.tour();
+      if (res.win) {
+        reward = opp.reward; lines.push([`🏆 ${TOUR_ROUNDS[T.round].label} gagnée`, reward]); T.round++;
+        if (T.round >= TOUR_ROUNDS.length) {
+          const prize = this.tourPrize(); reward += prize; T.done = true; res.champion = true;
+          lines.push([`👑 CHAMPION · ${this.tourTheme().name}`, prize]);
+          s.stats = s.stats || {}; s.stats.tourWins = (s.stats.tourWins || 0) + 1;
+        }
+      } else {
+        reward = Math.round(opp.reward * 0.15); lines.push([`Éliminé en ${TOUR_ROUNDS[T.round].label.toLowerCase()} · tu peux retenter`, reward]);
+        T.round = 0; T.opps = null;
+      }
     } else {
       if (opp.type === 'pink') {
         if (res.win) {
@@ -311,7 +342,24 @@ const CHALLENGES = [
   {id: 'rain',   icon: '🌧️', name: 'Roi de la pluie',    stat: 'rainWins',   tiers: [1, 5, 20, 60],        cash: 700,  d: n => `Gagner ${n} course${n > 1 ? 's' : ''} sous la pluie`},
   {id: 'pink',   icon: '🏴', name: 'Chasseur de titres', stat: 'pinkWins',   tiers: [1, 5, 15, 40],        cash: 1500, d: n => `Gagner ${n} titre${n > 1 ? 's' : ''} de propriété`},
   {id: 'garage', icon: '🚗', name: 'Collectionneur',                         tiers: [3, 6, 12, 20, 35],    cash: 800,  d: n => `Posséder ${n} véhicules`},
-  {id: 'boss',   icon: '⚔️', name: 'Fléau des clans',                        tiers: [1, 3, 5],             cash: 2000, d: n => `Battre ${n} boss de clan`}
+  {id: 'boss',   icon: '⚔️', name: 'Fléau des clans',                        tiers: [1, 3, 5],             cash: 2000, d: n => `Battre ${n} boss de clan`},
+  {id: 'tour',   icon: '👑', name: 'Champion',           stat: 'tourWins',   tiers: [1, 3, 10, 25],        cash: 2500, d: n => `Remporter ${n} tournoi${n > 1 ? 's' : ''} hebdomadaire${n > 1 ? 's' : ''}`}
+];
+
+/* tournoi hebdomadaire : un thème par semaine, trois tours à élimination directe */
+const JDM = ['mx5', 'civic', 's15', 'supra', 'rx7', 'evo', 'skyline', 'r35', 'lfa', 'rcf', 'sti', 'ae86', 'nsx', 'busa', 'gryaris', 'z350', 'terrano'];
+const TOUR_THEMES = [
+  {id: 'jdm',    name: 'Coupe JDM',            icon: '🇯🇵', desc: 'Voitures japonaises uniquement',               ok: cs => JDM.includes(cs.id)},
+  {id: 'city',   name: 'Coupe des citadines',  icon: '🏙️', desc: 'Voitures à moins de 15 000 € neuves',         ok: cs => CARS[cs.id].price < 15000},
+  {id: 'awd',    name: 'Trophée 4 roues motrices', icon: '🌀', desc: 'Transmission intégrale obligatoire',       ok: cs => CARS[cs.id].drive === 'AWD'},
+  {id: 'v8',     name: 'Nuit des gros cubes',  icon: '🔥', desc: 'Moteur de 8 cylindres ou plus',                ok: cs => (ENGINE_SOUND[cs.engine] || {}).cyl >= 8 || ['lr1', 'v10l', 'viper8', 'colombo', 'lv12', 'rs25'].includes(cs.engine)},
+  {id: 'euro',   name: 'Euro Cup',             icon: '🇪🇺', desc: 'Voitures européennes uniquement',             ok: cs => !JDM.includes(cs.id) && !['mustang', 'viper', 'charger', 'gt40'].includes(cs.id)},
+  {id: 'open',   name: 'Open toutes catégories', icon: '🏆', desc: 'Tout est permis',                           ok: () => true}
+];
+const TOUR_ROUNDS = [
+  {k: 'mid',  label: 'Quart de finale', d: [-0.2, 0.3],  skill: 0.89, mult: 1.2},
+  {k: 'hard', label: 'Demi-finale',     d: [-0.6, -0.1], skill: 0.92, mult: 1.8},
+  {k: 'hard', label: 'Finale',          d: [-1.0, -0.4], skill: 0.95, mult: 2.8}
 ];
 
 const CONTRACT_REFRESH = 100;

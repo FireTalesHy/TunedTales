@@ -155,7 +155,8 @@ document.addEventListener('click', e => {
   if (b.classList.contains('off') && a !== 'reset') { flash(b); return; }
   switch (a) {
     case 'go': UI.go(v); break;
-    case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : v[0] === 'p' ? Game.pinkSlips()[+v.slice(1)] : Game.ladderOpp(+v.slice(1))); break;
+    case 'race': Sound.resume(); Race.start(v[0] === 'c' ? Game.contracts()[+v.slice(1)] : v[0] === 'p' ? Game.pinkSlips()[+v.slice(1)] : v[0] === 't' ? Game.tourOpp() : Game.ladderOpp(+v.slice(1))); break;
+    case 'tourgo': UI.raceTab = 'tour'; UI.go('races'); break;
     case 'tab': UI.raceTab = v; UI.render(); break;
     case 'bcat': UI.bodyCat = v; UI.render(); break;
     case 'dyno': Sound.resume(); UI.dyno(); break;

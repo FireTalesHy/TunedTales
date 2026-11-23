@@ -4,6 +4,19 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 🏁 v1.19.0 — « Grille pleine » · 23 novembre 2026
+
+- 🚗 **8 nouveaux véhicules** (43 au total), tous construits à partir de leurs vraies cotes :
+  - **Citroën Saxo VTS** (2 500 €) · **Abarth 595 Competizione** (7 000 €) · **Nissan 350Z** (20 000 €) · **Toyota GR Yaris** (38 000 €)
+  - **Audi RS6 Avant** (130 000 €), le break qui humilie les supercars · **Mercedes-AMG G63** (180 000 €), 2,5 t de 4x4 à 585 ch
+  - **Ford GT40 Mk I** (900 000 €) en livrée bleu ciel et orange · **Ferrari F40** (1 500 000 €) et son grand aileron
+- 🔊 8 nouveaux moteurs et sons simulés, dont le **3 cylindres turbo** de la GR Yaris et le V8 biturbo à vilebrequin plat de la F40.
+- 👑 **Tournoi hebdomadaire** (nouvel onglet) : un thème différent chaque semaine (Coupe JDM, citadines, 4 roues motrices, gros cubes V8, Euro Cup, Open), trois tours à élimination directe (quart, demi, finale) et une **prime de champion**. Éliminé ? Tu peux retenter.
+- 🎨 **3 nouveaux vinyles** (bandes GT, camouflage, trame dégradée) et **10 nouvelles teintes** (noir profond, vert lime, violet, orange fluo, bleu canard, or, gris Nardo, bleu Gulf, bordeaux, bleu nuit).
+- 🎯 Nouveau défi **Champion** : remporter des tournois.
+
+---
+
 ## 📱 v1.18.0 — « Dans la poche » · 23 novembre 2026
 
 Le jeu devient vraiment agréable sur téléphone :

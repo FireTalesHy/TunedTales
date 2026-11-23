@@ -2,7 +2,7 @@
    Toutes les coordonnées de profil sont [x, h] : x depuis l'arrière, h = hauteur au-dessus du sol (px).
    Rastérisation manuelle (pas d'anti-aliasing) avec dégradés tramés et contour pixel-art.            */
 
-const SH = 116;                       // hauteur du sprite
+const SH = 126;                       // hauteur du sprite
 const GY = SH - 1;                    // ligne de sol
 
 // c : nombre = ton de la couleur carrosserie, tableau = couleur RGB
@@ -662,7 +662,36 @@ const CAR_MODEL = {
   countach:{L: 4.14, H: 1.07, WB: 2.45, FO: 0.95, D: 0.622, rim: 15, gc: 0.11, belt: 0.75, tail: [0.02, 0.92], C: [0.62, 0.98], R: 1.76, F: 2.25, A: [2.85, 0.72], N: 0.45, pb: 2.35},
   lfa:     {L: 4.505, H: 1.22, WB: 2.605, FO: 0.97, D: 0.693, rim: 20, gc: 0.11, belt: 0.88, tail: [0.03, 0.95], C: [0.46, 1.00], R: 1.76, F: 2.30, A: [3.00, 0.85], N: 0.62, pb: 2.25},
   huayra:  {L: 4.605, H: 1.169, WB: 2.795, FO: 1.00, D: 0.709, rim: 20, gc: 0.10, belt: 0.82, tail: [0.02, 0.90], C: [0.46, 0.98], R: 1.96, F: 2.40, A: [3.05, 0.80], N: 0.55, pb: 2.50},
-  chiron:  {L: 4.544, H: 1.212, WB: 2.711, FO: 1.00, D: 0.711, rim: 21, gc: 0.10, belt: 0.86, tail: [0.03, 0.95], C: [0.42, 1.00], R: 1.86, F: 2.35, A: [3.05, 0.85], N: 0.62, pb: 2.40}
+  chiron:  {L: 4.544, H: 1.212, WB: 2.711, FO: 1.00, D: 0.711, rim: 21, gc: 0.10, belt: 0.86, tail: [0.03, 0.95], C: [0.42, 1.00], R: 1.86, F: 2.35, A: [3.05, 0.85], N: 0.62, pb: 2.40},
+  /* ---- nouveaux modèles, créés directement à partir des cotes (détails en mètres) ---- */
+  saxo:    {L: 3.73, H: 1.38, WB: 2.385, FO: 0.72, D: 0.56, rim: 14, gc: 0.14, belt: 0.92, tail: [0.03, 0.98], C: [0.28, 1.30], R: 0.62, F: 2.00, A: [2.62, 0.96], N: 0.80, pb: 1.60, gR: 0.72, spokes: 4,
+    ex: [{t: 'rect', x: 0.75, h: 0.40, w: 1.75, hh: 0.07, c: [28, 28, 32]}, {t: 'poly', pts: [[3.60, 0.62], [3.73, 0.62], [3.73, 0.72], [3.62, 0.72]], c: [14, 14, 18]}]},
+  abarth:  {L: 3.657, H: 1.485, WB: 2.30, FO: 0.74, D: 0.58, rim: 16, gc: 0.13, belt: 1.00, tail: [0.04, 1.05], C: [0.18, 1.40], R: 0.55, F: 1.95, A: [2.55, 1.02], N: 0.88, pb: 1.62, gR: 0.55, spokes: 5,
+    hlRound: [3.52, 0.84, 0.075], tlRound: [0.05, 0.92, 0.06],
+    ex: [{t: 'poly', pts: [[0.6, 0.30], [2.9, 0.30], [2.9, 0.36], [0.6, 0.36]], c: [200, 20, 30]}, {t: 'poly', pts: [[3.45, 0.45], [3.657, 0.45], [3.657, 0.60], [3.48, 0.60]], c: [14, 14, 18]},
+      {t: 'poly', pts: [[2.42, 0.98], [2.58, 0.98], [2.58, 1.06], [2.44, 1.06]], c: [200, 20, 30]}]},
+  z350:    {L: 4.31, H: 1.315, WB: 2.65, FO: 0.90, D: 0.66, rim: 18, gc: 0.13, belt: 0.92, tail: [0.05, 1.00], C: [0.42, 1.04], R: 1.42, F: 2.15, A: [2.95, 0.95], N: 0.80, pb: 1.95, spokes: 6,
+    ex: [{t: 'poly', pts: [[4.12, 0.30], [4.31, 0.32], [4.31, 0.50], [4.14, 0.48]], c: [14, 14, 18]}, {t: 'line', a: [3.0, 0.86], b: [4.1, 0.76], c: 1.5}]},
+  gryaris: {L: 3.995, H: 1.455, WB: 2.56, FO: 0.84, D: 0.64, rim: 18, gc: 0.14, belt: 0.98, tail: [0.04, 1.02], C: [0.40, 1.25], R: 0.95, F: 2.05, A: [2.80, 1.00], N: 0.86, pb: 1.75, spokes: 15,
+    ex: [{t: 'poly', pts: [[3.80, 0.25], [3.995, 0.28], [3.995, 0.58], [3.82, 0.55]], c: [14, 14, 18]}, {t: 'poly', wing: 1, pts: [[0.18, 1.24], [0.62, 1.28], [0.62, 1.31], [0.2, 1.28]], c: 0.8},
+      {t: 'rect', x: 0.05, h: 0.24, w: 0.12, hh: 0.06, c: [200, 204, 212]}]},
+  rs6:     {L: 4.995, H: 1.46, WB: 2.926, FO: 1.00, D: 0.73, rim: 22, gc: 0.13, belt: 0.98, tail: [0.03, 1.05], C: [0.12, 1.38], R: 0.35, F: 2.60, A: [3.35, 1.00], N: 0.86, pb: 2.45, pil: [[1.35, 0.07]], rd: 1.45, gR: 0.25, spokes: 10,
+    ex: [{t: 'poly', pts: [[4.70, 0.20], [4.995, 0.22], [4.995, 0.60], [4.74, 0.56]], c: [14, 14, 18]}, {t: 'rect', x: 0.02, h: 0.22, w: 0.18, hh: 0.08, c: [200, 204, 212]},
+      {t: 'rect', x: 0.5, h: 1.44, w: 1.9, hh: 0.03, c: [26, 26, 30]}, {t: 'line', a: [0.9, 0.60], b: [4.4, 0.62], c: 1.5}]},
+  g63:     {L: 4.873, H: 1.969, WB: 2.89, FO: 0.85, D: 0.83, rim: 22, gc: 0.24, belt: 1.33, tail: [0.02, 1.40], C: [0.05, 1.92], R: 0.12, F: 3.05, A: [3.28, 1.42], N: 1.32, pb: 2.40, pil: [[1.25, 0.09]], rd: 1.45, gR: 0.16, spokes: 6,
+    hlRound: [4.80, 1.12, 0.09],
+    ex: [{t: 'disc', x: 0.02, h: 1.00, r: 0.38, c: [22, 22, 26]}, {t: 'disc', x: 0.02, h: 1.00, r: 0.22, c: [150, 156, 166]},
+      {t: 'rect', x: 1.45, h: 0.32, w: 0.9, hh: 0.07, c: [200, 204, 212]}, {t: 'poly', pts: [[4.70, 0.30], [4.873, 0.30], [4.873, 1.02], [4.72, 1.02]], c: [20, 20, 24]},
+      {t: 'line', a: [4.73, 0.9], b: [4.86, 0.9], c: [200, 204, 212]}, {t: 'line', a: [4.73, 0.7], b: [4.86, 0.7], c: [200, 204, 212]}, {t: 'rect', x: 0.4, h: 1.98, w: 2.4, hh: 0.03, c: [26, 26, 30]}]},
+  gt40:    {L: 4.18, H: 1.03, WB: 2.42, FO: 0.92, D: 0.66, rim: 15, gc: 0.11, belt: 0.72, tail: [0.02, 0.85], C: [0.55, 0.92], R: 1.65, F: 2.05, A: [2.60, 0.68], N: 0.52, pb: 2.00, spokes: 12, noHandle: true,
+    hlRound: [4.02, 0.58, 0.07],
+    ex: [{t: 'poly', clip: 1, sh: 1, pts: [[0, 0.82], [4.2, 0.62], [4.2, 0.72], [0, 0.92]], c: [255, 120, 20]}, {t: 'disc', x: 2.3, h: 0.45, r: 0.16, c: [244, 244, 248]},
+      {t: 'poly', pts: [[1.5, 0.50], [1.82, 0.52], [1.82, 0.62], [1.56, 0.60]], c: [14, 14, 18]}]},
+  f40:     {L: 4.358, H: 1.124, WB: 2.45, FO: 1.00, D: 0.66, rim: 17, gc: 0.11, belt: 0.80, tail: [0.02, 0.92], C: [0.62, 0.98], R: 1.75, F: 2.15, A: [2.85, 0.78], N: 0.56, pb: 2.25, spokes: 5, noHandle: true,
+    ex: [{t: 'rect', wing: 1, x: 0.12, h: 0.98, w: 0.04, hh: 0.14, c: 0.85}, {t: 'rect', wing: 1, x: 0.40, h: 0.98, w: 0.04, hh: 0.14, c: 0.85},
+      {t: 'poly', wing: 1, pts: [[0.0, 1.10], [0.56, 1.11], [0.56, 1.15], [0.0, 1.15]], c: 1.0},
+      {t: 'poly', pts: [[1.95, 0.55], [2.25, 0.60], [2.25, 0.64], [1.98, 0.60]], c: [14, 14, 18]}, {t: 'poly', pts: [[0.7, 0.55], [1.05, 0.58], [1.05, 0.68], [0.75, 0.66]], c: [14, 14, 18]},
+      {t: 'rect', x: 0.02, h: 0.28, w: 0.4, hh: 0.1, c: [20, 20, 26]}]}
 };
 function chaikin(pts, n) {
   for (let k = 0; k < n; k++) {
@@ -674,6 +703,15 @@ function chaikin(pts, n) {
 }
 function buildModel(m, old) {
   const K = 60, P = v => Math.round(v * K), L = m.L, H = m.H, gc = m.gc, RO = L - m.WB - m.FO;
+  if (!old) {                                      // voiture créée de zéro : détails donnés en mètres, feux génériques
+    const Q = a => a.map(q => [P(q[0]), P(q[1])]), th = m.tail[1];
+    old = {wheels: [P(RO), P(L - m.FO)], body: [[0, P(H)]], spokes: m.spokes || 6, bodyBumpers: true, noHandle: m.noHandle,
+      hl: Q([[L - 0.30, m.N - 0.05], [L - 0.05, m.N - 0.11], [L - 0.02, m.N - 0.19], [L - 0.27, m.N - 0.13]]),
+      tl: Q([[0.01, th - 0.06], [0.13, th - 0.04], [0.13, th - 0.15], [0.01, th - 0.18]]),
+      hlRound: m.hlRound && [P(m.hlRound[0]), P(m.hlRound[1]), P(m.hlRound[2])], tlRound: m.tlRound && [P(m.tlRound[0]), P(m.tlRound[1]), P(m.tlRound[2])],
+      extra: (m.ex || []).map(e => Object.assign({}, e, {pts: e.pts && Q(e.pts), a: e.a && [P(e.a[0]), P(e.a[1])], b: e.b && [P(e.b[0]), P(e.b[1])],
+        x: e.x != null ? P(e.x) : e.x, h: e.h != null ? P(e.h) : e.h, w: e.w != null ? P(e.w) : e.w, hh: e.hh != null ? P(e.hh) : e.hh, r: e.r != null ? P(e.r) : e.r}))};
+  }
   // ligne supérieure, de l'arrière (bas) vers l'avant (bas)
   const raw = [[0, gc + 0.14], [0, m.tail[1] - 0.1], [m.tail[0], m.tail[1]], m.C, [m.R, H - 0.025], [(m.R + m.F) / 2, H], [m.F, H - 0.02], m.A,
     [L - 0.24, m.N], [L - 0.05, m.N - 0.1], [L, m.N - 0.24], [L, gc + 0.14]];
@@ -703,8 +741,8 @@ function buildModel(m, old) {
     spoilerMap: [mx, sx]
   });
 }
-for (const id in CAR_MODEL) if (PROFILES[id]) PROFILES[id] = buildModel(CAR_MODEL[id], PROFILES[id]);
-for (const id in CAR_MODEL) { const sm = SPOILER_MOUNT[id], p = PROFILES[id]; if (sm && p.spoilerMap) SPOILER_MOUNT[id] = [Math.round(p.spoilerMap[0](sm[0])), Math.round(p.spoilerMap[0](sm[1])), sm[2]]; }
+for (const id in CAR_MODEL) PROFILES[id] = buildModel(CAR_MODEL[id], PROFILES[id]);
+for (const id in CAR_MODEL) { const sm = SPOILER_MOUNT[id], p = PROFILES[id]; if (sm && p.spoilerMap && !CAR_MODEL[id].ex) SPOILER_MOUNT[id] = [Math.round(p.spoilerMap[0](sm[0])), Math.round(p.spoilerMap[0](sm[1])), sm[2]]; }
 // convertit [x,h] -> [x,y] une fois
 for (const k in PROFILES) {
   const p = PROFILES[k]; p.H = SH;
@@ -866,6 +904,10 @@ function getBody(style, color, look) {
           return dy < edge ? (dy < edge * 0.45 && uu > 0.35 ? 2 : 1) : 0;
         }
         case 'tribal': { const yc = belt + hb * (0.45 + 0.22 * Math.sin(x * 0.045 / u)), th = (1.2 + 3.2 * Math.abs(Math.sin(x * 0.09 / u))) * u; return x > 10 * u && x < L - 10 * u && Math.abs(y - yc) < th ? 1 : 0; }
+        case 'camo': { const n = Math.sin(x * 0.07 / u + Math.sin(y * 0.11 / u) * 2) + Math.sin(y * 0.09 / u + x * 0.023 / u) * 0.9 + Math.sin((x + y) * 0.05 / u); return x > 6 * u && x < L - 6 * u ? (n > 1.1 ? 2 : n > 0.35 ? 1 : 0) : 0; }
+        case 'fade': { const t = x / L, cell = 5 * u, cx = (Math.floor(x / cell) + 0.5) * cell, cy = (Math.floor(y / cell) + 0.5) * cell, rr = cell * 0.55 * Math.max(0, 1 - t * 1.4);
+          return v > 0.08 && v < 0.9 && (x - cx) * (x - cx) + (y - cy) * (y - cy) < rr * rr ? 1 : 0; }
+        case 'gt': return x > 4 * u && x < L - 4 * u && ((v > 0.12 && v < 0.22) || (v > 0.27 && v < 0.37)) ? 1 : 0;
         case 'number': {
           const d2 = (x - dcx) * (x - dcx) + (y - dcy) * (y - dcy);
           if (d2 > dr * dr) return 0;

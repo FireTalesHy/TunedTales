@@ -6,14 +6,14 @@
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER_MAINTENANT-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
 
-[![Version](https://img.shields.io/badge/version-1.18.0-ff2bd6?style=flat-square&labelColor=04060c)](CHANGELOG.md)
-[![Véhicules](https://img.shields.io/badge/véhicules-35-ffd23f?style=flat-square&labelColor=04060c)](#-le-garage)
-[![Moteurs](https://img.shields.io/badge/moteurs-38-ff7a1a?style=flat-square&labelColor=04060c)](#-tuning-swap--ecu)
-[![Défis](https://img.shields.io/badge/défis-11-3dff7a?style=flat-square&labelColor=04060c)](#-progression)
+[![Version](https://img.shields.io/badge/version-1.19.0-ff2bd6?style=flat-square&labelColor=04060c)](CHANGELOG.md)
+[![Véhicules](https://img.shields.io/badge/véhicules-43-ffd23f?style=flat-square&labelColor=04060c)](#-le-garage)
+[![Moteurs](https://img.shields.io/badge/moteurs-46-ff7a1a?style=flat-square&labelColor=04060c)](#-tuning-swap--ecu)
+[![Défis](https://img.shields.io/badge/défis-12-3dff7a?style=flat-square&labelColor=04060c)](#-progression)
 [![Sans installation](https://img.shields.io/badge/HTML_·_CSS_·_JS-sans_build-7ff3ff?style=flat-square&labelColor=04060c)](#%EF%B8%8F-sous-le-capot)
 [![PC & mobile](https://img.shields.io/badge/PC_&_mobile-plein_écran-9b6bff?style=flat-square&labelColor=04060c)](#-commandes)
 
-**Commence en Twingo 2 avec 600 €. Finis en Bugatti Chiron, en Renault R25 championne du monde… ou en Formule 1 à dix millions.**
+**Commence en Twingo 2 avec 600 €. Finis en Ferrari F40, en Bugatti Chiron, en Renault R25 championne du monde… ou en Formule 1 à dix millions.**
 
 [Jouer](https://firetaleshy.github.io/TunedTales/) · [Nouveautés](CHANGELOG.md) · [Signaler un bug](../../issues/new?template=bug.md) · [Proposer une idée](../../issues/new?template=idee.md)
 
@@ -115,6 +115,7 @@ Chaque euro gagné repart dans ta caisse : pièces moteur, turbo, **swap de mote
 | 📜 **Contrats du jour** | Trois rivaux générés selon ta voiture (facile, serré, difficile), avec six types : course de rue, pari, pied de velours, départ canon, boîte parfaite… |
 | 🏴 **Courses au titre** | Le gagnant repart avec la voiture de l'autre. Gagne une caisse… ou perds la tienne. |
 | ⚔️ **Clans** | Quinze légendes de la ville réparties en cinq clans, chacun mené par un boss. |
+| 👑 **Tournoi hebdomadaire** | Un thème par semaine (JDM, citadines, 4x4, V8, Euro Cup, Open), trois tours à élimination directe et une prime de champion. |
 | 🔥 **Séries** | Chaque victoire d'affilée multiplie tes gains, jusqu'à **×2,5**. |
 
 ### 🌦️ Conditions de piste
@@ -129,29 +130,33 @@ Chaque euro gagné repart dans ta caisse : pièces moteur, turbo, **swap de mote
 
 ## 🚗 Le garage
 
-<div align="center"><img src="docs/vehicules.jpg" alt="Les 35 véhicules du jeu" width="100%"></div>
+<div align="center"><img src="docs/vehicules.jpg" alt="Les 43 véhicules du jeu" width="100%"></div>
 
 Chaque véhicule est construit à partir de ses **vraies cotes** (longueur, hauteur, empattement, porte-à-faux, garde au sol, ligne de caisse) et roule sur des **roues à sa taille réelle**.
 
 <details>
-<summary><b>📋 Liste complète des 35 véhicules (cliquer pour déplier)</b></summary>
+<summary><b>📋 Liste complète des 43 véhicules (cliquer pour déplier)</b></summary>
 
 | Véhicule | Moteur d'origine | Transmission | Prix |
 |---|---|:---:|---:|
 | Renault Twingo 2 | D4F 1.2 · 75 ch | traction | *offerte* |
+| Citroën Saxo VTS | TU5JP4 1.6 16v · 120 ch | traction | 2 500 € |
 | Peugeot 205 GTI 1.9 | XU9JA 1.9 · 130 ch | traction | 2 000 € |
 | Ford Focus Mk1 | Zetec 1.6 · 100 ch | traction | 3 000 € |
 | Volkswagen Golf GTI Mk2 | KR 1.8 16v · 139 ch | traction | 3 500 € |
 | Nissan Terrano II | TD27 turbo diesel · 125 ch | 4x4 | 5 000 € |
+| Abarth 595 Competizione | 1.4 T-Jet · 160 ch | traction | 7 000 € |
 | Renault Clio RS | F4R 2.0 · 197 ch | traction | 6 500 € |
 | Toyota AE86 Trueno | 4A-GE 1.6 16v · 130 ch | propulsion | 9 000 € |
 | Mazda MX-5 NB | BP 1.8 · 140 ch | propulsion | 11 000 € |
 | Honda Civic Type R EP3 | K20A VTEC · 215 ch | traction | 12 000 € |
 | 🏍️ Suzuki Hayabusa | 1340 4 cyl. · 197 ch | propulsion | 16 000 € |
 | Peugeot RCZ | 1.6 THP · 200 ch | traction | 18 000 € |
+| Nissan 350Z | VQ35DE V6 · 280 ch | propulsion | 20 000 € |
 | BMW M3 E46 | S54 · 343 ch | propulsion | 22 000 € |
 | Nissan Silvia S15 | SR20DET · 250 ch | propulsion | 25 000 € |
 | Subaru Impreza WRX STI | EJ257 boxer turbo · 280 ch | 4x4 | 32 000 € |
+| Toyota GR Yaris | G16E 1.6 3 cyl. turbo · 261 ch | 4x4 | 38 000 € |
 | Toyota Supra A80 | 2JZ-GTE · 320 ch | propulsion | 35 000 € |
 | Mazda RX-7 FD | 13B-REW rotatif · 280 ch | propulsion | 40 000 € |
 | Mitsubishi Lancer Evo IX | 4G63T · 290 ch | 4x4 | 45 000 € |
@@ -162,12 +167,16 @@ Chaque véhicule est construit à partir de ses **vraies cotes** (longueur, haut
 | Honda NSX (NA1) | C30A V6 VTEC · 274 ch | propulsion | 70 000 € |
 | Lexus RC F | 2UR-GSE 5.0 V8 · 477 ch | propulsion | 75 000 € |
 | Porsche 911 GT3 (997) | Mezger 3.6 · 415 ch | propulsion | 120 000 € |
+| Audi RS6 Avant | 4.0 V8 biturbo · 600 ch | 4x4 | 130 000 € |
+| Mercedes-AMG G63 | M177 4.0 V8 biturbo · 585 ch | 4x4 | 180 000 € |
 | Lancia 037 Rally | 2.0 compresseur · 325 ch | propulsion | 180 000 € |
 | Nissan GT-R R35 | VR38DETT · 485 ch | 4x4 | 250 000 € |
 | McLaren 720S | M840T V8 biturbo · 720 ch | propulsion | 320 000 € |
 | Lamborghini Huracán | V10 5.2 · 610 ch | 4x4 | 450 000 € |
 | Lamborghini Countach QV | V12 5.2 · 455 ch | propulsion | 600 000 € |
+| Ford GT40 Mk I | 289 V8 4.7 · 380 ch | propulsion | 900 000 € |
 | Lexus LFA | 1LR-GUE V10 · 560 ch | propulsion | 1 000 000 € |
+| Ferrari F40 | F120A 2.9 V8 biturbo · 478 ch | propulsion | 1 500 000 € |
 | Pagani Huayra | AMG 6.0 V12 biturbo · 730 ch | propulsion | 2 800 000 € |
 | Bugatti Chiron | W16 8.0 quadriturbo · 1 500 ch | 4x4 | 3 500 000 € |
 | Ferrari 250 Testa Rossa | Colombo V12 · 300 ch | propulsion | 5 000 000 € |
@@ -180,14 +189,14 @@ Chaque véhicule est construit à partir de ses **vraies cotes** (longueur, haut
 
 - **11 catégories de pièces** : admission, échappement, arbres à cames, reprogrammation, turbo, allègement, pneus, boîte courte, embrayage, aéro, nitro. Chaque pièce affiche son **gain estimé** (ch et secondes au 400 m) avant achat.
 - **Courbes de puissance et de couple** en direct, et un **banc de puissance** animé avec la voiture sur les rouleaux.
-- **Swap moteur** : 38 moteurs, tous montables dans toutes les voitures. Oui, une Twingo en W16, c'est possible.
+- **Swap moteur** : 46 moteurs, tous montables dans toutes les voitures. Oui, une Twingo en W16, c'est possible.
 - **Cartographie ECU** : avance à l'allumage, richesse, pression de turbo, rupteur, couple en 1re, flat shift, anti-lag. Plus tu pousses, plus le **cliquetis** te guette (−18 % de puissance en pleine course).
 - **Entretien** : chaque course use un peu la mécanique (davantage sur le rupteur, au cliquetis ou avec des pneus surchauffés). Usée, la voiture perd jusqu'à 15 % de puissance ; **réparation en un clic**.
 - **Réglages de châssis** : pression des pneus (adhérence contre vitesse) et rapport de pont (accélération contre vitesse max), avec le 400 m estimé recalculé en direct.
 
 ## 🎨 Carrosserie
 
-Peinture (brillante, mate, nacrée, métallisée), **kits carrosserie jusqu'au widebody**, ailerons, jantes (modèles, couleurs, tailles), vinyles (bandes, damier, flammes, tribal, numéro de course), hauteur de caisse, teinte des vitres, **néons**, capot carbone ou ajouré, écope de toit, bandeau de pare-soleil, phares xénon / fumés / angel eyes, sorties d'échappement. Tout s'essaie en **aperçu en direct** avant d'acheter.
+Peinture (brillante, mate, nacrée, métallisée), **kits carrosserie jusqu'au widebody**, ailerons, jantes (modèles, couleurs, tailles), vinyles (bandes, bandes GT, damier, flammes, tribal, camouflage, trame dégradée, numéro de course), 20 teintes de peinture, hauteur de caisse, teinte des vitres, **néons**, capot carbone ou ajouré, écope de toit, bandeau de pare-soleil, phares xénon / fumés / angel eyes, sorties d'échappement. Tout s'essaie en **aperçu en direct** avant d'acheter.
 
 ## 🏙️ La ville : clans & territoires
 
@@ -196,7 +205,7 @@ Cinq clans se partagent la ville. Bats leurs membres puis leur **boss** : il rej
 ## 📈 Progression
 
 - **⭐ Réputation** : chaque course rapporte de l'XP (victoire, départ parfait, passages parfaits, burnout réussi). Chaque niveau donne une **prime en cash** et **+2 % de gains** permanents, jusqu'à +50 %.
-- **🎯 11 défis à paliers** : victoires, départs parfaits, passages parfaits, burnouts, chrono sous 9 s, 300 km/h, séries, pluie, titres de propriété, collection, boss de clan.
+- **🎯 12 défis à paliers** : tournois remportés, victoires, départs parfaits, passages parfaits, burnouts, chrono sous 9 s, 300 km/h, séries, pluie, titres de propriété, collection, boss de clan.
 - **💼 Petits boulots** : livraison de pizzas, station de lavage, serrage au couple. Des mini-jeux pour arrondir les fins de mois.
 - **🎁 Bonus quotidien** qui grimpe sur 7 jours consécutifs.
 
@@ -237,7 +246,7 @@ Puis ouvre `http://localhost:8000`. Ouvrir directement `index.html` marche aussi
 
 ## 📜 Nouveautés
 
-Toutes les versions sont détaillées dans le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.18.0 « Dans la poche »** : paysage forcé sur mobile, jeu installable comme une appli, vibrations, commandes tactiles plein écran.
+Toutes les versions sont détaillées dans le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.19.0 « Grille pleine »** : 8 nouveaux véhicules (Saxo VTS, Abarth 595, 350Z, GR Yaris, RS6, G63, GT40, F40), tournoi hebdomadaire à thème, nouveaux vinyles et peintures.
 
 ## 🙏 Crédits
 

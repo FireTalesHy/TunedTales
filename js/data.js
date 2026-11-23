@@ -38,7 +38,15 @@ const ENGINES = {
   hemi:  {name:'426 Hemi V8 7.0', kind:'V8 atmo',      hp:425, hpRpm:5000, tqRpm:4000, red:6200, mass:320, turbo:false, price:19000},
   c30a:  {name:'C30A V6 VTEC',    kind:'V6 atmo',      hp:274, hpRpm:7100, tqRpm:5300, red:8000, mass:160, turbo:false, price:14000},
   lv12:  {name:'V12 5.2 Quattrovalvole', kind:'V12 atmo', hp:455, hpRpm:7000, tqRpm:5200, red:7500, mass:235, turbo:false, price:90000},
-  w16:   {name:'W16 8.0 quad-turbo', kind:'W16 quadriturbo', hp:1500, hpRpm:6700, tqRpm:3000, red:6900, mass:450, turbo:true, price:900000}
+  w16:   {name:'W16 8.0 quad-turbo', kind:'W16 quadriturbo', hp:1500, hpRpm:6700, tqRpm:3000, red:6900, mass:450, turbo:true, price:900000},
+  tu5:   {name:'TU5JP4 1.6 16v',  kind:'4 cyl. atmo',  hp:120, hpRpm:6600, tqRpm:5200, red:7300, mass:110, turbo:false, price:1500},
+  t14:   {name:'1.4 T-Jet',       kind:'4 cyl. turbo', hp:160, hpRpm:5500, tqRpm:3000, red:6500, mass:120, turbo:true,  price:4500},
+  vq35:  {name:'VQ35DE V6',       kind:'V6 atmo',      hp:280, hpRpm:6200, tqRpm:4800, red:7000, mass:165, turbo:false, price:8000},
+  g16e:  {name:'G16E-GTS 1.6 3 cyl.', kind:'3 cyl. turbo', hp:261, hpRpm:6500, tqRpm:3500, red:7000, mass:120, turbo:true, price:9000},
+  ford289:{name:'Ford 289 V8 4.7', kind:'V8 atmo',     hp:380, hpRpm:6500, tqRpm:5000, red:7000, mass:210, turbo:false, price:25000},
+  m177:  {name:'AMG M177 4.0 V8 biturbo', kind:'V8 biturbo', hp:585, hpRpm:6000, tqRpm:2500, red:6800, mass:215, turbo:true, price:55000},
+  v8rs:  {name:'4.0 V8 TFSI biturbo', kind:'V8 biturbo', hp:600, hpRpm:6000, tqRpm:2500, red:6800, mass:220, turbo:true, price:60000},
+  f120a: {name:'F120A 2.9 V8 biturbo', kind:'V8 biturbo', hp:478, hpRpm:7000, tqRpm:4000, red:7750, mass:190, turbo:true, price:200000}
 };
 
 // body = masse sans moteur ; frac = part du poids sur les roues motrices ; eff = rendement transmission
@@ -147,7 +155,31 @@ const CARS = {
            gears:[2.23,1.48,1.06,0.85,0.71], color:'#e8e8ea', style:'countach', hint:'Le poster de toute une génération'},
   chiron: {name:'Bugatti Chiron',      year:2016, drive:'AWD', price:3500000, engine:'w16',
            body:1545, mu:1.40, frac:0.92, eff:0.86, r:0.36, cd:0.36, A:2.10, final:3.60,
-           gears:[3.20,2.20,1.65,1.30,1.03,0.84,0.67], color:'#3a63c9', style:'chiron', hint:'1 500 ch, W16 et quatre turbos'}
+           gears:[3.20,2.20,1.65,1.30,1.03,0.84,0.67], color:'#3a63c9', style:'chiron', hint:'1 500 ch, W16 et quatre turbos'},
+  saxo:   {name:'Citroën Saxo VTS',    year:1999, drive:'FWD', price:2500, engine:'tu5',
+           body:825,  mu:0.95, frac:0.58, eff:0.90, r:0.28, cd:0.33, A:1.85, final:4.29,
+           gears:[3.42,1.81,1.28,0.98,0.77], color:'#1e57c8', style:'saxo', hint:'La terreur des parkings de supermarché'},
+  abarth: {name:'Abarth 595 Competizione', year:2017, drive:'FWD', price:7000, engine:'t14',
+           body:990,  mu:0.98, frac:0.60, eff:0.90, r:0.29, cd:0.33, A:2.00, final:3.35,
+           gears:[3.91,2.17,1.48,1.12,0.92], color:'#e5e8ec', style:'abarth', hint:'Petit scorpion, gros caractère'},
+  z350:   {name:'Nissan 350Z',         year:2005, drive:'RWD', price:20000, engine:'vq35',
+           body:1285, mu:1.05, frac:0.55, eff:0.90, r:0.33, cd:0.30, A:2.00, final:3.54,
+           gears:[3.79,2.32,1.62,1.27,1.00,0.79], color:'#f07a12', style:'z350', hint:'Le V6 qui a fait rêver toute une génération de tuners'},
+  gryaris:{name:'Toyota GR Yaris',     year:2021, drive:'AWD', price:38000, engine:'g16e',
+           body:1160, mu:1.12, frac:0.90, eff:0.87, r:0.32, cd:0.32, A:2.05, final:3.24,
+           gears:[3.54,2.24,1.53,1.16,0.97,0.79], color:'#c8142a', style:'gryaris', hint:'Une voiture de rallye homologuée en citadine'},
+  rs6:    {name:'Audi RS6 Avant',      year:2020, drive:'AWD', price:130000, engine:'v8rs',
+           body:1855, mu:1.25, frac:0.90, eff:0.87, r:0.365, cd:0.32, A:2.45, final:3.20,
+           gears:[4.71,3.14,2.10,1.67,1.29,1.00,0.84,0.67], color:'#8a8f94', style:'rs6', hint:'Le break familial qui humilie les supercars'},
+  g63:    {name:'Mercedes-AMG G63',    year:2019, drive:'AWD', price:180000, engine:'m177',
+           body:2345, mu:1.05, frac:0.90, eff:0.85, r:0.41, cd:0.54, A:3.50, final:3.27,
+           gears:[5.35,3.24,2.25,1.64,1.21,1.00,0.86,0.72,0.60], color:'#b9bec6', style:'g63', hint:'Une armoire de 2,5 t qui fait le 0-100 en 4,5 s'},
+  gt40:   {name:'Ford GT40 Mk I',      year:1966, drive:'RWD', price:900000, engine:'ford289',
+           body:790,  mu:1.05, frac:0.62, eff:0.90, r:0.33, cd:0.36, A:1.60, final:3.89,
+           gears:[2.42,1.47,1.09,0.85], color:'#8ec8e8', style:'gt40', hint:'La voiture qui a battu Ferrari au Mans'},
+  f40:    {name:'Ferrari F40',         year:1989, drive:'RWD', price:1500000, engine:'f120a',
+           body:910,  mu:1.20, frac:0.62, eff:0.90, r:0.33, cd:0.34, A:1.80, final:2.90,
+           gears:[2.90,1.90,1.40,1.10,0.86], color:'#d01818', style:'f40', hint:'Le dernier testament d\'Enzo Ferrari'}
 };
 const CAR_IDS = Object.keys(CARS).sort((a, b) => CARS[a].price - CARS[b].price);   // toujours par prix croissant
 const ENGINE_IDS = Object.keys(ENGINES).sort((a, b) => ENGINES[a].price - ENGINES[b].price);
@@ -197,7 +229,8 @@ const OPPONENTS = [
   {name:'L\'Architecte', tag:'Fondateur du Cercle', car:'f1', engine:'f1v6', parts:{tires:2,clutch:3}, reward:250000, skill:0.97}
 ];
 
-const PAINTS = ['#e8c020','#f2f2f2','#c42020','#3a78d0','#2a2a30','#30a050','#e87820','#9040c0','#e060a0','#20b8c8'];
+const PAINTS = ['#e8c020','#f2f2f2','#c42020','#3a78d0','#2a2a30','#30a050','#e87820','#9040c0','#e060a0','#20b8c8',
+  '#101215','#9bd41a','#5a2ca0','#ff5f1f','#0f8f8a','#c9a227','#8a8f94','#8ec8e8','#7a1020','#1d3fa0'];
 
 /* ============ PERSONNALISATION VISUELLE ============ */
 const LOOK_DEFAULT = {finish: 'gloss', kit: 0, spoiler: 0, wheel: 'stock', wheelColor: 'silver', wheelSize: 0,
@@ -223,7 +256,8 @@ const VISUAL = [
     {v: 0, n: 'Origine', p: 0}, {v: 1, n: '+1 pouce', p: 500}, {v: 2, n: '+2 pouces', p: 1000}]},
   {id: 'decal', name: 'Motifs', sub: 'Vinyles', opts: [
     {v: 'none', n: 'Aucun', p: 0}, {v: 'side', n: 'Bande latérale', p: 400}, {v: 'stripes', n: 'Double liseré', p: 500},
-    {v: 'number', n: 'Numéro de course', p: 500}, {v: 'checker', n: 'Damier', p: 700}, {v: 'flames', n: 'Flammes', p: 900}, {v: 'tribal', n: 'Tribal', p: 1100}]},
+    {v: 'number', n: 'Numéro de course', p: 500}, {v: 'checker', n: 'Damier', p: 700}, {v: 'flames', n: 'Flammes', p: 900}, {v: 'tribal', n: 'Tribal', p: 1100},
+    {v: 'gt', n: 'Bandes GT', p: 800}, {v: 'camo', n: 'Camouflage', p: 1200}, {v: 'fade', n: 'Trame dégradée', p: 1000}]},
   {id: 'decalColor', name: 'Couleur motif', sub: 'Gratuit', colors: true, opts: [
     {v: '#111216', n: 'Noir', p: 0}, {v: '#f4f4f8', n: 'Blanc', p: 0}, {v: '#ff3d2e', n: 'Rouge', p: 0}, {v: '#ffb21c', n: 'Orange', p: 0},
     {v: '#ffe23d', n: 'Jaune', p: 0}, {v: '#2fe06a', n: 'Vert', p: 0}, {v: '#1fd1ff', n: 'Cyan', p: 0}, {v: '#3a5bff', n: 'Bleu', p: 0},

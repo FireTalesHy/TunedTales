@@ -44,7 +44,15 @@ const ENGINE_SOUND = {
   hemi:  {cyl: 8, intake: 160, exhaust: 160, extractor: 170, pipe: 190, ign: 0.022, gIn: 0.25, gBlock: 0.35, gOut: 0.4},
   c30a:  {cyl: 6, intake: 70,  exhaust: 75,  extractor: 70,  pipe: 100, ign: 0.014, gIn: 0.55, gBlock: 0.25, gOut: 1.0, vtec: 5800},
   lv12:  {cyl: 12, intake: 70, exhaust: 70,  extractor: 65,  pipe: 100, ign: 0.014, gIn: 0.45, gBlock: 0.25, gOut: 0.4},
-  w16:   {cyl: 8, intake: 120, exhaust: 125, extractor: 130, pipe: 170, ign: 0.018, gIn: 0.3,  gBlock: 0.3,  gOut: 0.38}
+  w16:   {cyl: 8, intake: 120, exhaust: 125, extractor: 130, pipe: 170, ign: 0.018, gIn: 0.3,  gBlock: 0.3,  gOut: 0.38},
+  tu5:   {cyl: 4, intake: 85,  exhaust: 85,  extractor: 75,  pipe: 115, ign: 0.015, gIn: 0.5,  gBlock: 0.3,  gOut: 1.05},
+  t14:   {cyl: 4, intake: 95,  exhaust: 90,  extractor: 85,  pipe: 120, ign: 0.016, gIn: 0.35, gBlock: 0.3,  gOut: 1.1},
+  vq35:  {cyl: 6, intake: 95,  exhaust: 95,  extractor: 100, pipe: 130, ign: 0.016, gIn: 0.4,  gBlock: 0.3,  gOut: 1.0},
+  g16e:  {cyl: 3, intake: 90,  exhaust: 85,  extractor: 80,  pipe: 120, ign: 0.016, gIn: 0.4,  gBlock: 0.3,  gOut: 1.0},
+  ford289:{cyl: 8, intake: 140, exhaust: 145, extractor: 150, pipe: 160, ign: 0.02,  gIn: 0.3,  gBlock: 0.3,  gOut: 0.42},
+  m177:  {cyl: 8, intake: 115, exhaust: 115, extractor: 125, pipe: 155, ign: 0.018, gIn: 0.28, gBlock: 0.3,  gOut: 0.4},
+  v8rs:  {cyl: 8, intake: 105, exhaust: 110, extractor: 115, pipe: 150, ign: 0.017, gIn: 0.3,  gBlock: 0.3,  gOut: 0.4},
+  f120a: {cyl: 8, intake: 75,  exhaust: 75,  extractor: 70,  pipe: 105, ign: 0.014, gIn: 0.45, gBlock: 0.25, gOut: 0.5}
 };
 // variantes de silencieux testées stables (action 0.1) : moins d'éléments = son plus libre
 const MASTER_VOL = 0.8;

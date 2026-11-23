@@ -130,10 +130,18 @@ document.addEventListener('keyup', e => {
   if ((e.code === 'Space' || e.code === 'ArrowUp') && keyHeld) { keyHeld = false; if (Race.active) Race.onUp(); }
 });
 function canvasPos(e) {
-  const r = canvas.getBoundingClientRect(), k = Math.min(r.width / 960, r.height / 540);
-  return [(e.clientX - r.left - (r.width - 960 * k) / 2) / k, (e.clientY - r.top - (r.height - 540 * k) / 2) / k];
+  let cx = e.clientX, cy = e.clientY, r;
+  if (document.body.classList.contains('rot')) {             // application tournée de 90° : on revient dans son repère
+    const W = innerWidth; [cx, cy] = [cy, W - cx];
+    let el = canvas, ox = 0, oy = 0; while (el && el.id !== 'app') { ox += el.offsetLeft; oy += el.offsetTop; el = el.offsetParent; }
+    r = {left: ox, top: oy, width: canvas.offsetWidth, height: canvas.offsetHeight};
+  } else r = canvas.getBoundingClientRect();
+  const k = Math.min(r.width / 960, r.height / 540);
+  return [(cx - r.left - (r.width - 960 * k) / 2) / k, (cy - r.top - (r.height - 540 * k) / 2) / k];
 }
-canvas.addEventListener('pointerdown', e => {
+// toute la zone de jeu réagit au toucher (pas seulement le canvas)
+$('stage').addEventListener('pointerdown', e => {
+  if (e.target.closest('button')) return;
   if (Race.active) { e.preventDefault(); Race.onDown(); }
   else if (Jobs.active) { e.preventDefault(); const [x, y] = canvasPos(e); Jobs.down(x, y); }
 });
@@ -220,9 +228,26 @@ document.fonts && document.fonts.load('10px "Press Start 2P"');
 requestAnimationFrame(frame);
 
 /* ---------- plein écran ---------- */
+/* ---------- mobile : paysage forcé ---------- */
+function layoutMode() {
+  const b = document.body, touch = IS_TOUCH, rot = touch && innerHeight > innerWidth;
+  b.classList.toggle('touch', touch); b.classList.toggle('rot', rot);
+  b.classList.toggle('short', (rot ? innerWidth : innerHeight) < 560);
+}
+layoutMode();
+if (!document.documentElement.requestFullscreen && !document.documentElement.webkitRequestFullscreen) { const f = $('fsbtn'); if (f) f.style.display = 'none'; }
+addEventListener('resize', layoutMode); addEventListener('orientationchange', () => setTimeout(layoutMode, 120));
+// au premier toucher : plein écran + verrouillage en paysage quand le navigateur le permet (Android, appli installée)
+if (IS_TOUCH) document.addEventListener('pointerdown', function lockOnce() {
+  document.removeEventListener('pointerdown', lockOnce, true);
+  const el = document.documentElement, fs = el.requestFullscreen || el.webkitRequestFullscreen;
+  const lock = () => { try { screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} };
+  if (!matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches && fs && !document.fullscreenElement) { try { const p = fs.call(el, {navigationUI: 'hide'}); p && p.then ? p.then(lock).catch(() => {}) : lock(); } catch (e) {} }
+  else lock();
+}, true);
 function toggleFullscreen() {
   const d = document, el = d.documentElement;
-  if (!d.fullscreenElement && !d.webkitFullscreenElement) (el.requestFullscreen || el.webkitRequestFullscreen || (() => {})).call(el, {navigationUI: 'hide'});
+  if (!d.fullscreenElement && !d.webkitFullscreenElement) { const p = (el.requestFullscreen || el.webkitRequestFullscreen || (() => {})).call(el, {navigationUI: 'hide'}); if (p && p.then) p.then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => {}); }
   else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
 }
 document.addEventListener('keydown', e => { if (e.code === 'KeyF' && !e.repeat && !Jobs.active && !(e.target.closest && e.target.closest('input'))) toggleFullscreen(); });

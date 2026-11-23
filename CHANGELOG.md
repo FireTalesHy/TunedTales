@@ -4,6 +4,20 @@ Toutes les évolutions notables du jeu. Les versions suivent le format `majeure.
 
 ---
 
+## 📱 v1.18.0 — « Dans la poche » · 23 novembre 2026
+
+Le jeu devient vraiment agréable sur téléphone :
+
+- 🔄 **Paysage forcé** : tenu en portrait, le jeu s'affiche automatiquement à l'horizontale (il suffit de tourner le téléphone). Au premier toucher, il passe en **plein écran** et **verrouille l'orientation en paysage** quand le navigateur le permet (Android, appli installée).
+- 📲 **Installable** comme une appli (« Ajouter à l'écran d'accueil ») : icône, plein écran, paysage, sans barre de navigateur.
+- 👆 **Toute la zone de jeu réagit au toucher** (plus seulement l'image), gros bouton **NITRO** à portée de pouce, pas de zoom ni de sélection de texte intempestifs.
+- 📳 **Retour haptique** : vibrations au départ, aux passages, à la nitro et à l'arrivée.
+- 🔆 **L'écran ne se met plus en veille** pendant une course.
+- 📐 **Interface compacte** sur écrans bas : barre du haut réduite, menus et en-têtes resserrés, zones sûres des encoches respectées.
+- 💬 **Aides adaptées au tactile** : « pose le doigt sur l'écran » au lieu de « maintiens ESPACE ».
+
+---
+
 ## 📐 v1.17.0 — « Cotes d'origine » · 23 novembre 2026
 
 - 📐 **Tous les véhicules reconstruits avec un modèle paramétrique** basé sur leurs **vraies cotes** : longueur, hauteur, empattement, porte-à-faux avant / arrière, garde au sol, ligne de caisse et **diamètre réel des roues**, à l'échelle exacte de 60 px par mètre.

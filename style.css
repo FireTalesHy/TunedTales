@@ -15,7 +15,7 @@ body{background:radial-gradient(1200px 600px at 70% -10%,#2a1850 0%,transparent 
 #cash{font-family:var(--px);font-size:11px;color:var(--gold);background:rgba(255,211,77,.08);border:1px solid rgba(255,211,77,.3);padding:6px 10px;border-radius:6px}
 #carname{color:var(--mu);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.5px}
 #stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;background:#04050b}
-#scene{image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:100%;max-width:calc(100dvh*16/9);max-height:calc(100vw*9/16);object-fit:contain;touch-action:none;background:#000;box-shadow:0 0 80px rgba(0,0,0,.8)}
+#scene{image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:100%;max-width:calc(var(--VH)*16/9);max-height:calc(var(--VW)*9/16);object-fit:contain;touch-action:none;background:#000;box-shadow:0 0 80px rgba(0,0,0,.8)}
 .hidden{display:none!important}
 
 /* ---------- boutons ---------- */
@@ -27,13 +27,13 @@ body{background:radial-gradient(1200px 600px at 70% -10%,#2a1850 0%,transparent 
 .shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
 /* ---------- accueil ---------- */
-#menu{position:absolute;right:max(14px,calc(50% - min(50vw,100dvh*8/9) + 16px));top:50%;transform:translateY(-50%);width:min(290px,44vw);display:flex;flex-direction:column;gap:10px}
+#menu{position:absolute;right:max(14px,calc(50% - min(calc(var(--VW) / 2),var(--VH)*8/9) + 16px));top:50%;transform:translateY(-50%);width:min(290px,calc(var(--VW) * .44));display:flex;flex-direction:column;gap:10px}
 .mi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;color:var(--tx);font-family:var(--ui);padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.88),rgba(14,15,36,.88));backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s,border-color .15s,box-shadow .15s}
 .mi:hover{transform:translateX(-6px);border-color:var(--bd2);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,154,46,.3),0 0 30px rgba(255,154,46,.2)}
 .mi .ico{font-size:22px;width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(135deg,rgba(255,154,46,.25),rgba(255,61,154,.18));border:1px solid rgba(255,154,46,.35)}
 .mi b{display:block;font-family:var(--px);font-size:11px;letter-spacing:1px;margin-bottom:5px}
 .mi small{color:var(--mu);font-size:12px}
-#homecard{position:absolute;left:max(14px,calc(50% - min(50vw,100dvh*8/9) + 16px));top:66px;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.85),rgba(14,15,36,.85));backdrop-filter:blur(8px);min-width:230px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+#homecard{position:absolute;left:max(14px,calc(50% - min(calc(var(--VW) / 2),var(--VH)*8/9) + 16px));top:66px;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(28,30,66,.85),rgba(14,15,36,.85));backdrop-filter:blur(8px);min-width:230px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 #homecard .hc-t{font-family:var(--px);font-size:10px;color:var(--ac);margin-bottom:6px}
 #homecard .hc-n{font-weight:700;font-size:16px}
 #homecard .hc-s{display:flex;gap:14px;margin-top:6px;color:var(--mu);font-size:12px}
@@ -173,8 +173,8 @@ kbd{font-family:var(--ui);font-weight:700;font-size:11px;padding:1px 6px;border-
 /* ---------- plein écran ---------- */
 #app{position:relative}
 #topbar{position:absolute;left:0;right:0;top:0;background:linear-gradient(180deg,rgba(10,11,24,.92),rgba(10,11,24,.7));backdrop-filter:blur(8px);transition:transform .25s}
-#stage{height:100vh;height:100dvh;flex:none}
-#scene{max-width:calc(100dvh*16/9);max-height:calc(100vw*9/16);box-shadow:none}
+#stage{height:var(--VH);height:var(--VH);flex:none}
+#scene{max-width:calc(var(--VH)*16/9);max-height:calc(var(--VW)*9/16);box-shadow:none}
 body.ingame #topbar{transform:translateY(-100%)}
 #panel{top:0;padding-top:56px}
 
@@ -241,7 +241,7 @@ h3{font-size:24px;color:var(--ac)}
 .tab.on{color:#fff;text-shadow:0 0 14px rgba(25,230,255,.7)}
 .tab.on::after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:4px;transform:skewX(-30deg);background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 12px var(--ac)}
 /* menu d'accueil façon NFS */
-#menu{counter-reset:mi;gap:8px;width:min(330px,44vw)}
+#menu{counter-reset:mi;gap:8px;width:min(330px,calc(var(--VW) * .44))}
 .mi{border-radius:0;clip-path:none;transform:skewX(-10deg);background:linear-gradient(90deg,rgba(4,10,22,.92),rgba(4,10,22,.6));box-shadow:inset 0 0 0 1px rgba(25,230,255,.18);padding:10px 16px 8px;border:0;position:relative;overflow:hidden}
 .mi::before{counter-increment:mi;content:"0" counter(mi);font-family:var(--hd);font-size:20px;font-style:italic;color:var(--ac);opacity:.75;width:26px}
 .mi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac);box-shadow:0 0 14px var(--ac);transform:scaleY(0);transition:transform .15s}
@@ -319,7 +319,7 @@ h3{font-size:24px;color:var(--ac)}
 .pinkhead{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding:12px 16px;clip-path:var(--cut-s);background:linear-gradient(90deg,rgba(255,43,214,.18),rgba(5,9,20,.85));box-shadow:inset 0 0 0 1px rgba(255,43,214,.45)}
 .pinkhead>b{font-family:var(--hd);font-size:28px;font-style:italic;letter-spacing:1px;color:#ff7ae6}
 /* bouton COURSES façon ligne d'arrivée, en bas à droite de l'accueil */
-#racego{position:absolute;right:max(16px,calc(50% - min(50vw,100dvh*8/9) + 18px));bottom:22px;display:flex;align-items:stretch;gap:0;padding:0;border:0;cursor:pointer;
+#racego{position:absolute;right:max(16px,calc(50% - min(calc(var(--VW) / 2),var(--VH)*8/9) + 18px));bottom:22px;display:flex;align-items:stretch;gap:0;padding:0;border:0;cursor:pointer;
   transform:skewX(-12deg);clip-path:polygon(0 0,100% 0,100% 100%,0 100%);box-shadow:0 0 0 2px #fff,0 0 30px rgba(255,255,255,.25),0 14px 40px rgba(0,0,0,.6);transition:transform .15s,box-shadow .15s;z-index:3}
 #racego:hover{transform:skewX(-12deg) translateY(-4px) scale(1.03);box-shadow:0 0 0 2px #fff,0 0 44px rgba(25,230,255,.5),0 18px 50px rgba(0,0,0,.6)}
 #racego .rg-flag{width:74px;background:conic-gradient(#fff 0 25%,#0b0b0f 0 50%,#fff 0 75%,#0b0b0f 0) 0 0/18px 18px}
@@ -332,7 +332,8 @@ h3{font-size:24px;color:var(--ac)}
 
 /* ---------- petits écrans (mobile paysage, portables bas) ---------- */
 @media (max-height: 560px) {
-  #menu{top:47%;gap:5px;width:min(290px,44vw)}
+  /* (règles dupliquées pour body.short plus bas) */
+  #menu{top:47%;gap:5px;width:min(290px,calc(var(--VW) * .44))}
   .mi{padding:5px 14px 3px}
   .mi b{font-size:23px}
   .mi small{display:none}
@@ -516,3 +517,49 @@ h3{font-size:24px;color:var(--ac)}
 @keyframes neonBreath{50%{opacity:.45;transform:translateY(4%)}}
 .box,.contract,.chal,.jobc{backdrop-filter:blur(6px)}
 @media (prefers-reduced-motion:reduce){#panel::after{animation:none}}
+
+/* =====================================================================
+   MOBILE : paysage forcé, ergonomie tactile
+   ===================================================================== */
+:root{--VW:100vw;--VH:100vh;--tb:56px}
+@supports (height:100dvh){:root{--VH:100dvh}}
+html{-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{overscroll-behavior:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+#stage,#scene{touch-action:none}
+#panelBody{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+/* paysage forcé : en portrait sur écran tactile, toute l'application est tournée de 90° */
+body.rot{overflow:hidden}
+body.rot{--VW:100vh;--VH:100vw}
+@supports (height:100dvh){body.rot{--VW:100dvh;--VH:100vw}}
+body.rot #app{position:fixed;top:0;left:100vw;width:var(--VW);height:var(--VH);transform-origin:0 0;transform:rotate(90deg);overflow:hidden}
+
+/* écrans bas (paysage téléphone) : barre du haut compacte */
+body.short{--tb:42px}
+body.short #topbar{padding:4px max(10px,env(safe-area-inset-right)) 4px max(10px,env(safe-area-inset-left));gap:8px;min-height:42px}
+body.short #logo{font-size:22px;letter-spacing:1px}
+body.short #carname{font-size:16px;max-width:30%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+body.short #cash{font-size:18px;padding:4px 10px 2px}
+body.short #rep{padding:2px 8px 1px}body.short #rep b{font-size:16px}body.short #rep i{width:36px}
+body.short .iconbtn{width:32px;height:32px;font-size:14px}
+body.short #panel{padding-top:var(--tb)!important}
+body.short .phead{padding:6px 12px}body.short .phead h2{font-size:24px}
+body.short #panelBody{padding:10px max(12px,env(safe-area-inset-right)) 16px max(12px,env(safe-area-inset-left))}
+body.short #menu{top:50%;gap:5px;width:min(280px,calc(var(--VW) * .42))}
+body.short .mi{padding:5px 14px 3px}body.short .mi b{font-size:22px}body.short .mi small{display:none}body.short .mi::before{font-size:15px;width:22px}
+body.short #racego{bottom:8px}
+body.short #racego .rg-flag{width:34px;background-size:11px 11px}
+body.short #racego .rg-arrow{padding:0 8px;background-size:11px 11px}
+body.short #racego .rg-txt{padding:5px 12px 2px}body.short #racego .rg-txt small{display:none}body.short #racego .rg-txt b{font-size:32px}
+body.short #homecard{display:none}
+body.short .btn{font-size:19px}body.short .btn.small{font-size:15px}
+body.short .rbox{max-height:calc(var(--VH) - 16px);overflow:auto}
+@media (max-width:700px){#carname{display:none}}
+
+/* course sur écran tactile : gros bouton NITRO à portée de pouce, safe areas */
+body.touch #racebtns{bottom:max(10px,env(safe-area-inset-bottom));padding:0 max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));flex-direction:row-reverse}
+body.touch #nitrobtn{font-size:26px;padding:18px 26px 12px;min-width:120px}
+body.touch [data-act="quitrace"]{opacity:.75}
+/* textes d'aide : clavier sur PC, tactile sur mobile */
+.tc{display:none}body.touch .tc{display:inline}body.touch .kb{display:none}

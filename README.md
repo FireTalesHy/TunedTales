@@ -6,7 +6,7 @@
 
 [![Jouer](https://img.shields.io/badge/▶_JOUER_MAINTENANT-firetaleshy.github.io-19e6ff?style=for-the-badge&labelColor=04060c)](https://firetaleshy.github.io/TunedTales/)
 
-[![Version](https://img.shields.io/badge/version-1.17.0-ff2bd6?style=flat-square&labelColor=04060c)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.18.0-ff2bd6?style=flat-square&labelColor=04060c)](CHANGELOG.md)
 [![Véhicules](https://img.shields.io/badge/véhicules-35-ffd23f?style=flat-square&labelColor=04060c)](#-le-garage)
 [![Moteurs](https://img.shields.io/badge/moteurs-38-ff7a1a?style=flat-square&labelColor=04060c)](#-tuning-swap--ecu)
 [![Défis](https://img.shields.io/badge/défis-11-3dff7a?style=flat-square&labelColor=04060c)](#-progression)
@@ -93,6 +93,12 @@ Chaque euro gagné repart dans ta caisse : pièces moteur, turbo, **swap de mote
 | Passer la vitesse | <kbd>Espace</kbd> ou <kbd>↑</kbd> | toucher l'écran |
 | Nitro | <kbd>N</kbd> | bouton **NITRO** |
 | Plein écran | <kbd>F</kbd> | bouton ⛶ |
+
+### 📱 Sur mobile
+
+- Le jeu se joue **en paysage** : tenu en portrait, il s'affiche automatiquement à l'horizontale.
+- **Installe-le comme une appli** pour un vrai plein écran : *Partager → Sur l'écran d'accueil* (iPhone) ou *⋮ → Installer l'application* (Android).
+- Toute la zone de jeu réagit au toucher, avec **vibrations** au départ, aux passages et à la nitro.
 
 ### Déroulé d'une course
 
@@ -231,7 +237,7 @@ Puis ouvre `http://localhost:8000`. Ouvrir directement `index.html` marche aussi
 
 ## 📜 Nouveautés
 
-Toutes les versions sont détaillées dans le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.17.0 « Cotes d'origine »** : tous les véhicules reconstruits à partir de leurs vraies dimensions, lignes lissées, roues à leur place exacte.
+Toutes les versions sont détaillées dans le **[CHANGELOG](CHANGELOG.md)**. Dernière version : **v1.18.0 « Dans la poche »** : paysage forcé sur mobile, jeu installable comme une appli, vibrations, commandes tactiles plein écran.
 
 ## 🙏 Crédits
 

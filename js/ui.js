@@ -62,9 +62,9 @@ const UI = {
       <div class="you2"><canvas class="thumb" data-car="${cs.id}" data-color="${cs.color}" data-look='${JSON.stringify(lookOf(cs))}' width="600" height="232"></canvas>
         <div><div class="eyebrow">TA VOITURE</div><div class="big">${CARS[cs.id].name}</div>
         <div class="chips"><span class="chip">${ENGINES[cs.engine].name}</span><span class="chip">${Math.round(spec.hp)} ch</span><span class="chip">${fmt(spec.mass)} kg</span><span class="chip hl">400 m ≈ ${est.t400.toFixed(2)} s</span></div></div></div>
-      <div class="howto"><b>Départ :</b> maintiens / relâche <kbd>ESPACE</kbd> (ou l'écran) pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
+      <div class="howto"><b>Départ :</b> <span class="kb">maintiens / relâche <kbd>ESPACE</kbd></span><span class="tc">pose / lève le doigt sur l'écran</span> pour <b>garder l'aiguille dans le vert</b> jusqu'au feu vert : la voiture part toute seule.<br>
       <b>Burnout :</b> avant le départ, maintiens pour chauffer les pneus et relâche dans le vert (+10 % d'adhérence).<br>
-      <b>Vitesses :</b> appuie quand l'aiguille entre dans la zone blanche · <kbd>N</kbd> nitro.</div></div>
+      <b>Vitesses :</b> <span class="kb">appuie</span><span class="tc">touche l'écran</span> quand l'aiguille entre dans la zone blanche · <span class="kb"><kbd>N</kbd> nitro</span><span class="tc">bouton NITRO en bas à droite</span>.</div></div>
       <div class="tabs"><button class="tab ${tab === 'contracts' ? 'on' : ''}" data-act="tab" data-v="contracts">📜 Contrats du jour</button>
       <button class="tab ${tab === 'pink' ? 'on' : ''}" data-act="tab" data-v="pink">🏴 Courses au titre</button>
       <button class="tab ${tab === 'legends' ? 'on' : ''}" data-act="tab" data-v="legends">⚔️ Clans <small>${CLANS.filter(c => Game.clanDefeated(c)).length}/${CLANS.length}</small></button>

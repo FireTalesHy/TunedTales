@@ -9,7 +9,7 @@ const JOBS = [
    ctrl: 'Clique / touche et glisse pour frotter'},
   {id: 'torque', icon: '🔩', name: 'Atelier : serrage au couple', time: 0, rate: 0.35,
    desc: 'Serre 10 écrous de roue au bon couple. Arrête l\'aiguille dans la zone verte : de plus en plus vite !',
-   ctrl: 'ESPACE / clic pour serrer'}
+   ctrl: IS_TOUCH ? 'Touche l\'écran pour serrer' : 'ESPACE / clic pour serrer'}
 ];
 
 const Jobs = {
@@ -257,7 +257,7 @@ const Jobs = {
     const nx = bx + bw * g.pos;
     ctx.fillStyle = '#ff7a1a'; ctx.shadowColor = '#ff7a1a'; ctx.shadowBlur = 12; ctx.fillRect(nx - 3, by - 12, 6, 58); ctx.shadowBlur = 0;
     ctx.fillStyle = '#9097c0'; ctx.font = `600 13px ${UIF}`; ctx.fillText('Nm', gx + gw / 2, by + 70);
-    ctx.fillText('ESPACE / clic pour serrer', gx + gw / 2, gy + gh - 24);
+    ctx.fillText(IS_TOUCH ? 'Touche l\'écran pour serrer' : 'ESPACE / clic pour serrer', gx + gw / 2, gy + gh - 24);
     // historique
     ctx.textAlign = 'left';
     g.done.forEach((p, i) => { ctx.fillStyle = p >= 80 ? '#4cff8a' : p >= 15 ? '#ffd34d' : '#ff4a5a'; ctx.beginPath(); ctx.arc(gx + 40 + i * 29, gy + 62, 8, 0, Math.PI * 2); ctx.fill(); });

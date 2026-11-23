@@ -6,6 +6,8 @@ const FONT = '"Press Start 2P", "Courier New", monospace';
 const LAUNCH_ZONE = 0.09;           // demi-largeur de la zone verte (fraction de la zone rouge)
 const UIF = '"Chakra Petch", "Segoe UI", sans-serif';
 
+const IS_TOUCH = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+const buzz = p => { try { if (IS_TOUCH && navigator.vibrate) navigator.vibrate(p); } catch (e) {} };   // retour haptique
 function rng(seed) { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
 function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
 
@@ -44,9 +46,10 @@ const Race = {
     this.knockAt = Math.random() < Math.max(0, (this.plSpec.risk - 0.35) * 1.2) ? 1.5 + Math.random() * 3.5 : Infinity; this.knocked = false;
     Sound.stopAll(); this.plV = this.aiV = null;
     Sound.resume();
+    try { if (navigator.wakeLock && !this.lock) navigator.wakeLock.request('screen').then(l => { this.lock = l; l.addEventListener('release', () => { this.lock = null; }); }).catch(() => {}); } catch (e) {}
     UI.raceStart();
   },
-  stop() { this.photo = false; this.active = false; this.state = 'idle'; Sound.stopAll(); Sound.wind(0); this.camLag = 0; this.plV = this.aiV = null; },
+  stop() { try { if (this.lock) this.lock.release(); } catch (e) {} this.lock = null; this.photo = false; this.active = false; this.state = 'idle'; Sound.stopAll(); Sound.wind(0); this.camLag = 0; this.plV = this.aiV = null; },
 
   setMsg(m, c) { this.msg = m; this.msgC = c || '#fff'; this.msgT = 1.4; },
 
@@ -60,7 +63,7 @@ const Race = {
     this.holding = false;
   },
   onNitro() {
-    if (this.state === 'race' && this.pl.launched && this.plSpec.nitro && this.pl.nitroLeft > 0) { this.pl.nitroOn = true; this.setMsg('NITRO !', '#3ee0ff'); }
+    if (this.state === 'race' && this.pl.launched && this.plSpec.nitro && this.pl.nitroLeft > 0) { this.pl.nitroOn = true; this.setMsg('NITRO !', '#3ee0ff'); buzz(60); }
   },
 
   launchPlayer() {
@@ -71,6 +74,7 @@ const Race = {
     this.plLaunchRpm = rpm; this.plLaunchQ = q;
     simLaunch(this.pl, this.plSpec, rpm, q);
     this.pl.startT = this.t; this.flash = 1;
+    buzz(q > 0.95 ? [20, 30, 40] : 25);
     this.setMsg(q > 0.95 ? 'DÉPART PARFAIT' : q > 0.82 ? 'BON DÉPART' : 'DÉPART MOU', q > 0.95 ? '#4cff8a' : q > 0.82 ? '#ffd34d' : '#ff9a4a');
     this.state = 'race';
   },
@@ -78,7 +82,7 @@ const Race = {
     const sp = this.plSpec, s = this.pl, q = s.rpm / sp.red;
     if (s.gear >= sp.gears.length - 1 || s.shiftT > 0) return;
     if (q < 0.6) { this.setMsg('TROP TÔT', '#ff9a4a'); return; }
-    simShift(s, sp, q); this.shiftCount++; this.gearPop = 1;
+    simShift(s, sp, q); this.shiftCount++; this.gearPop = 1; buzz(q >= 0.93 ? 22 : 12);
     if ((sp.parts.exhaust || 0) >= 1 || sp.alag || sp.turbo) this.flamePl = 0.2;
     Sound.shift(this.plV);
     if (q >= 0.93) { this.perfectShifts++; this.setMsg('PARFAIT', '#4cff8a'); }
@@ -162,7 +166,7 @@ const Race = {
                    slip: {pl: Object.assign({et: this.pl.fin ? this.pl.tFin : null, trap: this.pl.v * 3.6, v660: (this.pl.v660 || 0) * 3.6}, this.pl.splits),
                           ai: Object.assign({et: this.ai.fin ? this.ai.tFin : null, trap: this.ai.v * 3.6, v660: (this.ai.v660 || 0) * 3.6, rt: this.aiReact}, this.ai.splits)}};
     Game.raceDone(this.opp, this.result);
-    this.setMsg(win ? 'VICTOIRE' : 'DÉFAITE', win ? '#4cff8a' : '#ff4a5a'); this.msgT = 3;
+    this.setMsg(win ? 'VICTOIRE' : 'DÉFAITE', win ? '#4cff8a' : '#ff4a5a'); this.msgT = 3; buzz(win ? [40, 60, 40, 60, 80] : 120);
     setTimeout(() => { if (this.state === 'done') { Sound.stopAll(); this.plV = this.aiV = null; UI.showResult(this.result); } }, 1600);
   },
 
@@ -399,7 +403,7 @@ const Race = {
       ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillRect(gx + gw * T - 2, gy + 24, 4, 26);
       ctx.font = `700 15px ${UIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = '#dfe4ff'; ctx.fillText(`TEMPÉRATURE DES PNEUS · ${this.cond.icon} ${this.cond.name}`, 480, gy + 10);
-      const txt = !this.burnUsed ? 'BURNOUT : maintiens ESPACE pour chauffer les pneus' : this.holding ? (this.tireT > 0.95 ? '▼ TROP CHAUD, relâche !' : this.tireT >= 0.6 ? '✓ DANS LE VERT : relâche !' : '🔥 Chauffe…') : '';
+      const txt = !this.burnUsed ? (IS_TOUCH ? 'BURNOUT : garde le doigt sur l\'écran pour chauffer les pneus' : 'BURNOUT : maintiens ESPACE pour chauffer les pneus') : this.holding ? (this.tireT > 0.95 ? '▼ TROP CHAUD, relâche !' : this.tireT >= 0.6 ? '✓ DANS LE VERT : relâche !' : '🔥 Chauffe…') : '';
       ctx.fillStyle = this.tireT >= 0.6 && this.tireT <= 0.95 ? '#4cff8a' : this.tireT > 0.95 ? '#ff4a5a' : '#ffd34d'; ctx.fillText(txt, 480, gy + 60);
       ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     }
